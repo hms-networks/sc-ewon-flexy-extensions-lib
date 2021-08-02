@@ -1,4 +1,4 @@
-# Java Starter Project Code of Conduct
+# Ewon Flexy Extensions Library Code of Conduct
 
 ## Our Pledge
 
