@@ -127,6 +127,15 @@ public class TagInfo {
   }
 
   /**
+   * Get the tag description
+   *
+   * @return tag description
+   */
+  public String getDescription() {
+    return description;
+  }
+
+  /**
    * Get the tag name
    *
    * @return tag name
