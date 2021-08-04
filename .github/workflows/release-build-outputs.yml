@@ -14,9 +14,11 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  RELEASE_INCLUDED: README.md LICENSE src .classpath .project pom.xml build.xml
+  CHANGELOG_FILE_NAME: CHANGELOG.md
+  RELEASE_INCLUDED: CHANGELOG.md README.md LICENSE src .classpath .project pom.xml build.xml
   RELEASE_JAR_NAME_REGEX: '*-full.jar'
   RELEASE_JAVADOCS_NAME_REGEX: '*-javadoc.jar'
+  RELEASE_BODY_FILE: RELEASE-BODY.md
 
 
 jobs:
@@ -47,6 +49,14 @@ jobs:
         run: |
           zip release -r $RELEASE_INCLUDED $(find target -name $RELEASE_JAR_NAME_REGEX) $(find target -name $RELEASE_JAVADOCS_NAME_REGEX)
 
+      - name: Extract version number from tag name
+        run: echo "VERSION_NUMBER=$(cut -d 'v' -f2- <<< ${{ github.ref }})" >> $GITHUB_ENV
+        # gets substring of github.ref after and including 'v', for example refs/tags/v1.0.0 results in v1.0.0
+
+      - name: Extract version-specific change list from CHANGELOG.md
+        run: grep -Pzo "(?<=##\sVersion\s$VERSION_NUMBER[\r\n])((.|\r|\n|\r\n)*?(?=##\sVersion.*)|(.|\r|\n|\r\z)*)" $CHANGELOG_FILE_NAME >> $RELEASE_BODY_FILE
+        # gets section of changelog between (not including) version-specific header and next version header using regex look-back and look-ahead
+
       - name: Create Release in Repository Releases
         if: ${{ contains(github.ref,'alpha') != true && contains(github.ref,'beta') != true && contains(github.ref,'pre') != true }}
         id: create_release
@@ -58,6 +68,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+          body_path: ${{ env.RELEASE_BODY_FILE }}
 
       - name: Create Pre-Release in Repository Releases
         if: ${{ contains(github.ref,'alpha') == true || contains(github.ref,'beta') == true || contains(github.ref,'pre') == true }}
@@ -70,6 +81,7 @@ jobs:
           release_name: Pre-Release ${{ github.ref }}
           draft: false
           prerelease: true
+          body_path: ${{ env.RELEASE_BODY_FILE }}
 
       - name: Upload Release Asset to Created Release
         if: ${{ contains(github.ref,'alpha') != true && contains(github.ref,'beta') != true && contains(github.ref,'pre') != true }}
