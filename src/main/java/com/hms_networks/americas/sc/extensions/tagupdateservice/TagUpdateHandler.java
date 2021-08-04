@@ -268,24 +268,23 @@ public class TagUpdateHandler {
    * @return true/false indicating if tag type matches
    */
   private static boolean doesTagTypeMatch(int tagId, String expectedTagType) {
-    int tagInfoListIDOffset = TagInfoManager.getLowestTagIdSeen();
-    final TagInfo[] tagInfoArray = TagInfoManager.getTagInfoArray();
+    final TagInfo tagInfo = TagInfoManager.getTagInfoFromTagId(tagId);
     boolean matches = true;
     if (expectedTagType.equals(TAG_UPDATE_MESSAGE_TAG_TYPE_INTEGER_STRING)
-        && tagInfoArray[tagId - tagInfoListIDOffset].getType() != TagType.INTEGER
-        && tagInfoArray[tagId - tagInfoListIDOffset].getType() != TagType.INTEGER_MAPPED_STRING) {
+        && tagInfo.getType() != TagType.INTEGER
+        && tagInfo.getType() != TagType.INTEGER_MAPPED_STRING) {
       matches = false;
     } else if (expectedTagType.equals(TAG_UPDATE_MESSAGE_TAG_TYPE_FLOAT_STRING)
-        && tagInfoArray[tagId - tagInfoListIDOffset].getType() != TagType.FLOAT) {
+        && tagInfo.getType() != TagType.FLOAT) {
       matches = false;
     } else if (expectedTagType.equals(TAG_UPDATE_MESSAGE_TAG_TYPE_STRING_STRING)
-        && tagInfoArray[tagId - tagInfoListIDOffset].getType() != TagType.STRING) {
+        && tagInfo.getType() != TagType.STRING) {
       matches = false;
     } else if (expectedTagType.equals(TAG_UPDATE_MESSAGE_TAG_TYPE_BOOLEAN_STRING)
-        && tagInfoArray[tagId - tagInfoListIDOffset].getType() != TagType.BOOLEAN) {
+        && tagInfo.getType() != TagType.BOOLEAN) {
       matches = false;
     } else if (expectedTagType.equals(TAG_UPDATE_MESSAGE_TAG_TYPE_DWORD_STRING)
-        && tagInfoArray[tagId - tagInfoListIDOffset].getType() != TagType.DWORD) {
+        && tagInfo.getType() != TagType.DWORD) {
       matches = false;
     }
     return matches;

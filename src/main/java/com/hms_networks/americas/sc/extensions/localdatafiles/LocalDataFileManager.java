@@ -332,9 +332,7 @@ public class LocalDataFileManager extends Thread {
       String localTimestamp)
       throws IllegalStateException, IndexOutOfBoundsException {
     // Get tag type
-    // TagInfo objects are stored with the "current ID" - "lowest ID seen" used as the index
-    int offset = TagInfoManager.getLowestTagIdSeen();
-    TagType tagType = TagInfoManager.getTagInfoArray()[tagID - offset].getType();
+    TagType tagType = TagInfoManager.getTagInfoFromTagId(tagID).getType();
 
     // Append UTC time and delimiter
     localDataFileWriteBuffer.append(utcTimestamp);
