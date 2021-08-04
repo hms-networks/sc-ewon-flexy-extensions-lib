@@ -250,10 +250,9 @@ public class HistoricalDataManager {
           }
 
           // Get corresponding tag info object for tag
-          int tagInfoListIDOffset = TagInfoManager.getLowestTagIdSeen();
           TagInfo tagInfo;
           try {
-            tagInfo = (TagInfo) TagInfoManager.getTagInfoArray()[tagId - tagInfoListIDOffset];
+            tagInfo = TagInfoManager.getTagInfoFromTagId(tagId);
           } catch (ArrayIndexOutOfBoundsException e) {
             e.printStackTrace();
             break;
