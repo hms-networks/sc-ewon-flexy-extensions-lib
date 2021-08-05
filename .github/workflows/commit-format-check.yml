@@ -31,7 +31,7 @@ jobs:
       - name: Check Title Does Not End With Period
         uses: gsactions/commit-message-checker@v1
         with:
-          pattern: '^.*[^.][^.]((\r|\n|\r\n)(.*|\r|\n|\r\n)*)?$' # matches if first line (title) does not end with period, followed by 0 or more additional lines
+          pattern: '^.*[^.\r\n]((\r|\n|\r\n)(.*|\r|\n|\r\n)*)?$' # matches if first line (title) does not end with period, followed by 0 or more additional lines
           flags: 'y' # y flag indicates "sticky" search that matches starting at beginning (or current location) of string.
           error: 'The title must not end with a period.'
           excludeDescription: 'true' # optional: this excludes the description body of a pull request
