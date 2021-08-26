@@ -88,7 +88,7 @@ If the Solution Center Maven repository is not already included in your project,
 
 ## [Development Environment](#table-of-contents)
 
-This project is based on the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project), and uses the Maven build system for compilation, testing, and packaging. 
+This project is based on the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project), and uses the Maven build system for compilation, testing, and packaging.
 
 Maven lifecycle information and other details about the development environment provided by the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project) can be found in its README.md at [https://github.com/hms-networks/sc-java-maven-starter-project/blob/main/README.md](https://github.com/hms-networks/sc-java-maven-starter-project/blob/main/README.md).
 
