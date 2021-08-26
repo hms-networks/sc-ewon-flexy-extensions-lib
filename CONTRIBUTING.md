@@ -2,9 +2,9 @@
 
 Thank you for your interest in contributing to the project.
 
-All types of contributions are valued and encouraged, though there are a few guidelines which must be followed to make the contribution process easy and consistent. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them. 
+All types of contributions are valued and encouraged, though there are a few guidelines which must be followed to make the contribution process easy and consistent. See the [Table of Contents](#table-of-contents) for different ways to help and details about how this project handles them.
 
-If you like the project, but don't have time to contribute, there are other easy ways to show your support and appreciation, such as: 
+If you like the project, but don't have time to contribute, there are other easy ways to show your support and appreciation, such as:
 - Star the project
  - Refer to this project in another project
  - Mention or share the project at local meetups and tell your colleagues
@@ -58,9 +58,9 @@ We use GitHub issues to track feature and enhancement requests. If you'd like to
 - Make sure that you are using the latest Ewon firmware.
   - Check for updates at [https://www.ewon.biz/technical-support/pages/firmware](https://www.ewon.biz/technical-support/pages/firmware).
 - Read the [README.md](README.md) carefully to find out if the functionality is already covered.
-- Perform a search for existing [Issues](https://github.com/{APPLICATION NAME}/issues) or [Discussions](https://github.com/hms-networks/sc-ewon-flexy-extensions-lib/discussions) to see if the feature or enhancement has already been suggested. 
+- Perform a search for existing [Issues](https://github.com/{APPLICATION NAME}/issues) or [Discussions](https://github.com/hms-networks/sc-ewon-flexy-extensions-lib/discussions) to see if the feature or enhancement has already been suggested.
   - If the feature or enhancement has already been suggested, add a comment to the existing issue or discussion instead of opening a new one.
-- Make sure the feature or enhancement is with the scope and aims of the project. New features shall be useful to the majority of users, not a small subset. 
+- Make sure the feature or enhancement is with the scope and aims of the project. New features shall be useful to the majority of users, not a small subset.
   - If a feature or enhancement targets a minority of users, it is advised to consider writing an add-on or library.
 
 ### Making Modifications or Updates
@@ -71,7 +71,7 @@ Documentation and additional information about the Ewon Java development environ
 
 #### Documentation
 
-Changes made to the documentation in this project must be made in an individual commit, or accompany the commit with the relevant source code changes. 
+Changes made to the documentation in this project must be made in an individual commit, or accompany the commit with the relevant source code changes.
 
 Documentation for this project shall be written in present passive voice and is governed by the project's [Code of Conduct](CODE_OF_CONDUCT.md).
 
@@ -106,7 +106,7 @@ Each commit must contain a message describing the change(s) made. The commit mes
    2. Must describe commit change-set thoroughly
    3. Must use proper capitalization, grammar, and punctuation
    4. Must use blank lines to separate paragraphs
-  
+
 ```
 Subject line
 
