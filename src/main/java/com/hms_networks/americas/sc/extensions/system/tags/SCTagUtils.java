@@ -10,7 +10,7 @@ import com.ewon.ewonitf.SysControlBlock;
  */
 public class SCTagUtils {
 
-  /** Key for accessing/manipulating the tag name item in a system con4trol block. */
+  /** Key for accessing/manipulating the tag name item in a system control block. */
   private static final String SCB_TAG_NAME_KEY = "Name";
 
   /** Key for accessing/manipulating the tag description item in a system control block. */
