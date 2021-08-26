@@ -112,7 +112,7 @@ Subject line
 
 More detailed explanatory text, if necessary. Wrap to 72 characters
 or less. The blank line between the subject line and commit body is
-critical (unless commit body is ommitted).
+critical (unless commit body is omitted).
 
 Additional paragraphs can be added after another blank line. Bullet
 points and other rich text can be included as well.
