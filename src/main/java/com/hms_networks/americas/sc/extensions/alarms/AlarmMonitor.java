@@ -29,7 +29,6 @@ public abstract class AlarmMonitor extends EvtTagAlarmListener {
     int alarmedTagId = getTagId();
 
     // TagInfo objects are stored with the "current ID" - "lowest ID seen" used as the index
-    int offset = TagInfoManager.getLowestTagIdSeen();
     TagType alarmedTagType = TagInfoManager.getTagInfoFromTagId(alarmedTagId).getType();
 
     // Call alarm handler with information
