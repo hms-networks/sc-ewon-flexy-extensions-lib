@@ -1,6 +1,7 @@
 package com.hms_networks.americas.sc.extensions.alarms;
 
 import com.ewon.ewonitf.EvtTagAlarmListener;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeFormat;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
 import com.hms_networks.americas.sc.extensions.time.LocalTimeOffsetCalculator;
@@ -20,8 +21,8 @@ public abstract class AlarmMonitor extends EvtTagAlarmListener {
     // Get tag alarm information
     long utcTime = System.currentTimeMillis();
     long localTime = utcTime - LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
-    String alarmUtcTimestamp = new Date(utcTime).toString();
-    String alarmLocalTimestamp = new Date(localTime).toString();
+    String alarmUtcTimestamp = SCTimeFormat.ISO_8601.format(new Date(utcTime));
+    String alarmLocalTimestamp = SCTimeFormat.ISO_8601.format(new Date(localTime));
     String alarmedTagName = getTagName();
     String alarmedTagValue = getTagValueAsString();
     String alarmStatus = getAlarmStatusStringFromInt(getAlarmStatus());
