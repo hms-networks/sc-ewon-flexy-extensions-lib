@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.1.2
+### Features
+- Added multi-character delimiter support to StringUtils split method
+### Bug Fixes
+- N/A
+### Other
+- N/A
+
 ## Version 1.1.1
 ### Features
 - Added SCTimeFormat ISO 8601 date format constant
