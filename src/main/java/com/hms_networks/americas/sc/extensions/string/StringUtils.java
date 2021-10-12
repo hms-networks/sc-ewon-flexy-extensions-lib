@@ -69,7 +69,7 @@ public class StringUtils {
     while (endIndex != -1) {
       String stringPart = string.substring(startIndex, endIndex);
       stringParts.add(stringPart);
-      startIndex = endIndex + 1;
+      startIndex = endIndex + delimiter.length();
       endIndex = string.indexOf(delimiter, startIndex);
     }
 
