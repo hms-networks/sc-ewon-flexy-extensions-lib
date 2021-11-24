@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.2.0
+### Features
+- Added system.application.SCAppManagement.java
+### Bug Fixes
+- N/A
+### Other
+- N/A
+
 ## Version 1.1.2
 ### Features
 - Added multi-character delimiter support to StringUtils split method
