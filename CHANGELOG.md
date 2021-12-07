@@ -1,5 +1,15 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.3.0
+### Features
+- Added system.http package
+  - Perform HTTP GET and POST requests
+  - Set Ewon system HTTP timeouts
+### Bug Fixes
+- N/A
+### Other
+- N/A
+
 ## Version 1.2.0
 ### Features
 - Added system.application.SCAppManagement.java
