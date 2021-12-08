@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.3.1
+### Features
+- N/A
+### Bug Fixes
+- Fix bug preventing access of HTTP timeout setting function.
+### Other
+- N/A
+
 ## Version 1.3.0
 ### Features
 - Added system.http package
