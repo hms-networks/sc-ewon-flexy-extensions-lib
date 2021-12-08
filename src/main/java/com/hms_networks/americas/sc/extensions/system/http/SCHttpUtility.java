@@ -49,7 +49,7 @@ public class SCHttpUtility {
    * @param seconds the timeout in seconds
    * @throws Exception if unable to set timeouts
    */
-  private static void setHttpTimeouts(String seconds) throws Exception {
+  public static void setHttpTimeouts(String seconds) throws Exception {
     final String httpSendTimeoutName = "HTTPC_SDTO";
     final String httpReadTimeoutName = "HTTPC_RDTO";
 
