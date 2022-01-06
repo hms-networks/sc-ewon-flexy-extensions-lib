@@ -41,6 +41,7 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
       boolean isInGroupC,
       boolean isInGroupD,
       TagType type,
+      String unit,
       String[] enumeratedStringValueMapping) {
     super(
         id,
@@ -52,7 +53,8 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
         isInGroupB,
         isInGroupC,
         isInGroupD,
-        type);
+        type,
+        unit);
     this.enumeratedStringValueMapping = enumeratedStringValueMapping;
   }
 
@@ -77,8 +79,9 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
       boolean realTimeLogEnabled,
       ArrayList tagGroups,
       TagType type,
+      String unit,
       String[] enumeratedStringValueMapping) {
-    super(id, name, description, historicalLogEnabled, realTimeLogEnabled, tagGroups, type);
+    super(id, name, description, historicalLogEnabled, realTimeLogEnabled, tagGroups, type, unit);
     this.enumeratedStringValueMapping = enumeratedStringValueMapping;
   }
 
