@@ -1,5 +1,18 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.4.0
+### Features
+- Added support for the tag unit in TagInfo objects
+- Added system.threading package
+  - Added CountdownLatch implementation
+- Updated local time offset calculator
+  - Removed dependency on system credentials
+- Added utility for getting string contents of an input stream
+### Bug Fixes
+- N/A
+### Other
+- N/A
+
 ## Version 1.3.1
 ### Features
 - N/A
