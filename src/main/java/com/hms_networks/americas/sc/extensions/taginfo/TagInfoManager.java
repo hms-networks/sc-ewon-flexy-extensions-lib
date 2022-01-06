@@ -217,6 +217,7 @@ public class TagInfoManager {
      * index 27 - in tag group C
      * index 28 - in tag group D
      * index 55 - tag type
+     * index 56 - tag unit
      * index 61 - end of line
      */
     final int indexTagId = 0;
@@ -229,13 +230,14 @@ public class TagInfoManager {
     final int indexGroupC = 27;
     final int indexGroupD = 28;
     final int indexType = 55;
+    final int indexUnit = 56;
     final int indexEnd = indexType + 1;
 
     // Tag information
     String tagName = "";
     String tagDescription = "";
     int tagId = TagConstants.UNINIT_INT_VAL;
-    int tagType = TagConstants.UNINIT_INT_VAL;
+    TagType tagType = null;
     boolean tagInGroupA = false;
     boolean tagInGroupB = false;
     boolean tagInGroupC = false;
@@ -302,12 +304,15 @@ public class TagInfoManager {
           tagInGroupD = convertStrToBool(currentToken);
           break;
         case indexType:
-          tagType = Integer.parseInt(currentToken);
+          int tagTypeInteger = Integer.parseInt(currentToken);
 
           // Convert tag type integer to object
-          TagType tagTypeObj = TagType.getTagTypeFromInt(tagType);
+          tagType = TagType.getTagTypeFromInt(tagTypeInteger);
+          break;
+        case indexUnit:
+          String tagUnit = currentToken;
 
-          // Type is the last index, form TagInfo object
+          // Unit is the last index, form TagInfo object
           createTagInfoObject(
               tagId,
               tagName,
@@ -318,7 +323,8 @@ public class TagInfoManager {
               tagInGroupB,
               tagInGroupC,
               tagInGroupD,
-              tagTypeObj);
+              tagType,
+              tagUnit);
           break;
       }
     }
@@ -367,6 +373,7 @@ public class TagInfoManager {
    * @param tagInGroupC true if tag is added to group C
    * @param tagInGroupD true if tag is added to group D
    * @param tagTypeObj TagType object associated with this tag
+   * @param tagUnit the unit of a tag
    * @throws JSONException if int to string enumeration JSON parse fails
    * @throws IOException if in to string enumeration file read fails
    * @throws NumberFormatException if the key defined in int to string enum mappings is not an
@@ -382,7 +389,8 @@ public class TagInfoManager {
       boolean tagInGroupB,
       boolean tagInGroupC,
       boolean tagInGroupD,
-      TagType tagTypeObj)
+      TagType tagTypeObj,
+      String tagUnit)
       throws IOException, JSONException {
     String[] tagIntToStringMappings = null;
     boolean enumTag = false;
@@ -413,6 +421,7 @@ public class TagInfoManager {
               tagInGroupC,
               tagInGroupD,
               tagTypeObj,
+              tagUnit,
               tagIntToStringMappings);
     } else {
       currentTagInfo =
@@ -426,7 +435,8 @@ public class TagInfoManager {
               tagInGroupB,
               tagInGroupC,
               tagInGroupD,
-              tagTypeObj);
+              tagTypeObj,
+              tagUnit);
     }
     tagInfoList[tagInfoListInsertIndex] = currentTagInfo;
     tagInfoListInsertIndex++;
