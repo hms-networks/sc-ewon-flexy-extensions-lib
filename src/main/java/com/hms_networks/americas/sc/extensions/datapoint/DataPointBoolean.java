@@ -23,9 +23,10 @@ public class DataPointBoolean extends DataPoint {
    * @param quality data point quality
    */
   public DataPointBoolean(
-      String tagName, int tagId, boolean value, String time, DataQuality quality) {
+      String tagName, int tagId, String tagUnit, boolean value, String time, DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = quality;
@@ -39,9 +40,10 @@ public class DataPointBoolean extends DataPoint {
    * @param value data point value
    * @param time data point timestamp
    */
-  public DataPointBoolean(String tagName, int tagId, boolean value, String time) {
+  public DataPointBoolean(String tagName, int tagId, String tagUnit, boolean value, String time) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = DataQuality.GOOD;

@@ -14,6 +14,9 @@ public abstract class DataPoint {
   /** ID of data point tag */
   protected int tagId;
 
+  /** Unit of data point tag. */
+  protected String tagUnit;
+
   /** Timestamp of data point */
   protected String timestamp;
 
@@ -39,6 +42,15 @@ public abstract class DataPoint {
   }
 
   /**
+   * Get the unit of the data point tag
+   *
+   * @return unit of data point tag
+   */
+  public String getTagUnit() {
+    return tagUnit;
+  }
+
+  /**
    * Get the string representation of the time stamp.
    *
    * @return the timestamp as a string.
@@ -57,12 +69,12 @@ public abstract class DataPoint {
   }
 
   /**
-   * Get the tag name, timestamp and the value returned as a string.
+   * Get the tag name, timestamp, value, and the unit returned as a string.
    *
-   * @return tag name, timestamp and value in a string with spaces in between
+   * @return tag name, timestamp, value, and unit in a string with spaces in between
    */
   public String toString() {
-    return tagName + " " + timestamp + " " + getValueString();
+    return tagName + " " + timestamp + " " + getValueString() + " " + tagUnit;
   }
 
   /**
