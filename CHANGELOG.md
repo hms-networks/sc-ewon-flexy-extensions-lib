@@ -1,6 +1,6 @@
 # Ewon Flexy Extensions Library Changelog
 
-## Version 1.4.0
+## Version 1.4.0-pre1
 ### Features
 - Added support for the tag unit in TagInfo objects
 - Added system.threading package
