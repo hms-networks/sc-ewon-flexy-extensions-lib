@@ -102,6 +102,7 @@ public class RealTimeTagDataPointManager {
 
     String tagName = tag.getName();
     TagType tagType = tag.getType();
+    String tagUnit = tag.getUnit();
     int tagID = tag.getId();
     final int millisecondsInSeconds = 1000;
     String timeStampSeconds = String.valueOf(System.currentTimeMillis() / millisecondsInSeconds);
@@ -110,19 +111,19 @@ public class RealTimeTagDataPointManager {
     if (tagControl != null) {
       if (tagType == TagType.FLOAT) {
         float val = (float) tagControl.getTagValueAsDouble();
-        data = new DataPointFloat(tagName, tagID, val, timeStampSeconds);
+        data = new DataPointFloat(tagName, tagID, tagUnit, val, timeStampSeconds);
       } else if (tagType == TagType.INTEGER) {
         int val = tagControl.getTagValueAsInt();
-        data = new DataPointFloat(tagName, tagID, val, timeStampSeconds);
+        data = new DataPointFloat(tagName, tagID, tagUnit, val, timeStampSeconds);
       } else if (tagType == TagType.STRING) {
         String val = tagControl.getTagValueAsString();
-        data = new DataPointString(tagName, tagID, val, timeStampSeconds);
+        data = new DataPointString(tagName, tagID, tagUnit, val, timeStampSeconds);
       } else if (tagType == TagType.BOOLEAN) {
         boolean val = (tagControl.getTagValueAsLong() != 0);
-        data = new DataPointBoolean(tagName, tagID, val, timeStampSeconds);
+        data = new DataPointBoolean(tagName, tagID, tagUnit, val, timeStampSeconds);
       } else if (tagType == TagType.DWORD) {
         long val = tagControl.getTagValueAsLong();
-        data = new DataPointDword(tagName, tagID, val, timeStampSeconds);
+        data = new DataPointDword(tagName, tagID, tagUnit, val, timeStampSeconds);
       }
     } else {
       Logger.LOG_WARN(

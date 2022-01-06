@@ -22,9 +22,11 @@ public class DataPointFloat extends DataPoint {
    * @param time data point timestamp
    * @param quality data point quality
    */
-  public DataPointFloat(String tagName, int tagId, float value, String time, DataQuality quality) {
+  public DataPointFloat(
+      String tagName, int tagId, String tagUnit, float value, String time, DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = quality;
@@ -38,9 +40,10 @@ public class DataPointFloat extends DataPoint {
    * @param value data point value
    * @param time data point timestamp
    */
-  public DataPointFloat(String tagName, int tagId, float value, String time) {
+  public DataPointFloat(String tagName, int tagId, String tagUnit, float value, String time) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = DataQuality.GOOD;

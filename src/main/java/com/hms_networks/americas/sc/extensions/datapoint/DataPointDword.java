@@ -22,9 +22,11 @@ public class DataPointDword extends DataPoint {
    * @param time data point timestamp
    * @param quality data point quality
    */
-  public DataPointDword(String tagName, int tagId, long value, String time, DataQuality quality) {
+  public DataPointDword(
+      String tagName, int tagId, String tagUnit, long value, String time, DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = quality;
@@ -38,9 +40,10 @@ public class DataPointDword extends DataPoint {
    * @param value data point value
    * @param time data point timestamp
    */
-  public DataPointDword(String tagName, int tagId, long value, String time) {
+  public DataPointDword(String tagName, int tagId, String tagUnit, long value, String time) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = DataQuality.GOOD;
