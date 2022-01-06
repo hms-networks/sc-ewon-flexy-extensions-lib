@@ -33,6 +33,9 @@ public class TagInfo {
   /** List of tag groups */
   private final ArrayList tagGroups;
 
+  /** Tag unit */
+  private final String unit;
+
   /**
    * Constructor for tag class with group booleans.
    *
@@ -46,6 +49,7 @@ public class TagInfo {
    * @param isInGroupC boolean if tag in group C
    * @param isInGroupD boolean if tag in group D
    * @param type tag type
+   * @param unit tag unit
    */
   public TagInfo(
       int id,
@@ -57,13 +61,15 @@ public class TagInfo {
       boolean isInGroupB,
       boolean isInGroupC,
       boolean isInGroupD,
-      TagType type) {
+      TagType type,
+      String unit) {
     this.type = type;
     this.historicalLogEnabled = historicalLogEnabled;
     this.realTimeLogEnabled = realTimeLogEnabled;
     this.id = id;
     this.name = name;
     this.description = description;
+    this.unit = unit;
     this.tagGroups = new ArrayList();
 
     if (isInGroupA) {
@@ -98,7 +104,8 @@ public class TagInfo {
       boolean historicalLogEnabled,
       boolean realTimeLogEnabled,
       ArrayList tagGroups,
-      TagType type) {
+      TagType type,
+      String unit) {
     this.type = type;
     this.historicalLogEnabled = historicalLogEnabled;
     this.realTimeLogEnabled = realTimeLogEnabled;
@@ -106,6 +113,7 @@ public class TagInfo {
     this.name = name;
     this.description = description;
     this.tagGroups = tagGroups;
+    this.unit = unit;
   }
 
   /**
@@ -169,5 +177,14 @@ public class TagInfo {
    */
   public List getTagGroups() {
     return Collections.unmodifiableList(tagGroups);
+  }
+
+  /**
+   * Get the tag unit
+   *
+   * @return tag unit
+   */
+  public String getUnit() {
+    return unit;
   }
 }
