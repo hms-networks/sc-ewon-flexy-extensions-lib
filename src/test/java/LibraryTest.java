@@ -49,6 +49,9 @@ public class LibraryTest extends TestCase {
   /** Tag in group D boolean flag used for testing in {@link #testBasicTagInfo()}. */
   protected boolean basicTagInfoTestInGroupD = randomGenerator.nextBoolean();
 
+  /** Tag unit used for testing in {@link #testBasicTagInfo()}. */
+  protected String basicTagInfoTestUnit = String.valueOf(randomGenerator.nextFloat());
+
   /**
    * Main test method. Invokes all test methods with a name starting with 'test' and no required
    * parameters/arguments.
@@ -77,7 +80,8 @@ public class LibraryTest extends TestCase {
             basicTagInfoTestInGroupB,
             basicTagInfoTestInGroupC,
             basicTagInfoTestInGroupD,
-            basicTagInfoTestTagType);
+            basicTagInfoTestTagType,
+            basicTagInfoTestUnit);
 
     super.setUp();
   }
