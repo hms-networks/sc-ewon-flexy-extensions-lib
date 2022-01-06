@@ -31,11 +31,12 @@ public class DataPointIntegerMappedString extends DataPointString {
   public DataPointIntegerMappedString(
       String tagName,
       int tagId,
+      String tagUnit,
       int value,
       String time,
       DataQuality quality,
       String[] enumMapping) {
-    super(tagName, tagId, enumMapping[value], time, quality);
+    super(tagName, tagId, tagUnit, enumMapping[value], time, quality);
   }
 
   /**
@@ -49,8 +50,8 @@ public class DataPointIntegerMappedString extends DataPointString {
    * @param enumMapping integer enumerated {@link String} mapping(s)
    */
   public DataPointIntegerMappedString(
-      String tagName, int tagId, int value, String time, String[] enumMapping) {
-    super(tagName, tagId, enumMapping[value], time);
+      String tagName, int tagId, String tagUnit, int value, String time, String[] enumMapping) {
+    super(tagName, tagId, tagUnit, enumMapping[value], time);
   }
 
   /**

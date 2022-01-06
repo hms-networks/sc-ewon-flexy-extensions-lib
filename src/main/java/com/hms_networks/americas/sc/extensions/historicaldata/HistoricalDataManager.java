@@ -262,15 +262,19 @@ public class HistoricalDataManager {
             // Create data point for tag type
             TagType tagType = tagInfo.getType();
             String tagName = tagInfo.getName();
+            String tagUnit = tagInfo.getUnit();
             if (tagType == TagType.BOOLEAN) {
               boolean boolValue = convertStrToBool(tagValue);
-              returnVal = new DataPointBoolean(tagName, tagId, boolValue, tagTimeInt, dataQuality);
+              returnVal =
+                  new DataPointBoolean(tagName, tagId, tagUnit, boolValue, tagTimeInt, dataQuality);
             } else if (tagType == TagType.FLOAT) {
               float floatValue = Float.valueOf(tagValue).floatValue();
-              returnVal = new DataPointFloat(tagName, tagId, floatValue, tagTimeInt, dataQuality);
+              returnVal =
+                  new DataPointFloat(tagName, tagId, tagUnit, floatValue, tagTimeInt, dataQuality);
             } else if (tagType == TagType.INTEGER) {
               int intValue = Integer.valueOf(tagValue).intValue();
-              returnVal = new DataPointInteger(tagName, tagId, intValue, tagTimeInt, dataQuality);
+              returnVal =
+                  new DataPointInteger(tagName, tagId, tagUnit, intValue, tagTimeInt, dataQuality);
             } else if (tagType == TagType.INTEGER_MAPPED_STRING) {
               int intValue = Integer.valueOf(tagValue).intValue();
               TagInfoEnumeratedIntToString tagInfoEnumeratedIntToString =
@@ -279,15 +283,18 @@ public class HistoricalDataManager {
                   new DataPointIntegerMappedString(
                       tagName,
                       tagId,
+                      tagUnit,
                       intValue,
                       tagTimeInt,
                       dataQuality,
                       tagInfoEnumeratedIntToString.getEnumeratedStringValueMapping());
             } else if (tagType == TagType.DWORD) {
               long dwordValue = Long.valueOf(tagValue).longValue();
-              returnVal = new DataPointDword(tagName, tagId, dwordValue, tagTimeInt, dataQuality);
+              returnVal =
+                  new DataPointDword(tagName, tagId, tagUnit, dwordValue, tagTimeInt, dataQuality);
             } else if (tagType == TagType.STRING) {
-              returnVal = new DataPointString(tagName, tagId, tagValue, tagTimeInt, dataQuality);
+              returnVal =
+                  new DataPointString(tagName, tagId, tagUnit, tagValue, tagTimeInt, dataQuality);
             }
           }
       }

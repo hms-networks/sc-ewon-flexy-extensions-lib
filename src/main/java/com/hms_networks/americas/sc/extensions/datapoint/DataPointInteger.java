@@ -22,9 +22,11 @@ public class DataPointInteger extends DataPoint {
    * @param time data point timestamp
    * @param quality data point quality
    */
-  public DataPointInteger(String tagName, int tagId, int value, String time, DataQuality quality) {
+  public DataPointInteger(
+      String tagName, int tagId, String tagUnit, int value, String time, DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = quality;
@@ -38,9 +40,10 @@ public class DataPointInteger extends DataPoint {
    * @param value data point value
    * @param time data point timestamp
    */
-  public DataPointInteger(String tagName, int tagId, int value, String time) {
+  public DataPointInteger(String tagName, int tagId, String tagUnit, int value, String time) {
     this.tagName = tagName;
     this.tagId = tagId;
+    this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
     this.quality = DataQuality.GOOD;
