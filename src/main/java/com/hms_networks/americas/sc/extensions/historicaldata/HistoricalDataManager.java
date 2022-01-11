@@ -10,6 +10,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointInteger;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointIntegerMappedString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
+import com.hms_networks.americas.sc.extensions.fileutils.FileConstants;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
@@ -123,7 +124,7 @@ public class HistoricalDataManager {
 
     // Perform EBD call
     Exporter exporter = new Exporter(ebdStr);
-    exporter.ExportTo(HistoricalDataConstants.FILE_URL_PREFIX + destinationFileName);
+    exporter.ExportTo(FileConstants.FILE_URL_PREFIX + destinationFileName);
     exporter.close();
   }
 
