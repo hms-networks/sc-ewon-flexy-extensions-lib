@@ -1,9 +1,7 @@
 package com.hms_networks.americas.sc.extensions.time;
 
-import com.ewon.ewonitf.EWException;
-import com.ewon.ewonitf.ScheduledActionManager;
-import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
-
+import com.ewon.ewonitf.Exporter;
+import com.hms_networks.americas.sc.extensions.string.StringUtils;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -12,37 +10,16 @@ import java.util.Date;
 /**
  * Utility class for calculating the offset between the local time zone and UTC.
  *
+ * <p>Versions of this class prior to v1.4.0 used an HTTP request to get the local time, which has
+ * been replaced with a script expression export block descriptor call.
+ *
  * @since 1.0.0
  * @author HMS Networks, MU Americas Solution Center
  */
 public class LocalTimeOffsetCalculator {
 
-  /** Device username used for creating an HTTP connection to the local time offset HTML file. */
-  private static String deviceUsername = TimeLibConstants.DEFAULT_DEVICE_USERNAME;
-
-  /** Device password used for creating an HTTP connection to the local time offset HTML file. */
-  private static String devicePassword = TimeLibConstants.DEFAULT_DEVICE_PASSWORD;
-
   /** Calculated time offset in milliseconds between the local time zone and UTC. */
   private static long timeOffsetMilliseconds = 0;
-
-  /**
-   * Sets the device username to the specified value.
-   *
-   * @param deviceUsername device username
-   */
-  public static synchronized void setDeviceUsername(String deviceUsername) {
-    LocalTimeOffsetCalculator.deviceUsername = deviceUsername;
-  }
-
-  /**
-   * Sets the device password to the specified value.
-   *
-   * @param devicePassword device password
-   */
-  public static synchronized void setDevicePassword(String devicePassword) {
-    LocalTimeOffsetCalculator.devicePassword = devicePassword;
-  }
 
   /**
    * Gets the currently stored time offset in milliseconds.
@@ -54,79 +31,59 @@ public class LocalTimeOffsetCalculator {
   }
 
   /**
-   * Calculates the offset between UTC time and local time (in milliseconds) and stores the result
-   * to be returned by {@link #getLocalTimeOffsetMilliseconds()}. The result is also returned by
-   * this method. The local time offset is calculated using an on-device HTML file that is accessed
-   * using the default Ewon username and password, or an updated username/password combination
-   * specified by calling {@link #setDeviceUsername(String)} and {@link #setDevicePassword(String)}.
-   * The username/password combination must be updated to reflect a valid username/password
-   * combination on the Ewon Flexy device.
+   * Reads the current device local time and calculates an offset (in milliseconds) between the
+   * local time and UTC time using a script expression export block descriptor call. The returned
+   * result is also stored and can be later retrieved using the {@link
+   * #getLocalTimeOffsetMilliseconds()} method.
    *
    * @return calculated local time offset (in milliseconds)
-   * @throws IOException if unable to read/write local time offset files
-   * @throws EWException if unable to create HTTP connection to local time offset HTML file (check
-   *     device username and password)
-   * @throws ParseException if unable to parse local time offset result file
+   * @throws IOException if unable to perform script expression export block descriptor call
+   * @throws ParseException if unable to parse script expression export block descriptor call result
+   *     (local time)
    */
   public static synchronized long calculateLocalTimeOffsetMilliseconds()
-      throws IOException, EWException, ParseException {
-    // Generate local time offset files
-    generateLocalTimeOffsetFiles();
+      throws IOException, ParseException {
+    // Export the local time result file
+    String localTime = exportLocalTime();
 
-    // Parse local time offset value file and store/return
-    timeOffsetMilliseconds = parseOffsetFromLocalTime();
+    // Parse local time for offset and store/return
+    timeOffsetMilliseconds = parseLocalTimeResult(localTime);
     return timeOffsetMilliseconds;
   }
 
   /**
-   * Generates a local time offset HTML files and creates an HTTP connection to that page to
-   * generate a local time offset result file. The HTTP connection is authenticated using the
-   * default Ewon device credentials, or updated device credentials that can be set via {@link
-   * #setDeviceUsername(String)} and {@link #setDevicePassword(String)}.
+   * Gets and returns the local time using the script expression export block descriptor call
+   * specified by {@link TimeLibConstants#TIME_OFFSET_LOCAL_TIME_EBD}.
    *
-   * @throws IOException if unable to write local time offset HTML file
-   * @throws EWException if unable to create HTTP connection to local time offset HTML file (check
-   *     device username and password)
+   * @throws IOException if unable to perform script expression export block descriptor call
    */
-  private static synchronized void generateLocalTimeOffsetFiles() throws IOException, EWException {
-    // Write local time offset HTML file
-    FileAccessManager.writeStringToFile(
-        TimeLibConstants.TIME_OFFSET_HTML_FILE_NAME,
-        TimeLibConstants.TIME_OFFSET_HTML_FILE_CONTENTS);
+  private static synchronized String exportLocalTime() throws IOException {
+    // Build full export block descriptor call and file path
+    final String exportBlockDescriptorCall = TimeLibConstants.TIME_OFFSET_LOCAL_TIME_EBD;
 
-    // Load and write local time offset value file
-    String httpUserCredentialsAndServer =
-        deviceUsername + ":" + devicePassword + "@" + TimeLibConstants.LOOPBACK_IP_ADDRESS;
-    ScheduledActionManager.GetHttp(
-        httpUserCredentialsAndServer,
-        TimeLibConstants.TIME_OFFSET_RESULT_FILE_NAME,
-        TimeLibConstants.TIME_OFFSET_HTML_FILE_NAME);
+    // Run export block descriptor call to get local time
+    Exporter exporter = new Exporter(exportBlockDescriptorCall);
+    return StringUtils.getStringFromInputStream(exporter, "UTF-8");
   }
 
   /**
-   * Parses and returns the value from the local time offset result file generated by {@link
-   * #generateLocalTimeOffsetFiles()}.
+   * Parses the specified local time (generated by {@link #exportLocalTime()}) and returns the
+   * offset from local time to UTC time in milliseconds.
    *
-   * @return local time offset
-   * @throws IOException if unable to read local time offset result file
-   * @throws ParseException if unable to parse local time offset result file
+   * @param localTime the local time to parse
+   * @return local time offset (in milliseconds)
+   * @throws ParseException if unable to parse specified local time
    */
-  private static long parseOffsetFromLocalTime() throws IOException, ParseException {
-    // Read contents of local time offset result file
-    BufferedReader reader =
-        new BufferedReader(new FileReader(TimeLibConstants.TIME_OFFSET_RESULT_FILE_NAME));
-    String line = reader.readLine();
-    reader.close();
-
-    // Remove unnecessary line break from file, if present
-    int endIndex = line.indexOf("<BR>");
+  private static long parseLocalTimeResult(String localTime) throws ParseException {
+    // Remove unnecessary line break, if present
+    int endIndex = localTime.indexOf("<BR>");
     if (endIndex > 0) {
-      line = line.substring(0, endIndex);
+      localTime = localTime.substring(0, endIndex);
     }
 
     // Get local time from contents of local time offset result file
     SimpleDateFormat sdf = new SimpleDateFormat(TimeLibConstants.TIME_OFFSET_DATE_FORMAT);
-    Date localTimeDateObj = sdf.parse(line);
+    Date localTimeDateObj = sdf.parse(localTime);
 
     // Calculate difference between UTC time (Ewon system time) and local time (in milliseconds)
     Date systemTimeDateObj = new Date(System.currentTimeMillis());
