@@ -8,9 +8,6 @@ package com.hms_networks.americas.sc.extensions.historicaldata;
  */
 class HistoricalDataConstants {
 
-  /** URL prefix for local files */
-  static final String FILE_URL_PREFIX = "file://";
-
   /** Number of seconds in one minute */
   static final int TIME_SECS_PER_MIN = 60;
 
