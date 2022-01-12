@@ -1,5 +1,8 @@
 package com.hms_networks.americas.sc.extensions.string;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,5 +80,39 @@ public class StringUtils {
     String endStringPart = string.substring(startIndex);
     stringParts.add(endStringPart);
     return stringParts;
+  }
+
+  /**
+   * Gets the contents of the supplied {@link InputStream} as a {@link String} in the specified
+   * encoding.
+   *
+   * @param inputStream input stream to read
+   * @param encoding encoding to use
+   * @return string contents of input stream
+   * @throws IOException if an error occurs reading the input stream
+   * @since 1.4.0
+   */
+  public static String getStringFromInputStream(InputStream inputStream, String encoding)
+      throws IOException {
+    // Create output stream for result
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+    // Create buffer for reading input stream
+    final int bufferSizeBytes = 1024;
+    byte[] buffer = new byte[bufferSizeBytes];
+
+    // Read from input stream and write to output stream
+    final int endOfStreamValue = -1;
+    for (int length; (length = inputStream.read(buffer)) != endOfStreamValue; ) {
+      final int offset = 0;
+      outputStream.write(buffer, offset, length);
+    }
+
+    // Get result from output stream and cleanup streams
+    String result = outputStream.toString(encoding);
+    outputStream.close();
+    inputStream.close();
+
+    return result;
   }
 }
