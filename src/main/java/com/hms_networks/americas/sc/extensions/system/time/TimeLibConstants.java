@@ -1,4 +1,4 @@
-package com.hms_networks.americas.sc.extensions.time;
+package com.hms_networks.americas.sc.extensions.system.time;
 
 /**
  * Class of constants for the HMS MU Americas Solution Center time library for Ewon Flexy devices.

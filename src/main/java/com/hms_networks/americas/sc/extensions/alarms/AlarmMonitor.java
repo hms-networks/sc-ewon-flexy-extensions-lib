@@ -4,7 +4,7 @@ import com.ewon.ewonitf.EvtTagAlarmListener;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeFormat;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
-import com.hms_networks.americas.sc.extensions.time.LocalTimeOffsetCalculator;
+import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
 
 import java.util.Date;
 

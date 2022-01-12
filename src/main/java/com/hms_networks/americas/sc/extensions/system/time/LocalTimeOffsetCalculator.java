@@ -1,4 +1,4 @@
-package com.hms_networks.americas.sc.extensions.time;
+package com.hms_networks.americas.sc.extensions.system.time;
 
 import com.ewon.ewonitf.Exporter;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
