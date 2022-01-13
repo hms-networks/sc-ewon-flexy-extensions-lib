@@ -105,6 +105,18 @@ public class HistoricalDataQueueManager {
   }
 
   /**
+   * Gets the time (in milliseconds) that the queue is running behind by.
+   *
+   * @return time (in milliseconds) that the queue is running behind by
+   * @throws IOException if unable to read a file
+   * @throws TimeTrackerUnrecoverableException if unable to read both time tracker files
+   */
+  public static long getQueueTimeBehindMillis()
+      throws IOException, TimeTrackerUnrecoverableException {
+    return System.currentTimeMillis() - getCurrentTimeTrackerValue();
+  }
+
+  /**
    * Gets the current value in the time tracker file.
    *
    * @throws IOException if unable to read file
