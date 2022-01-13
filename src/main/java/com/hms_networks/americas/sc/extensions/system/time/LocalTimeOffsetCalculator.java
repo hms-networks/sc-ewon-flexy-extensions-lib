@@ -61,9 +61,16 @@ public class LocalTimeOffsetCalculator {
     // Build full export block descriptor call and file path
     final String exportBlockDescriptorCall = TimeLibConstants.TIME_OFFSET_LOCAL_TIME_EBD;
 
-    // Run export block descriptor call to get local time
-    Exporter exporter = new Exporter(exportBlockDescriptorCall);
-    return StringUtils.getStringFromInputStream(exporter, "UTF-8");
+    // Run export block descriptor call to get local time (try twice, in case of not found error)
+    String exportBlockDescriptorCallResult;
+    try {
+      Exporter exporter = new Exporter(exportBlockDescriptorCall);
+      exportBlockDescriptorCallResult = StringUtils.getStringFromInputStream(exporter, "UTF-8");
+    } catch (IOException e) {
+      Exporter exporter = new Exporter(exportBlockDescriptorCall);
+      exportBlockDescriptorCallResult = StringUtils.getStringFromInputStream(exporter, "UTF-8");
+    }
+    return exportBlockDescriptorCallResult;
   }
 
   /**
