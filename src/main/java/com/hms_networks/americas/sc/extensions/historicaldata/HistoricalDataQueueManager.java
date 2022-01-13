@@ -21,9 +21,6 @@ public class HistoricalDataQueueManager {
   /** Time span for fetching FIFO queue data. Default is 1 minute. */
   private static long queueFifoTimeSpanMins = 1;
 
-  /** Local time offset in milliseconds. */
-  private static long timeOffsetMilliseconds = 0;
-
   /** Boolean flag indicating if string history data should be included in queue data. */
   private static boolean stringHistoryEnabled = false;
 
@@ -87,24 +84,6 @@ public class HistoricalDataQueueManager {
    */
   private static String convertToEBDTimeFormat(long time) {
     return new SimpleDateFormat(HistoricalDataConstants.EBD_TIME_FORMAT).format(new Date(time));
-  }
-
-  /**
-   * Configures the local time offset of the historical data queue.
-   *
-   * @param timeOffsetMilliseconds local time offset in milliseconds
-   */
-  public static void setLocalTimeOffset(long timeOffsetMilliseconds) {
-    HistoricalDataQueueManager.timeOffsetMilliseconds = timeOffsetMilliseconds;
-  }
-
-  /**
-   * Gets the current time with the configured time offset.
-   *
-   * @return current time minus local time offset
-   */
-  public static long getCurrentTimeWithOffset() {
-    return System.currentTimeMillis() - timeOffsetMilliseconds;
   }
 
   /**
@@ -268,7 +247,7 @@ public class HistoricalDataQueueManager {
    */
   private static long writeNewTime(String writeFile) throws IOException {
     long startTimeTrackerMsLong = 0;
-    startTimeTrackerMsLong = getCurrentTimeWithOffset();
+    startTimeTrackerMsLong = System.currentTimeMillis();
     String startTimeTrackerMs = Long.toString(startTimeTrackerMsLong);
     FileAccessManager.writeStringToFile(writeFile, startTimeTrackerMs);
     return startTimeTrackerMsLong;
@@ -326,7 +305,7 @@ public class HistoricalDataQueueManager {
      * end time is in the future.
      */
     long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
-    long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, getCurrentTimeWithOffset());
+    long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
 
     ArrayList queueData = new ArrayList();
 
