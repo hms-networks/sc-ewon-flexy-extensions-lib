@@ -1,6 +1,7 @@
 package com.hms_networks.americas.sc.extensions.system.time;
 
 import com.ewon.ewonitf.SysControlBlock;
+import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
@@ -176,6 +177,27 @@ public class SCTimeUtils {
     iso8601LocalTimeFormat = new SimpleDateFormat(localTimeFormatString, Locale.getDefault());
     iso8601UtcTimeFormat = new SimpleDateFormat(utcTimeFormatString, Locale.getDefault());
     iso8601UtcTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_TIME_ZONE_NAME));
+  }
+
+  /**
+   * Returns an ISO 8601 formatted string representing the timestamp of the specified data point in
+   * the applicable time zone (UTC or local, depending on the value returned by {@link
+   * #getTagDataExportedInUtc()}).
+   *
+   * @param dataPoint data point to get timestamp for
+   * @return ISO 8601 formatted string representing the timestamp of the specified data point in the
+   *     applicable time zone
+   * @throws Exception if unable to get UTC export value
+   */
+  public static String getIso8601FormattedTimestampForDataPoint(DataPoint dataPoint)
+      throws Exception {
+    String formattedTimestamp;
+    if (getTagDataExportedInUtc()) {
+      formattedTimestamp = getIso8601UtcTimeFormat().format(dataPoint.getTimeStampAsDate());
+    } else {
+      formattedTimestamp = getIso8601LocalTimeFormat().format(dataPoint.getTimeStampAsDate());
+    }
+    return formattedTimestamp;
   }
 
   /**
