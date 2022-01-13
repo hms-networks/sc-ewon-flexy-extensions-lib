@@ -1,5 +1,14 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.5.0-pre3
+### Features
+- Add friendly date/time string utility method
+- Add local time zone utilities
+### Bug Fixes
+- N/A
+### Other
+- Combined duplicate time libraries
+
 ## Version 1.4.0
 ### Features
 - Added support for the tag unit in TagInfo objects
