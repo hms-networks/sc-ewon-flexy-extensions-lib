@@ -1,5 +1,10 @@
 package com.hms_networks.americas.sc.extensions.datapoint;
 
+import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
+import java.util.Date;
+
 /**
  * Abstract data point class. Stores tag value and data timestamp from historical logs.
  *
@@ -57,6 +62,33 @@ public abstract class DataPoint {
    */
   public String getTimeStamp() {
     return timestamp;
+  }
+
+  /**
+   * Gets the {@link Date} representation of the time stamp.
+   *
+   * @return the timestamp as a {@link Date}
+   * @throws Exception if unable to detect if time stamp is in UTC or local time
+   */
+  public Date getTimeStampAsDate() throws Exception {
+    // Get timestamp in milliseconds
+    long timestampMillisecondsTime = SCTimeUnit.SECONDS.toMillis(Long.parseLong(getTimeStamp()));
+
+    // Handle tag timestamp being in local time (default)
+    Date timestampDate;
+    if (!SCTimeUtils.getTagDataExportedInUtc()) {
+      // Add offset to get UTC time (new Date() uses time since epoch in UTC)
+      long timestampMillisecondsUtcTime =
+          timestampMillisecondsTime + LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
+
+      timestampDate = new Date(timestampMillisecondsUtcTime);
+    }
+    // Handle tag timestamp being in UTC time
+    else {
+      timestampDate = new Date(timestampMillisecondsTime);
+    }
+
+    return timestampDate;
   }
 
   /**
