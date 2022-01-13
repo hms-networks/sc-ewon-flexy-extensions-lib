@@ -1,5 +1,17 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.5.0-pre9
+### Features
+- Add friendly date/time string utility method
+- Add local time zone utilities
+- Add data point method to get time stamp as date object
+- Update ISO 8601 date formats for proper time zone handling
+- Add utility method to get value of the Ewon 'Record data in UTC' option
+### Bug Fixes
+- Fix bug preventing local time offset calculation only on first call
+### Other
+- Combined duplicate time libraries
+
 ## Version 1.4.0
 ### Features
 - Added support for the tag unit in TagInfo objects
