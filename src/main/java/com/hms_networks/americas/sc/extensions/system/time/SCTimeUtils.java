@@ -147,4 +147,45 @@ public class SCTimeUtils {
     iso8601UtcTimeFormat = new SimpleDateFormat(utcTimeFormatString, Locale.getDefault());
     iso8601UtcTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_TIME_ZONE_NAME));
   }
+
+  /**
+   * Returns a string representing the specified time span (in milliseconds) in the format of
+   * '[days] [days text], [hours] [hours text], [minutes] [minutes text], [seconds] [seconds text]'.
+   *
+   * @param milliseconds time span (in milliseconds)
+   * @param daysText text used to represent days
+   * @param hoursText text used to represent hours
+   * @param minutesText text used to represent minutes
+   * @param secondsText text used to represent seconds
+   * @return string representing the specified time span (in milliseconds) in the format of '[days]
+   *     [days text], [hours] [hours text], [minutes] [minutes text], [seconds] [seconds text]'
+   */
+  public static String getDayHourMinSecsForMillis(
+      int milliseconds, String daysText, String hoursText, String minutesText, String secondsText) {
+    final long days = SCTimeUnit.MILLISECONDS.toDays(milliseconds);
+    final long hours =
+        SCTimeUnit.MILLISECONDS.toHours(milliseconds)
+            - SCTimeUnit.DAYS.toHours(SCTimeUnit.MILLISECONDS.toDays(milliseconds));
+    final long minutes =
+        SCTimeUnit.MILLISECONDS.toMinutes(milliseconds)
+            - SCTimeUnit.HOURS.toMinutes(SCTimeUnit.MILLISECONDS.toHours(milliseconds));
+    final long seconds =
+        SCTimeUnit.MILLISECONDS.toSeconds(milliseconds)
+            - SCTimeUnit.MINUTES.toSeconds(SCTimeUnit.MILLISECONDS.toMinutes(milliseconds));
+    return days
+        + " "
+        + daysText
+        + ", "
+        + hours
+        + " "
+        + hoursText
+        + ", "
+        + minutes
+        + " "
+        + minutesText
+        + ", "
+        + seconds
+        + " "
+        + secondsText;
+  }
 }
