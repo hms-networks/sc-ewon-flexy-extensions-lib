@@ -104,7 +104,7 @@ public class HistoricalDataQueueManager {
    * @return current time minus local time offset
    */
   public static long getCurrentTimeWithOffset() {
-    return System.currentTimeMillis() - timeOffsetMilliseconds;
+    return new Date().getTime() - timeOffsetMilliseconds;
   }
 
   /**

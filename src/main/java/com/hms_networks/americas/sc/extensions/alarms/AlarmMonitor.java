@@ -19,7 +19,7 @@ public abstract class AlarmMonitor extends EvtTagAlarmListener {
   /** Tag alarm event method. This method is invoked for each tag alarm that occurs. */
   public void callTagChanged() {
     // Get tag alarm information
-    long utcTime = System.currentTimeMillis();
+    long utcTime = new Date().getTime();
     long localTime = utcTime - LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
     String alarmUtcTimestamp = SCTimeFormat.ISO_8601.format(new Date(utcTime));
     String alarmLocalTimestamp = SCTimeFormat.ISO_8601.format(new Date(localTime));

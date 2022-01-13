@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Date;
 
 /**
  * Logger.java
@@ -265,7 +266,8 @@ public class Logger {
     BufferedWriter logBufferedWriter = null;
 
     /* Build a log entry string (timestamp + logString) */
-    String formattedLogString = ("[" + System.currentTimeMillis() + "] " + logString + "\n");
+    final long currentTimeMillis = new Date().getTime();
+    String formattedLogString = ("[" + currentTimeMillis + "] " + logString + "\n");
 
     /* Write the log entry to the file */
     try {

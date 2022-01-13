@@ -117,7 +117,7 @@ public class LocalTimeOffsetCalculator {
     Date localTimeDateObj = sdf.parse(localTime);
 
     // Calculate difference between UTC time (Ewon system time) and local time (in milliseconds)
-    Date systemTimeDateObj = new Date(System.currentTimeMillis());
+    Date systemTimeDateObj = new Date();
     long diffInMilliseconds = 0;
     if (localTimeDateObj != null) {
       diffInMilliseconds = systemTimeDateObj.getTime() - localTimeDateObj.getTime();

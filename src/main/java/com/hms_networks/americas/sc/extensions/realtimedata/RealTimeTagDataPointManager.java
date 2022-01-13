@@ -11,6 +11,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
+import java.util.Date;
 
 /**
  * This class will hold a list of data points for each tag. One instance of the class is made per
@@ -105,7 +106,8 @@ public class RealTimeTagDataPointManager {
     String tagUnit = tag.getUnit();
     int tagID = tag.getId();
     final int millisecondsInSeconds = 1000;
-    String timeStampSeconds = String.valueOf(System.currentTimeMillis() / millisecondsInSeconds);
+    final long currentTimeMilliseconds = new Date().getTime();
+    String timeStampSeconds = String.valueOf(currentTimeMilliseconds / millisecondsInSeconds);
     DataPoint data = null;
 
     if (tagControl != null) {

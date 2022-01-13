@@ -2,6 +2,7 @@ package com.hms_networks.americas.sc.extensions.logging;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Date;
 import javax.microedition.io.ConnectionNotFoundException;
 import javax.microedition.io.Connector;
 import javax.microedition.io.ServerSocketConnection;
@@ -184,7 +185,8 @@ public class SocketLogger implements Runnable {
     boolean wasLogged = false;
     if (logEntry.length() > 0) {
       // Format log entries "Timestamp: logEntry\n"
-      String logEntryFormatted = System.currentTimeMillis() + ": " + logEntry + "\n";
+      final long currentTimeMillis = new Date().getTime();
+      String logEntryFormatted = currentTimeMillis + ": " + logEntry + "\n";
 
       if (socketConnectionState == STATE_CONNECTED) {
         try {

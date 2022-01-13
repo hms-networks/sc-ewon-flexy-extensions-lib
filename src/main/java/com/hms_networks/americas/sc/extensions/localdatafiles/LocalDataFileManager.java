@@ -83,7 +83,7 @@ public class LocalDataFileManager extends Thread {
     // Get current date/time
     Calendar calendar = Calendar.getInstance();
     long localTimeMillis =
-        System.currentTimeMillis() - LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
+        new Date().getTime() - LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
     calendar.setTimeInMillis(localTimeMillis);
 
     // Get date sections (add 1 to month - based on 0)
@@ -133,8 +133,9 @@ public class LocalDataFileManager extends Thread {
   private void deleteOutdatedFiles() {
     // Get current date/time
     Calendar calendar = Calendar.getInstance();
+    final long currentTimeMilliseconds = new Date().getTime();
     long localTimeMillis =
-        System.currentTimeMillis() - LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
+        currentTimeMilliseconds - LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
     calendar.setTimeInMillis(localTimeMillis);
 
     // Get date sections (add 1 to month - based on 0)
@@ -187,7 +188,7 @@ public class LocalDataFileManager extends Thread {
     }
 
     // Store last run time
-    lastDeleteOutdatedFilesTimeMillis = System.currentTimeMillis();
+    lastDeleteOutdatedFilesTimeMillis = new Date().getTime();
   }
 
   /**
@@ -474,8 +475,9 @@ public class LocalDataFileManager extends Thread {
       }
 
       // Check if need to delete outdated local data files
+      final long currentTimeMillis = new Date().getTime();
       final long timeSinceLastDeleteOutdatedLocalFilesMillis =
-          System.currentTimeMillis() - lastDeleteOutdatedFilesTimeMillis;
+          currentTimeMillis - lastDeleteOutdatedFilesTimeMillis;
       if (timeSinceLastDeleteOutdatedLocalFilesMillis
           >= LocalDataFileConstants.LOCAL_DATA_FILE_OUTDATED_FILE_DELETE_INTERVAL_MILLIS) {
         Logger.LOG_INFO("Deleting outdated data files from the local file system.");
