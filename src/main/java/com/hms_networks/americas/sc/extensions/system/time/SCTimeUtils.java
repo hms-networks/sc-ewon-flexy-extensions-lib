@@ -18,6 +18,15 @@ public class SCTimeUtils {
   /** Key for accessing the time zone name item in the Flexy's system control block. */
   private static final String SCB_TIME_ZONE_KEY = "Timezone";
 
+  /** Key for accessing the UTC export item in the Flexy's system control block. */
+  private static final String SCB_UTC_EXPORT_KEY = "UTCExport";
+
+  /**
+   * String value used to represent a true value for the UTC export item in the Flexy's system
+   * control block.
+   */
+  private static final String SCB_UTC_EXPORT_VALUE_TRUE = "1";
+
   /** The name of the Java time zone representing GMT/UTC. */
   private static final String GMT_TIME_ZONE_NAME = "GMT";
 
@@ -38,6 +47,34 @@ public class SCTimeUtils {
 
   /** The designator for the local time zone. (i.e. -05:00, +02:00, Z, etc.) */
   private static String localTimeZoneDesignator = null;
+
+  /** Boolean value indicating if tag data is exported using UTC time stamps. */
+  private static boolean tagDataExportedInUtc = false;
+
+  /**
+   * Boolean value indicating of the tag data is exported using UTC time stamps option has been read
+   * from configuration.
+   */
+  private static boolean didReadTagDataExportedInUtc = false;
+
+  /**
+   * Gets a boolean value indicating if tag data is exported using UTC time stamps.
+   *
+   * @return true if tag data is exported using UTC time stamps, false otherwise
+   * @throws Exception if unable to get UTC export value
+   */
+  public static boolean getTagDataExportedInUtc() throws Exception {
+    if (!didReadTagDataExportedInUtc) {
+      // Create system control block
+      SysControlBlock sysControlBlock = new SysControlBlock(SysControlBlock.SYS);
+
+      // Get UTC export value from system control block
+      tagDataExportedInUtc =
+          sysControlBlock.getItem(SCB_UTC_EXPORT_KEY).trim().equals(SCB_UTC_EXPORT_VALUE_TRUE);
+      didReadTagDataExportedInUtc = true;
+    }
+    return tagDataExportedInUtc;
+  }
 
   /**
    * Gets the name of the Flexy's local time zone (i.e. America/New_York, Europe/London, etc.).
