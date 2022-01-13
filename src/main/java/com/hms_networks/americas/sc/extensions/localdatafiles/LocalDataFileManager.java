@@ -6,7 +6,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataType;
 import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.fileutils.FileManager;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
-import com.hms_networks.americas.sc.extensions.system.time.SCTimeFormat;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
 import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
@@ -261,10 +261,11 @@ public class LocalDataFileManager extends Thread {
             * LocalDataFileConstants.NUM_MILLISECONDS_PER_SECOND;
     long utcDataPointTime =
         localDataPointTime + LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
+    Date dataPointDate = new Date(utcDataPointTime);
 
     // Get local time from datapoint UTC time
-    String utcTimestamp = SCTimeFormat.ISO_8601.format(new Date(utcDataPointTime));
-    String localTimestamp = SCTimeFormat.ISO_8601.format(new Date(localDataPointTime));
+    String utcTimestamp = SCTimeUtils.getIso8601UtcTimeFormat().format(dataPointDate);
+    String localTimestamp = SCTimeUtils.getIso8601LocalTimeFormat().format(dataPointDate);
 
     // Append UTC time and delimiter
     localDataFileWriteBuffer.append(utcTimestamp);
