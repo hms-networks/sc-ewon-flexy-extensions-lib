@@ -28,7 +28,7 @@ public class MqttConstants {
   public static String MQTT_KEEP_ALIVE_OPTION_KEY = "KEEPALIVE";
 
   /** Default value for MQTT keep alive (secs) option */
-  public static String MQTT_KEEP_ALIVE_OPTION_DEFAULT = "30";
+  public static String MQTT_KEEP_ALIVE_OPTION_DEFAULT = "60";
 
   /** Key for MQTT protocol version option */
   public static String MQTT_PROTOCOL_VERSION_OPTION_KEY = "PROTOCOLVERSION";
