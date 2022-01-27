@@ -225,10 +225,17 @@ public class TagInfoManager {
     final int indexDescription = 2;
     final int indexHistoricalLogging = 8;
     final int indexRealTimeLogging = 15;
+    final int indexAlarmHint = 20;
+    final int indexAlarmHigh = 21;
+    final int indexAlarmLow = 22;
+    final int indexAlarmTimeDeadBand = 23;
+    final int indexAlarmLevelDeadBand = 24;
     final int indexGroupA = 25;
     final int indexGroupB = 26;
     final int indexGroupC = 27;
     final int indexGroupD = 28;
+    final int indexAlarmLowLow = 34;
+    final int indexAlarmHighHigh = 35;
     final int indexType = 55;
     final int indexUnit = 56;
     final int indexEnd = indexType + 1;
@@ -244,6 +251,13 @@ public class TagInfoManager {
     boolean tagInGroupD = false;
     boolean tagHistoricalLoggingEnabled = false;
     boolean tagRealTimeLoggingEnabled = false;
+    String alarmHint = "";
+    float alarmLow = TagConstants.UNINIT_INT_VAL;
+    float alarmHigh = TagConstants.UNINIT_INT_VAL;
+    float alarmLowLow = TagConstants.UNINIT_INT_VAL;
+    float alarmHighHigh = TagConstants.UNINIT_INT_VAL;
+    int alarmTimeDeadBand = TagConstants.UNINIT_INT_VAL;
+    float alarmLevelDeadBand = TagConstants.UNINIT_INT_VAL;
 
     // Tokenize line
     final boolean returnDelimiters = false;
@@ -303,6 +317,51 @@ public class TagInfoManager {
         case indexGroupD:
           tagInGroupD = convertStrToBool(currentToken);
           break;
+        case indexAlarmHint:
+          alarmHint = currentToken;
+          break;
+        case indexAlarmLow:
+          if (currentToken.length() > 0) {
+            alarmLow = Float.parseFloat(currentToken);
+          } else {
+            alarmLow = TagConstants.UNINIT_INT_VAL;
+          }
+          break;
+        case indexAlarmHigh:
+          if (currentToken.length() > 0) {
+            alarmHigh = Float.parseFloat(currentToken);
+          } else {
+            alarmHigh = TagConstants.UNINIT_INT_VAL;
+          }
+          break;
+        case indexAlarmLowLow:
+          if (currentToken.length() > 0) {
+            alarmLowLow = Float.parseFloat(currentToken);
+          } else {
+            alarmLowLow = TagConstants.UNINIT_INT_VAL;
+          }
+          break;
+        case indexAlarmHighHigh:
+          if (currentToken.length() > 0) {
+            alarmHighHigh = Float.parseFloat(currentToken);
+          } else {
+            alarmHighHigh = TagConstants.UNINIT_INT_VAL;
+          }
+          break;
+        case indexAlarmTimeDeadBand:
+          if (currentToken.length() > 0) {
+            alarmTimeDeadBand = Integer.parseInt(currentToken);
+          } else {
+            alarmTimeDeadBand = TagConstants.UNINIT_INT_VAL;
+          }
+          break;
+        case indexAlarmLevelDeadBand:
+          if (currentToken.length() > 0) {
+            alarmLevelDeadBand = Float.parseFloat(currentToken);
+          } else {
+            alarmLevelDeadBand = TagConstants.UNINIT_INT_VAL;
+          }
+          break;
         case indexType:
           int tagTypeInteger = Integer.parseInt(currentToken);
 
@@ -324,7 +383,14 @@ public class TagInfoManager {
               tagInGroupC,
               tagInGroupD,
               tagType,
-              tagUnit);
+              tagUnit,
+              alarmHint,
+              alarmLow,
+              alarmHigh,
+              alarmLowLow,
+              alarmHighHigh,
+              alarmTimeDeadBand,
+              alarmLevelDeadBand);
           break;
       }
     }
@@ -374,6 +440,13 @@ public class TagInfoManager {
    * @param tagInGroupD true if tag is added to group D
    * @param tagTypeObj TagType object associated with this tag
    * @param tagUnit the unit of a tag
+   * @param alarmHint tag alarm hint
+   * @param alarmLow tag alarm low threshold
+   * @param alarmHigh tag alarm high threshold
+   * @param alarmLowLow tag alarm low/low threshold
+   * @param alarmHighHigh tag alarm high/high threshold
+   * @param alarmTimeDeadBand tag alarm time dead band (delay)
+   * @param alarmLevelDeadBand tag alarm level dead band (value)
    * @throws JSONException if int to string enumeration JSON parse fails
    * @throws IOException if in to string enumeration file read fails
    * @throws NumberFormatException if the key defined in int to string enum mappings is not an
@@ -390,7 +463,14 @@ public class TagInfoManager {
       boolean tagInGroupC,
       boolean tagInGroupD,
       TagType tagTypeObj,
-      String tagUnit)
+      String tagUnit,
+      String alarmHint,
+      float alarmLow,
+      float alarmHigh,
+      float alarmLowLow,
+      float alarmHighHigh,
+      int alarmTimeDeadBand,
+      float alarmLevelDeadBand)
       throws IOException, JSONException {
     String[] tagIntToStringMappings = null;
     boolean enumTag = false;
@@ -422,6 +502,13 @@ public class TagInfoManager {
               tagInGroupD,
               tagTypeObj,
               tagUnit,
+              alarmHint,
+              alarmLow,
+              alarmHigh,
+              alarmLowLow,
+              alarmHighHigh,
+              alarmTimeDeadBand,
+              alarmLevelDeadBand,
               tagIntToStringMappings);
     } else {
       currentTagInfo =
@@ -436,7 +523,14 @@ public class TagInfoManager {
               tagInGroupC,
               tagInGroupD,
               tagTypeObj,
-              tagUnit);
+              tagUnit,
+              alarmHint,
+              alarmLow,
+              alarmHigh,
+              alarmLowLow,
+              alarmHighHigh,
+              alarmTimeDeadBand,
+              alarmLevelDeadBand);
     }
     tagInfoList[tagInfoListInsertIndex] = currentTagInfo;
     tagInfoListInsertIndex++;
