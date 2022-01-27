@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.6.0-pre3
+### Features
+- Add alarm configuration to tag information objects
+### Bug Fixes
+- Add missing param Javadocs in tag information objects
+### Other
+- N/A
+
 ## Version 1.5.0
 ### Features
 - Add milliseconds to days, hours, minutes, seconds utility method
