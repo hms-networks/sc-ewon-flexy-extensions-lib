@@ -27,6 +27,14 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
    * @param isInGroupC boolean if tag in group C
    * @param isInGroupD boolean if tag in group D
    * @param type tag type
+   * @param unit tag unit
+   * @param alarmHint tag alarm hint
+   * @param alarmLow tag alarm low threshold
+   * @param alarmHigh tag alarm high threshold
+   * @param alarmLowLow tag alarm low/low threshold
+   * @param alarmHighHigh tag alarm high/high threshold
+   * @param alarmTimeDeadBand tag alarm time dead band (delay)
+   * @param alarmLevelDeadBand tag alarm level dead band (value)
    * @param enumeratedStringValueMapping array of {@link String}s where the {@code int} value of the
    *     tag represents the {@link String} array index
    */
@@ -42,6 +50,13 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
       boolean isInGroupD,
       TagType type,
       String unit,
+      String alarmHint,
+      float alarmLow,
+      float alarmHigh,
+      float alarmLowLow,
+      float alarmHighHigh,
+      int alarmTimeDeadBand,
+      float alarmLevelDeadBand,
       String[] enumeratedStringValueMapping) {
     super(
         id,
@@ -54,7 +69,14 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
         isInGroupC,
         isInGroupD,
         type,
-        unit);
+        unit,
+        alarmHint,
+        alarmLow,
+        alarmHigh,
+        alarmLowLow,
+        alarmHighHigh,
+        alarmTimeDeadBand,
+        alarmLevelDeadBand);
     this.enumeratedStringValueMapping = enumeratedStringValueMapping;
   }
 
@@ -68,6 +90,14 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
    * @param historicalLogEnabled boolean if historical logging enabled
    * @param tagGroups list of tag groups
    * @param type tag type
+   * @param unit tag unit
+   * @param alarmHint tag alarm hint
+   * @param alarmLow tag alarm low threshold
+   * @param alarmHigh tag alarm high threshold
+   * @param alarmLowLow tag alarm low/low threshold
+   * @param alarmHighHigh tag alarm high/high threshold
+   * @param alarmTimeDeadBand tag alarm time dead band (delay)
+   * @param alarmLevelDeadBand tag alarm level dead band (value)
    * @param enumeratedStringValueMapping array of {@link String}s where the {@code int} value of the
    *     tag represents the {@link String} array index
    */
@@ -80,8 +110,30 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
       ArrayList tagGroups,
       TagType type,
       String unit,
+      String alarmHint,
+      float alarmLow,
+      float alarmHigh,
+      float alarmLowLow,
+      float alarmHighHigh,
+      int alarmTimeDeadBand,
+      float alarmLevelDeadBand,
       String[] enumeratedStringValueMapping) {
-    super(id, name, description, historicalLogEnabled, realTimeLogEnabled, tagGroups, type, unit);
+    super(
+        id,
+        name,
+        description,
+        historicalLogEnabled,
+        realTimeLogEnabled,
+        tagGroups,
+        type,
+        unit,
+        alarmHint,
+        alarmLow,
+        alarmHigh,
+        alarmLowLow,
+        alarmHighHigh,
+        alarmTimeDeadBand,
+        alarmLevelDeadBand);
     this.enumeratedStringValueMapping = enumeratedStringValueMapping;
   }
 
