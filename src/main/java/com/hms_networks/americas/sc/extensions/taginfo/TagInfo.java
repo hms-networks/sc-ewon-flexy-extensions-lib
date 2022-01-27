@@ -96,6 +96,7 @@ public class TagInfo {
    * @param realTimeLogEnabled boolean if realtime logging enabled
    * @param tagGroups list of tag groups
    * @param type tag type
+   * @param unit tag unit
    */
   public TagInfo(
       int id,

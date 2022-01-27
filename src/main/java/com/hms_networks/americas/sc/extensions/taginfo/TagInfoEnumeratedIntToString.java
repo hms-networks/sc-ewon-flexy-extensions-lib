@@ -27,6 +27,7 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
    * @param isInGroupC boolean if tag in group C
    * @param isInGroupD boolean if tag in group D
    * @param type tag type
+   * @param unit tag unit
    * @param enumeratedStringValueMapping array of {@link String}s where the {@code int} value of the
    *     tag represents the {@link String} array index
    */
@@ -68,6 +69,7 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
    * @param historicalLogEnabled boolean if historical logging enabled
    * @param tagGroups list of tag groups
    * @param type tag type
+   * @param unit tag unit
    * @param enumeratedStringValueMapping array of {@link String}s where the {@code int} value of the
    *     tag represents the {@link String} array index
    */
