@@ -52,6 +52,27 @@ public class LibraryTest extends TestCase {
   /** Tag unit used for testing in {@link #testBasicTagInfo()}. */
   protected String basicTagInfoTestUnit = String.valueOf(randomGenerator.nextFloat());
 
+  /** Tag alarm hint used for testing in {@link #testBasicTagInfo()}. */
+  protected String basicTagInfoTestAlarmHint = String.valueOf(randomGenerator.nextFloat());
+
+  /** Tag alarm low threshold used for testing in {@link #testBasicTagInfo()}. */
+  protected int basicTagInfoTestAlarmLow = randomGenerator.nextInt();
+
+  /** Tag alarm high threshold used for testing in {@link #testBasicTagInfo()}. */
+  protected int basicTagInfoTestAlarmHigh = randomGenerator.nextInt();
+
+  /** Tag alarm low/low threshold used for testing in {@link #testBasicTagInfo()}. */
+  protected int basicTagInfoTestAlarmLowLow = randomGenerator.nextInt();
+
+  /** Tag alarm high/high threshold used for testing in {@link #testBasicTagInfo()}. */
+  protected int basicTagInfoTestAlarmHighHigh = randomGenerator.nextInt();
+
+  /** Tag alarm time dead band (delay) used for testing in {@link #testBasicTagInfo()}. */
+  protected int basicTagInfoTestAlarmTimeDeadBand = randomGenerator.nextInt();
+
+  /** Tag alarm level dead band (value) used for testing in {@link #testBasicTagInfo()}. */
+  protected int basicTagInfoTestAlarmLevelDeadBand = randomGenerator.nextInt();
+
   /**
    * Main test method. Invokes all test methods with a name starting with 'test' and no required
    * parameters/arguments.
@@ -81,7 +102,14 @@ public class LibraryTest extends TestCase {
             basicTagInfoTestInGroupC,
             basicTagInfoTestInGroupD,
             basicTagInfoTestTagType,
-            basicTagInfoTestUnit);
+            basicTagInfoTestUnit,
+            basicTagInfoTestAlarmHint,
+            basicTagInfoTestAlarmLow,
+            basicTagInfoTestAlarmHigh,
+            basicTagInfoTestAlarmLowLow,
+            basicTagInfoTestAlarmHighHigh,
+            basicTagInfoTestAlarmTimeDeadBand,
+            basicTagInfoTestAlarmLevelDeadBand);
 
     super.setUp();
   }
