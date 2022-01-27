@@ -36,6 +36,27 @@ public class TagInfo {
   /** Tag unit */
   private final String unit;
 
+  /** Tag alarm hint */
+  private final String alarmHint;
+
+  /** Tag alarm low threshold */
+  private final float alarmLow;
+
+  /** Tag alarm high threshold */
+  private final float alarmHigh;
+
+  /** Tag alarm low/low threshold */
+  private final float alarmLowLow;
+
+  /** Tag alarm high/high threshold */
+  private final float alarmHighHigh;
+
+  /** Tag alarm time dead band (delay) */
+  private final int alarmTimeDeadBand;
+
+  /** Tag alarm level dead band (value) */
+  private final float alarmLevelDeadBand;
+
   /**
    * Constructor for tag class with group booleans.
    *
@@ -50,6 +71,13 @@ public class TagInfo {
    * @param isInGroupD boolean if tag in group D
    * @param type tag type
    * @param unit tag unit
+   * @param alarmHint tag alarm hint
+   * @param alarmLow tag alarm low threshold
+   * @param alarmHigh tag alarm high threshold
+   * @param alarmLowLow tag alarm low/low threshold
+   * @param alarmHighHigh tag alarm high/high threshold
+   * @param alarmTimeDeadBand tag alarm time dead band (delay)
+   * @param alarmLevelDeadBand tag alarm level dead band (value)
    */
   public TagInfo(
       int id,
@@ -62,7 +90,14 @@ public class TagInfo {
       boolean isInGroupC,
       boolean isInGroupD,
       TagType type,
-      String unit) {
+      String unit,
+      String alarmHint,
+      float alarmLow,
+      float alarmHigh,
+      float alarmLowLow,
+      float alarmHighHigh,
+      int alarmTimeDeadBand,
+      float alarmLevelDeadBand) {
     this.type = type;
     this.historicalLogEnabled = historicalLogEnabled;
     this.realTimeLogEnabled = realTimeLogEnabled;
@@ -70,6 +105,13 @@ public class TagInfo {
     this.name = name;
     this.description = description;
     this.unit = unit;
+    this.alarmHint = alarmHint;
+    this.alarmLow = alarmLow;
+    this.alarmHigh = alarmHigh;
+    this.alarmLowLow = alarmLowLow;
+    this.alarmHighHigh = alarmHighHigh;
+    this.alarmTimeDeadBand = alarmTimeDeadBand;
+    this.alarmLevelDeadBand = alarmLevelDeadBand;
     this.tagGroups = new ArrayList();
 
     if (isInGroupA) {
@@ -96,6 +138,14 @@ public class TagInfo {
    * @param realTimeLogEnabled boolean if realtime logging enabled
    * @param tagGroups list of tag groups
    * @param type tag type
+   * @param unit tag unit
+   * @param alarmHint tag alarm hint
+   * @param alarmLow tag alarm low threshold
+   * @param alarmHigh tag alarm high threshold
+   * @param alarmLowLow tag alarm low/low threshold
+   * @param alarmHighHigh tag alarm high/high threshold
+   * @param alarmTimeDeadBand tag alarm time dead band (delay)
+   * @param alarmLevelDeadBand tag alarm level dead band (value)
    */
   public TagInfo(
       int id,
@@ -105,7 +155,14 @@ public class TagInfo {
       boolean realTimeLogEnabled,
       ArrayList tagGroups,
       TagType type,
-      String unit) {
+      String unit,
+      String alarmHint,
+      float alarmLow,
+      float alarmHigh,
+      float alarmLowLow,
+      float alarmHighHigh,
+      int alarmTimeDeadBand,
+      float alarmLevelDeadBand) {
     this.type = type;
     this.historicalLogEnabled = historicalLogEnabled;
     this.realTimeLogEnabled = realTimeLogEnabled;
@@ -114,6 +171,13 @@ public class TagInfo {
     this.description = description;
     this.tagGroups = tagGroups;
     this.unit = unit;
+    this.alarmHint = alarmHint;
+    this.alarmLow = alarmLow;
+    this.alarmHigh = alarmHigh;
+    this.alarmLowLow = alarmLowLow;
+    this.alarmHighHigh = alarmHighHigh;
+    this.alarmTimeDeadBand = alarmTimeDeadBand;
+    this.alarmLevelDeadBand = alarmLevelDeadBand;
   }
 
   /**
@@ -186,5 +250,68 @@ public class TagInfo {
    */
   public String getUnit() {
     return unit;
+  }
+
+  /**
+   * Get the tag alarm hint
+   *
+   * @return tag alarm hint
+   */
+  public String getAlarmHint() {
+    return alarmHint;
+  }
+
+  /**
+   * Get the tag alarm low threshold
+   *
+   * @return tag alarm low threshold
+   */
+  public float getAlarmLow() {
+    return alarmLow;
+  }
+
+  /**
+   * Get the tag alarm high threshold
+   *
+   * @return tag alarm high threshold
+   */
+  public float getAlarmHigh() {
+    return alarmHigh;
+  }
+
+  /**
+   * Get the tag alarm low/low threshold
+   *
+   * @return tag alarm low/low threshold
+   */
+  public float getAlarmLowLow() {
+    return alarmLowLow;
+  }
+
+  /**
+   * Get the tag alarm high/high threshold
+   *
+   * @return tag alarm high/high threshold
+   */
+  public float getAlarmHighHigh() {
+    return alarmHighHigh;
+  }
+
+  /**
+   * Get the tag alarm time dead band (delay)
+   *
+   * @return tag alarm time dead band (delay)
+   */
+  public int getAlarmTimeDeadBand() {
+    return alarmTimeDeadBand;
+  }
+
+  /**
+   * Get the tag alarm level dead band (value)
+   *
+   * @return tag alarm level dead band (value)
+   */
+  public float getAlarmLevelDeadBand() {
+    return alarmLevelDeadBand;
   }
 }
