@@ -52,4 +52,7 @@ class HistoricalDataConstants {
 
   /** Name of historical data queue time tracker file 2. */
   static final String QUEUE_TIME_FILE_2_NAME = "histDataTime2";
+
+  /** Minimum amount of Historical FIFO queue that can be set by library users. */
+  static final long MIN_QUEUE_SPAN_MINS = 1;
 }
