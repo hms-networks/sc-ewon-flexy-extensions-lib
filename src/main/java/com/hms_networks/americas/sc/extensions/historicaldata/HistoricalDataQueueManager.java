@@ -1,7 +1,6 @@
 package com.hms_networks.americas.sc.extensions.historicaldata;
 
 import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
-
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import java.io.File;
 import java.io.IOException;
