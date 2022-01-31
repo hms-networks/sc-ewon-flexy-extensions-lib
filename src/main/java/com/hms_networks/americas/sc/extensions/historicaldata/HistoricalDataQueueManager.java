@@ -334,59 +334,56 @@ public class HistoricalDataQueueManager {
 
     ArrayList queueData = new ArrayList();
 
-    // Ensure start time is not equal to end time, and enough time has passed to grab new data
-    if (enoughSeconds(startTimeTrackerMsLong, endTimeTrackerMsLong)) {
-      // Calculate EBD start and end time
-      final String ebdStartTime = convertToEBDTimeFormat(startTimeTrackerMsLong);
-      final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
+    // Calculate EBD start and end time
+    final String ebdStartTime = convertToEBDTimeFormat(startTimeTrackerMsLong);
+    final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
 
-      // Run standard EBD export call (int, float, ...)
-      final String ebdFileName =
+    // Run standard EBD export call (int, float, ...)
+    final String ebdFileName =
+        HistoricalDataConstants.QUEUE_FILE_FOLDER
+            + "/"
+            + HistoricalDataConstants.QUEUE_EBD_FILE_NAME
+            + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
+    boolean stringHistorical = false;
+    HistoricalDataManager.exportHistoricalToFile(
+        ebdStartTime,
+        ebdEndTime,
+        ebdFileName,
+        includeTagGroupA,
+        includeTagGroupB,
+        includeTagGroupC,
+        includeTagGroupD,
+        stringHistorical);
+
+    // Parse standard EBD export call
+    queueData = HistoricalDataManager.parseHistoricalFile(ebdFileName);
+
+    // Run string EBD export call if enabled
+    if (stringHistoryEnabled) {
+      final String ebdStringFileName =
           HistoricalDataConstants.QUEUE_FILE_FOLDER
               + "/"
-              + HistoricalDataConstants.QUEUE_EBD_FILE_NAME
+              + HistoricalDataConstants.QUEUE_EBD_STRING_FILE_NAME
               + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
-      boolean stringHistorical = false;
+      stringHistorical = true;
       HistoricalDataManager.exportHistoricalToFile(
           ebdStartTime,
           ebdEndTime,
-          ebdFileName,
+          ebdStringFileName,
           includeTagGroupA,
           includeTagGroupB,
           includeTagGroupC,
           includeTagGroupD,
           stringHistorical);
 
-      // Parse standard EBD export call
-      queueData = HistoricalDataManager.parseHistoricalFile(ebdFileName);
-
-      // Run string EBD export call if enabled
-      if (stringHistoryEnabled) {
-        final String ebdStringFileName =
-            HistoricalDataConstants.QUEUE_FILE_FOLDER
-                + "/"
-                + HistoricalDataConstants.QUEUE_EBD_STRING_FILE_NAME
-                + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
-        stringHistorical = true;
-        HistoricalDataManager.exportHistoricalToFile(
-            ebdStartTime,
-            ebdEndTime,
-            ebdStringFileName,
-            includeTagGroupA,
-            includeTagGroupB,
-            includeTagGroupC,
-            includeTagGroupD,
-            stringHistorical);
-
-        // Parse string EBD export call and combine with standard EBD call results
-        ArrayList queueStringData = HistoricalDataManager.parseHistoricalFile(ebdStringFileName);
-        queueData.addAll(queueStringData);
-      }
-
-      // Store end time +1 ms (to prevent duplicate data)
-      final String newTimeTrackerVal = Long.toString(endTimeTrackerMsLong + 1);
-      FileAccessManager.writeStringToFile(writeFile, newTimeTrackerVal);
+      // Parse string EBD export call and combine with standard EBD call results
+      ArrayList queueStringData = HistoricalDataManager.parseHistoricalFile(ebdStringFileName);
+      queueData.addAll(queueStringData);
     }
+
+    // Store end time +1 ms (to prevent duplicate data)
+    final String newTimeTrackerVal = Long.toString(endTimeTrackerMsLong + 1);
+    FileAccessManager.writeStringToFile(writeFile, newTimeTrackerVal);
 
     isFile1CurrTimeTrackerFile = !isFile1CurrTimeTrackerFile;
 
@@ -394,27 +391,4 @@ public class HistoricalDataQueueManager {
     return queueData;
   }
 
-  /**
-   * Compare a start and end time in milliseconds to see if enough time has passed for an EBD call.
-   *
-   * @param startTimeMillis the start time in milliseconds.
-   * @param endTimeMillis the end time in milliseconds.
-   * @return true if enough time has passed for the next EBD call
-   */
-  private static boolean enoughSeconds(long startTimeMillis, long endTimeMillis) {
-    boolean enoughTimePassed = true;
-    long oneSecondMillis = 1000;
-    long secondsPassed = (endTimeMillis / oneSecondMillis) - (startTimeMillis / oneSecondMillis);
-
-    /* If the export block descriptor start and end time are the same, no data is grabbed.
-     * If there is 1 second between the start and end time EBD calls do not work consistently.
-     * EBD calls work consistently when 2 or more seconds have passed between the start and end time.
-     */
-    int twoSeconds = 2;
-    if (secondsPassed < twoSeconds) {
-      enoughTimePassed = false;
-    }
-
-    return enoughTimePassed;
-  }
 }
