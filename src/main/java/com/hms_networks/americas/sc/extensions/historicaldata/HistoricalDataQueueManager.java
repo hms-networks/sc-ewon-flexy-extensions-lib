@@ -71,8 +71,15 @@ public class HistoricalDataQueueManager {
    * Set the FIFO queue time span in minutes.
    *
    * @param timeSpanMins new FIFO queue time span in minutes
+   * @throws IllegalArgumentException if unable to read a file
    */
   public static synchronized void setQueueFifoTimeSpanMins(long timeSpanMins) {
+    if (timeSpanMins < HistoricalDataConstants.MIN_QUEUE_SPAN_MINS) {
+      throw new IllegalArgumentException(
+          "The FifoTimeSpan must not be less than "
+              + HistoricalDataConstants.MIN_QUEUE_SPAN_MINS
+              + ".");
+    }
     queueFifoTimeSpanMins = timeSpanMins;
   }
 
