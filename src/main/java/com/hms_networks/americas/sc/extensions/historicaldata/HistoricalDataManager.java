@@ -1,7 +1,6 @@
 package com.hms_networks.americas.sc.extensions.historicaldata;
 
 import com.ewon.ewonitf.Exporter;
-
 import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointBoolean;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointDword;
