@@ -46,6 +46,9 @@ public class HistoricalDataQueueManager {
           + HistoricalDataConstants.QUEUE_TIME_FILE_2_NAME
           + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
 
+  /** Maximum amount of time that the historical Fifo can get behind in milliseconds. */
+  private static long maxQueueGetsBehindMs = HistoricalDataConstants.MAX_HIST_FIFO_GET_BEHIND_MS;
+
   /**
    * Get the current configured FIFO queue time span in milliseconds.
    *
@@ -87,6 +90,22 @@ public class HistoricalDataQueueManager {
       throw new IllegalArgumentException("The FifoTimeSpan must not be less than one.");
     }
     queueFifoTimeSpanMins = timeSpanMins;
+  }
+
+  /**
+   * Set the maximum amount the Historical FIFO queue can get behind in minutes.
+   *
+   * @param timeSpanMins new FIFO queue time span in minutes
+   * @throws IllegalArgumentException if parameter is negative
+   */
+  public static synchronized void setQueueMaxBehindMins(long timeMins) {
+    if (timeMins < 0) {
+      throw new IllegalArgumentException("The parameter passed must be greater than 0.");
+    }
+    maxQueueGetsBehindMs =
+        timeMins
+            * HistoricalDataConstants.TIME_SECS_PER_MIN
+            * HistoricalDataConstants.TIME_MS_PER_SEC;
   }
 
   /**
@@ -249,6 +268,7 @@ public class HistoricalDataQueueManager {
   private static long getStartTime(boolean startNewTimeTracker, String readFile, String writeFile)
       throws IOException, CorruptedTimeTrackerException, TimeTrackerUnrecoverableException {
     long startTimeTrackerMsLong = 0;
+    long enforceMaxGetsBehindMs = System.currentTimeMillis() - maxQueueGetsBehindMs;
     String startTimeTrackerMs;
     if (startNewTimeTracker) {
       startTimeTrackerMsLong = writeNewTime(writeFile);
@@ -259,6 +279,10 @@ public class HistoricalDataQueueManager {
       } catch (Exception e) {
         initTimeTrackerFiles();
       }
+    }
+    /* Here we enforce the cannot get behind maxQueueGetsBehind value. */
+    if (enforceMaxGetsBehindMs > startTimeTrackerMsLong) {
+      startTimeTrackerMsLong = enforceMaxGetsBehindMs;
     }
     return startTimeTrackerMsLong;
   }
