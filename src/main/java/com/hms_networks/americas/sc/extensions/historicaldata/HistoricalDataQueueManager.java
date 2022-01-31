@@ -2,6 +2,7 @@ package com.hms_networks.americas.sc.extensions.historicaldata;
 
 import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,6 +47,9 @@ public class HistoricalDataQueueManager {
           + HistoricalDataConstants.QUEUE_TIME_FILE_2_NAME
           + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
 
+  /** Maximum amount of time that the historical Fifo can get behind in milliseconds. */
+  private static long maxQueueGetsBehindMs = HistoricalDataConstants.MAX_HIST_FIFO_GET_BEHIND_MS;
+
   /**
    * Get the current configured FIFO queue time span in milliseconds.
    *
@@ -80,6 +84,19 @@ public class HistoricalDataQueueManager {
               + ".");
     }
     queueFifoTimeSpanMins = timeSpanMins;
+  }
+
+  /**
+   * Set the maximum amount the Historical FIFO queue can get behind in minutes.
+   *
+   * @param timeMins new FIFO queue time span in minutes
+   * @throws IllegalArgumentException if parameter is not greater than 0
+   */
+  public static synchronized void setQueueMaxBehindMins(long timeMins) {
+    if (timeMins <= 0) {
+      throw new IllegalArgumentException("The parameter passed must be greater than 0.");
+    }
+    maxQueueGetsBehindMs = SCTimeUnit.MINUTES.toMillis(timeMins);
   }
 
   /**
@@ -242,6 +259,7 @@ public class HistoricalDataQueueManager {
   private static long getStartTime(boolean startNewTimeTracker, String readFile, String writeFile)
       throws IOException, CorruptedTimeTrackerException, TimeTrackerUnrecoverableException {
     long startTimeTrackerMsLong = 0;
+    long enforceMaxGetsBehindMs = System.currentTimeMillis() - maxQueueGetsBehindMs;
     String startTimeTrackerMs;
     if (startNewTimeTracker) {
       startTimeTrackerMsLong = writeNewTime(writeFile);
@@ -252,6 +270,10 @@ public class HistoricalDataQueueManager {
       } catch (Exception e) {
         initTimeTrackerFiles();
       }
+    }
+    /* Here we enforce the cannot get behind maxQueueGetsBehind value. */
+    if (enforceMaxGetsBehindMs > startTimeTrackerMsLong) {
+      startTimeTrackerMsLong = enforceMaxGetsBehindMs;
     }
     return startTimeTrackerMsLong;
   }

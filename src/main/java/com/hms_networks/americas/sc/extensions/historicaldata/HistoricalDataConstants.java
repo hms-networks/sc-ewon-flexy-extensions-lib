@@ -1,5 +1,7 @@
 package com.hms_networks.americas.sc.extensions.historicaldata;
 
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
+
 /**
  * Class for storing constants used in the queueing package.
  *
@@ -55,4 +57,7 @@ class HistoricalDataConstants {
 
   /** Minimum amount of Historical FIFO queue that can be set by library users. */
   static final long MIN_QUEUE_SPAN_MINS = 1;
+
+  /** Default maximum amount of time Historical FIFO can get behind. */
+  static final long MAX_HIST_FIFO_GET_BEHIND_MS = SCTimeUnit.HOURS.toMillis(12);
 }
