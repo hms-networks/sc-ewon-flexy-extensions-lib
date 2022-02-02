@@ -767,6 +767,7 @@ public class JSONArray {
    * @return a printable, displayable, transmittable representation of the object, beginning with
    *     <code>[</code>&nbsp;<small>(left bracket)</small> and ending with <code>]</code>
    *     &nbsp;<small>(right bracket)</small>.
+   * @throws JSONException for JSON serializing Exceptions
    */
   public String toString(int indentFactor) throws JSONException {
     return toString(indentFactor, 0);
@@ -779,6 +780,7 @@ public class JSONArray {
    * @param indentFactor The number of spaces to add to each level of indentation.
    * @param indent The indention of the top level.
    * @return a printable, displayable, transmittable representation of the array.
+   * @throws JSONException for JSON parsing Exceptions
    */
   String toString(int indentFactor, int indent) throws JSONException {
     int len = length();
@@ -816,7 +818,9 @@ public class JSONArray {
    *
    * <p>Warning: This method assumes that the data structure is acyclical.
    *
+   * @param writer java.io.Writer
    * @return The writer.
+   * @throws JSONException for JSON Exception
    */
   public Writer write(Writer writer) throws JSONException {
     try {

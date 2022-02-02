@@ -87,6 +87,7 @@ public class SCHttpUtility {
    * @throws SCHttpAuthException if an authentication error occurs during the request
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
    */
   private static String httpRequest(String url, String header, String body, String method)
       throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
@@ -176,6 +177,7 @@ public class SCHttpUtility {
    * @throws SCHttpAuthException if an authentication error occurs during the request
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return response string
    */
   public static String httpPost(String url, String header, String body)
       throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
@@ -195,6 +197,7 @@ public class SCHttpUtility {
    * @throws SCHttpAuthException if an authentication error occurs during the request
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
    */
   public static String httpGet(String url, String header, String body)
       throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,

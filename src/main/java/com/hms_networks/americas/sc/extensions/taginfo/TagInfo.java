@@ -94,6 +94,7 @@ public class TagInfo {
    * @param description tag description
    * @param historicalLogEnabled boolean if historical logging enabled
    * @param realTimeLogEnabled boolean if realtime logging enabled
+   * @param unit tag unit
    * @param tagGroups list of tag groups
    * @param type tag type
    */
