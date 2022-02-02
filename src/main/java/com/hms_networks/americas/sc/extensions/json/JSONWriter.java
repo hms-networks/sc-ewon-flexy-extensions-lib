@@ -79,7 +79,11 @@ public class JSONWriter {
   /** The writer that will receive the output. */
   protected Writer writer;
 
-  /** Make a fresh JSONWriter. It can be used to build one JSON text. */
+  /**
+   * Make a fresh JSONWriter. It can be used to build one JSON text.
+   *
+   * @param w a java.io.Writer
+   */
   public JSONWriter(Writer w) {
     this.comma = false;
     this.mode = 'i';
@@ -264,6 +268,7 @@ public class JSONWriter {
    *
    * @param b A boolean.
    * @return this
+   * @throws JSONException for JSON related Exceptions
    */
   public JSONWriter value(boolean b) throws JSONException {
     return this.append(b ? "true" : "false");
@@ -288,6 +293,7 @@ public class JSONWriter {
    *
    * @param l A long.
    * @return this
+   * @throws JSONException for JSON related exceptions
    */
   public JSONWriter value(long l) throws JSONException {
     return this.append(Long.toString(l));

@@ -23,6 +23,7 @@ public class DataPointIntegerMappedString extends DataPointString {
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
+   * @param tagUnit data point tag unit
    * @param value data point value
    * @param time data point timestamp
    * @param quality data point quality
@@ -45,6 +46,7 @@ public class DataPointIntegerMappedString extends DataPointString {
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
+   * @param tagUnit data point tag Unit
    * @param value data point value
    * @param time data point timestamp
    * @param enumMapping integer enumerated {@link String} mapping(s)

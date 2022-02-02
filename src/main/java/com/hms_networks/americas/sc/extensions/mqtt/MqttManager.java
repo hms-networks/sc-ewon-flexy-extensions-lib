@@ -304,6 +304,7 @@ public abstract class MqttManager extends MqttClient {
    *
    * @param topics MQTT topics to subscribe to
    * @param qosLevel QOS level for subscription
+   * @throws EWException for Flexy related exceptions
    */
   public void subscribeMultiple(String[] topics, int qosLevel) throws EWException {
     // Subscribe to each topic in the specified list of topics

@@ -27,7 +27,7 @@ public class SCSystemInfo {
    * Gets the configured name for the Ewon.
    *
    * @return The Ewon's name
-   * @throws EWException
+   * @throws EWException for Flexy specific Exception
    */
   public static String getEwonName() throws EWException {
     SysControlBlock SCB = new SysControlBlock(SysControlBlock.SYS);
@@ -38,7 +38,7 @@ public class SCSystemInfo {
    * Gets the firmware version string in "MAJOR.MINOR" format.
    *
    * @return Firmware version in "MAJOR.MINOR" format. (Ex: "14.4")
-   * @throws EWException
+   * @throws EWException for Flexy specific Exception
    */
   public static String getFirmwareString() throws EWException {
     SysControlBlock SCB = new SysControlBlock(SysControlBlock.INF);
@@ -49,7 +49,7 @@ public class SCSystemInfo {
    * Gets the version of Java running on the Ewon.
    *
    * @return Java version (Ex: "1.4.4")
-   * @throws EWException
+   * @throws EWException for Flexy specific Exception
    */
   public static String getJavaVersionString() throws EWException {
     SysControlBlock SCB = new SysControlBlock(SysControlBlock.INF);

@@ -561,7 +561,12 @@ public class JSONObject {
     return ja.length() == 0 ? null : ja;
   }
 
-  /** Shave off trailing zeros and decimal point, if possible. */
+  /**
+   * Shave off trailing zeros and decimal point, if possible.
+   *
+   * @param s input string
+   * @return shaved off string.
+   */
   public static String trimNumber(String s) {
     if (s.indexOf('.') > 0 && s.indexOf('e') < 0 && s.indexOf('E') < 0) {
       while (s.endsWith("0")) {
@@ -633,6 +638,7 @@ public class JSONObject {
    * @param key A key string.
    * @param value A Collection value.
    * @return this.
+   * @throws JSONException for JSON related Exceptions
    */
   public JSONObject put(String key, Vector value) throws JSONException {
     put(key, new com.hms_networks.americas.sc.extensions.json.JSONArray(value));
@@ -1221,7 +1227,9 @@ public class JSONObject {
    *
    * <p>Warning: This method assumes that the data structure is acyclical.
    *
+   * @param writer java.io.Writer
    * @return The writer.
+   * @throws JSONException for JSON Exception
    */
   public Writer write(Writer writer) throws JSONException {
     try {

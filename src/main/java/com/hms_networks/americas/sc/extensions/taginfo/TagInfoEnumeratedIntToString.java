@@ -22,6 +22,7 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
    * @param name tag name
    * @param description tag description
    * @param historicalLogEnabled boolean if historical logging enabled
+   * @param realTimeLogEnabled boolean if real-time logging enabled
    * @param isInGroupA boolean if tag in group A
    * @param isInGroupB boolean if tag in group B
    * @param isInGroupC boolean if tag in group C
@@ -88,6 +89,7 @@ public class TagInfoEnumeratedIntToString extends TagInfo {
    * @param name tag name
    * @param description tag description
    * @param historicalLogEnabled boolean if historical logging enabled
+   * @param realTimeLogEnabled boolean if real-time logging enabled
    * @param tagGroups list of tag groups
    * @param type tag type
    * @param unit tag unit

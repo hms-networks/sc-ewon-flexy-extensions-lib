@@ -18,6 +18,7 @@ public class DataPointBoolean extends DataPoint {
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
+   * @param tagUnit data point tag unit
    * @param value data point value
    * @param time data point timestamp
    * @param quality data point quality
@@ -37,6 +38,7 @@ public class DataPointBoolean extends DataPoint {
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
+   * @param tagUnit data point unit
    * @param value data point value
    * @param time data point timestamp
    */

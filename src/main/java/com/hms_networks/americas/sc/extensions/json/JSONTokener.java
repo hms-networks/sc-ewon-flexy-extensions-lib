@@ -151,6 +151,7 @@ public class JSONTokener {
    * hash).
    *
    * @return A character, or 0 if there are no more characters.
+   * @throws JSONException for JSON related Exceptions
    */
   public char nextClean() throws JSONException {
     for (; ; ) {
