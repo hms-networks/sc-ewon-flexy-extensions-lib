@@ -364,6 +364,8 @@ public class HistoricalDataManager {
       // Read next line before looping again
       line = reader.readLine();
     }
+    reader.close();
+
     return dataPoints;
   }
 
