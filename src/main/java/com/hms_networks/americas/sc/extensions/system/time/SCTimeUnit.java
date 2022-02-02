@@ -100,6 +100,7 @@ public class SCTimeUnit {
   /**
    * Converts the specified time to milliseconds.
    *
+   * @param time in units specified by millisecondsInUnit
    * @return specified time to milliseconds
    */
   public long toMillis(long time) {
@@ -110,6 +111,7 @@ public class SCTimeUnit {
   /**
    * Converts the specified time to seconds.
    *
+   * @param time time in units of millisecondsInUnit
    * @return specified time to seconds
    */
   public long toSeconds(long time) {
@@ -120,6 +122,7 @@ public class SCTimeUnit {
   /**
    * Converts the specified time to minutes.
    *
+   * @param time specified time in milliseconds
    * @return specified time to minutes
    */
   public long toMinutes(long time) {
@@ -130,6 +133,7 @@ public class SCTimeUnit {
   /**
    * Converts the specified time to hours.
    *
+   * @param time specified time in milliseconds
    * @return specified time to hours
    */
   public long toHours(long time) {
@@ -140,6 +144,7 @@ public class SCTimeUnit {
   /**
    * Converts the specified time to days.
    *
+   * @param time specified time in milliseconds
    * @return specified time to days
    */
   public long toDays(long time) {

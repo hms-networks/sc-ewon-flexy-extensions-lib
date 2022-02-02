@@ -37,6 +37,7 @@ public abstract class ConfigFile {
    * Creates a configuration JSON object containing fields and their default values.
    *
    * @return configuration object with defaults
+   * @throws JSONException for errors parsing JSON
    */
   public abstract JSONObject getDefaultConfigurationObject() throws JSONException;
 

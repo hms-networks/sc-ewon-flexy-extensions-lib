@@ -30,6 +30,7 @@ public abstract class AutomaticRetryCode {
    * #codeToRetry()} method and retry or fail based on the resulting {@link AutomaticRetryState}.
    *
    * @return automatic retry code result
+   * @throws InterruptedException should retry be interrupted
    */
   public AutomaticRetryResult run() throws InterruptedException {
     // Loop until finished or critical error
