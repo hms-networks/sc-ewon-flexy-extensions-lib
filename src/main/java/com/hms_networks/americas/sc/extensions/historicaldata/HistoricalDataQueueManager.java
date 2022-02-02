@@ -95,7 +95,7 @@ public class HistoricalDataQueueManager {
   /**
    * Set the maximum amount the Historical FIFO queue can get behind in minutes.
    *
-   * @param timeSpanMins new FIFO queue time span in minutes
+   * @param timeMins new FIFO queue time span in minutes
    * @throws IllegalArgumentException if parameter is negative
    */
   public static synchronized void setQueueMaxBehindMins(long timeMins) {
@@ -363,24 +363,17 @@ public class HistoricalDataQueueManager {
     final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
 
     // Run standard EBD export call (int, float, ...)
-    final String ebdFileName =
-        HistoricalDataConstants.QUEUE_FILE_FOLDER
-            + "/"
-            + HistoricalDataConstants.QUEUE_EBD_FILE_NAME
-            + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
     boolean stringHistorical = false;
-    HistoricalDataManager.exportHistoricalToFile(
-        ebdStartTime,
-        ebdEndTime,
-        ebdFileName,
-        includeTagGroupA,
-        includeTagGroupB,
-        includeTagGroupC,
-        includeTagGroupD,
-        stringHistorical);
 
-    // Parse standard EBD export call
-    queueData = HistoricalDataManager.parseHistoricalFile(ebdFileName);
+    queueData =
+        HistoricalDataManager.readHistoricalFifo(
+            ebdStartTime,
+            ebdEndTime,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            stringHistorical);
 
     // Run string EBD export call if enabled
     if (stringHistoryEnabled) {

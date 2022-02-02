@@ -58,4 +58,10 @@ class HistoricalDataConstants {
 
   /** Default maximum amount of time Historical FIFO can get behind. 48hours in ms. */
   static final long MAX_HIST_FIFO_GET_BEHIND_MS = 4147200000L;
+
+  /** Default thread sleep time waiting for EBD in ms. */
+  static final int THREAD_SLEEP_MS = 5;
+
+  /** Maximum amount of time that EBD call should wait before timing out. */
+  static final long MAX_EBD_WAIT = 15000;
 }

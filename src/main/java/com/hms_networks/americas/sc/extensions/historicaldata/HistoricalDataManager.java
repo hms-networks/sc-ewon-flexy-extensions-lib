@@ -17,9 +17,12 @@ import com.hms_networks.americas.sc.extensions.taginfo.TagInfoEnumeratedIntToStr
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Class to manage retrieving tag information and historical logs using export block descriptors.
@@ -55,6 +58,192 @@ public class HistoricalDataManager {
         includeTagGroupC,
         includeTagGroupD,
         stringHistorical);
+  }
+
+  /**
+   * Prepare Read Historical Log Export Bloc Descriptor (EBD) string.
+   *
+   * @param startTime start time of export
+   * @param endTime end time of export
+   * @param includeTagGroupA include tag group A
+   * @param includeTagGroupB include tag group B
+   * @param includeTagGroupC include tag group C
+   * @param includeTagGroupD include tag group D
+   * @param stringHistorical export string historical logs if true
+   * @return EBD string
+   */
+  private static String prepareHistoricalFifoReadEBDString(
+      String startTime,
+      String endTime,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      boolean stringHistorical) {
+
+    // Check for valid group selection
+    if (!includeTagGroupA && !includeTagGroupB && !includeTagGroupC && !includeTagGroupD) {
+      throw new IllegalArgumentException(
+          "Cannot generate historical logs with no tag groups selected.");
+    }
+
+    // Build string of tag groups for filter type
+    String tagGroupFilterStr = "";
+    if (includeTagGroupA) {
+      tagGroupFilterStr += "A";
+    }
+    if (includeTagGroupB) {
+      tagGroupFilterStr += "B";
+    }
+    if (includeTagGroupC) {
+      tagGroupFilterStr += "C";
+    }
+    if (includeTagGroupD) {
+      tagGroupFilterStr += "D";
+    }
+
+    // Get EBD data type
+    String ebdDataType;
+    if (stringHistorical) {
+      ebdDataType = "HS";
+    } else {
+      ebdDataType = "HL";
+    }
+
+    /*
+     * Build EBD string with parameters
+     * dt[ebdDataType]: data type, value specified in string ebdDataType
+     * ftT: file type, text
+     * startTime: start time for data
+     * endTime: end time for data
+     * flABCD: filter type, specified tag groups
+     */
+    return "$dt"
+        + ebdDataType
+        + "$ftT$st"
+        + startTime
+        + "$et"
+        + endTime
+        + "$fl"
+        + tagGroupFilterStr;
+  }
+
+  /**
+   * Parses Export Block Descriptor Historical Log response into dataPoints. Note: this function
+   * only handles Historical List responses
+   *
+   * @param exporter EBD Exporter
+   * @return dataPoints
+   * @throws IOException for parsing Exceptions
+   * @throws JSONException for JSON parsing Exceptions
+   */
+  private static ArrayList parseEBDHistoricalLogExportResponse(Exporter exporter)
+      throws IOException, JSONException {
+    final DataInputStream dataStream = new DataInputStream(exporter);
+    final BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
+
+    // Create line counter and variable to store current line
+    int lineCount = 0;
+    String line = reader.readLine();
+    // Loop through lines in file until end and store data points
+    ArrayList dataPoints = new ArrayList();
+    while (line != null) {
+
+      // Only parse lines 1 and greater, skip header
+      if (lineCount > 0) {
+        // Parse line
+        DataPoint lineDataPoint = parseHistoricalFileLine(line);
+
+        if (lineDataPoint != null) {
+          dataPoints.add(lineDataPoint);
+        }
+      }
+
+      // Increment line count
+      lineCount++;
+      // Read next line before looping again
+      line = reader.readLine();
+    }
+    reader.close();
+    exporter.close();
+    return dataPoints;
+  }
+
+  /**
+   * Executes EBD call, waits for data return.
+   *
+   * @param ebdStr EBD string
+   * @return EBD Exporter - caller must close exporter
+   * @throws TimeoutException when there is no response before timeout period
+   * @throws IOException when there is an Exporter Exception
+   */
+  public static Exporter ExecuteEBDCall(String ebdStr) throws IOException, TimeoutException {
+    final long start = System.currentTimeMillis();
+    final Exporter exporter = new Exporter(ebdStr);
+    int available = exporter.available();
+    // check on data availability
+    while (available == 0) {
+      // sleep
+      try {
+        Thread.sleep(HistoricalDataConstants.THREAD_SLEEP_MS);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      // check for timeout
+      if (System.currentTimeMillis() - start > HistoricalDataConstants.MAX_EBD_WAIT) {
+        exporter.close();
+        throw new TimeoutException("could not wait any longer for EBD call");
+      }
+
+      // check for data available
+      available = exporter.available();
+    }
+    return exporter;
+  }
+
+  /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns
+   * Datapoints.
+   *
+   * @param startTime start time of export
+   * @param endTime end time of export
+   * @param includeTagGroupA include tag group A
+   * @param includeTagGroupB include tag group B
+   * @param includeTagGroupC include tag group C
+   * @param includeTagGroupD include tag group D
+   * @param stringHistorical export string historical logs if true
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   */
+  public static ArrayList readHistoricalFifo(
+      String startTime,
+      String endTime,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      boolean stringHistorical)
+      throws IOException, JSONException {
+
+    // create EBD string
+    final String ebdStr =
+        prepareHistoricalFifoReadEBDString(
+            startTime,
+            endTime,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            stringHistorical);
+
+    // Execute EBD call and parse results
+    try {
+      final Exporter exporter = ExecuteEBDCall(ebdStr);
+      return parseEBDHistoricalLogExportResponse(exporter);
+    } catch (TimeoutException e) {
+      return new ArrayList();
+    }
   }
 
   /**
