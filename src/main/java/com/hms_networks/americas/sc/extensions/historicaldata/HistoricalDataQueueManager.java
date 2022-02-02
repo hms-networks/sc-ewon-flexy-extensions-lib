@@ -178,10 +178,11 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException if the current time tracking file is corrupted
    * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
    */
   public static synchronized ArrayList getFifoNextSpanDataAllGroups(boolean startNewTimeTracker)
       throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException {
+          JSONException, EbdTimeoutException {
     final boolean includeTagGroupA = true;
     final boolean includeTagGroupB = true;
     final boolean includeTagGroupC = true;
@@ -309,6 +310,7 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
    * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException when EBD call times out
    */
   public static synchronized ArrayList getFifoNextSpanData(
       boolean startNewTimeTracker,
@@ -317,7 +319,7 @@ public class HistoricalDataQueueManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD)
       throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException {
+          JSONException, EbdTimeoutException {
 
     if (!hasInitTime) {
       initTimeTrackerFiles();
@@ -354,24 +356,17 @@ public class HistoricalDataQueueManager {
     final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
 
     // Run standard EBD export call (int, float, ...)
-    final String ebdFileName =
-        HistoricalDataConstants.QUEUE_FILE_FOLDER
-            + "/"
-            + HistoricalDataConstants.QUEUE_EBD_FILE_NAME
-            + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
     boolean stringHistorical = false;
-    HistoricalDataManager.exportHistoricalToFile(
-        ebdStartTime,
-        ebdEndTime,
-        ebdFileName,
-        includeTagGroupA,
-        includeTagGroupB,
-        includeTagGroupC,
-        includeTagGroupD,
-        stringHistorical);
 
-    // Parse standard EBD export call
-    queueData = HistoricalDataManager.parseHistoricalFile(ebdFileName);
+    queueData =
+        HistoricalDataManager.readHistoricalFifo(
+            ebdStartTime,
+            ebdEndTime,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            stringHistorical);
 
     // Run string EBD export call if enabled
     if (stringHistoryEnabled) {

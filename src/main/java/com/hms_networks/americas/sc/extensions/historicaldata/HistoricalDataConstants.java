@@ -60,4 +60,10 @@ class HistoricalDataConstants {
 
   /** Default maximum amount of time Historical FIFO can get behind. */
   static final long MAX_HIST_FIFO_GET_BEHIND_MS = SCTimeUnit.HOURS.toMillis(12);
+
+  /** Default thread sleep time waiting for EBD in ms. */
+  static final int DEFAULT_EBD_THREAD_SLEEP_MS = 5;
+
+  /** Maximum amount of time that EBD call should wait in milliseconds before timing out. */
+  static final long MAX_EBD_WAIT_MS = 15000;
 }
