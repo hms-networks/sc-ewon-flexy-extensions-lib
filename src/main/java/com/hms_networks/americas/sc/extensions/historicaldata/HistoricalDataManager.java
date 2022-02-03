@@ -9,6 +9,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointInteger;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointIntegerMappedString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
+import com.hms_networks.americas.sc.extensions.eventfile.EventFile;
 import com.hms_networks.americas.sc.extensions.fileutils.FileConstants;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
@@ -136,9 +137,11 @@ public class HistoricalDataManager {
    * @return dataPoints
    * @throws IOException for parsing Exceptions
    * @throws JSONException for JSON parsing Exceptions
+   * @throws TimeoutException timeout for reading event file
+   * @throws CircularizedFileException when event log indicates circularized event
    */
   private static ArrayList parseEBDHistoricalLogExportResponse(Exporter exporter)
-      throws IOException, JSONException {
+      throws IOException, JSONException, TimeoutException, CircularizedFileException {
     final DataInputStream dataStream = new DataInputStream(exporter);
     final BufferedReader reader = new BufferedReader(new InputStreamReader(dataStream));
 
@@ -166,6 +169,11 @@ public class HistoricalDataManager {
     }
     reader.close();
     exporter.close();
+
+    // Check for Circularized Event
+    if (EventFile.DidFileCircularizedEventOccur()) {
+      throw new CircularizedFileException("A circularized event was found in the event logs.");
+    }
     return dataPoints;
   }
 
@@ -215,6 +223,7 @@ public class HistoricalDataManager {
    * @return data points from response
    * @throws IOException if export block descriptor fails
    * @throws JSONException if unable to parse int to string enumeration file
+   * @throws CircularizedFileException if circularized file event is found
    */
   public static ArrayList readHistoricalFifo(
       String startTime,
@@ -224,7 +233,7 @@ public class HistoricalDataManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD,
       boolean stringHistorical)
-      throws IOException, JSONException {
+      throws IOException, JSONException, CircularizedFileException {
 
     // create EBD string
     final String ebdStr =
