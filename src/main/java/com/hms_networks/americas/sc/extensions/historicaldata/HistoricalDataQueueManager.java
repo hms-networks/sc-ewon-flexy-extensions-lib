@@ -443,4 +443,27 @@ public class HistoricalDataQueueManager {
 
     isFile1CurrTimeTrackerFile = !isFile1CurrTimeTrackerFile;
   }
+
+  /**
+   * Advance Historical FIFO tracking time. The intention is for exception handlers to make the
+   * decision to advance time.
+   *
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
+   */
+  public static void advanceTrackingStartTime()
+      throws CorruptedTimeTrackerException, IOException, TimeTrackerUnrecoverableException {
+
+    long startTimeTrackerMsLong = getTrackingStartTime(false);
+
+    /*
+     * Calculate end time from start time + time span. Use current time if calculated
+     * end time is in the future.
+     */
+    long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
+    long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
+
+    updateTrackingStartTime(endTimeTrackerMsLong);
+  }
 }
