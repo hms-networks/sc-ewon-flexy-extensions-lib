@@ -178,11 +178,12 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException if the current time tracking file is corrupted
    * @throws JSONException if unable to parse int to string enumeration file
-   * @throws EbdTimeoutException for EBD timeout
+   * @throws CircularizedFileException if circularized file exception was found
+   * @throws EbdTimeoutException for EBD timeouts
    */
   public static synchronized ArrayList getFifoNextSpanDataAllGroups(boolean startNewTimeTracker)
       throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException, EbdTimeoutException {
+          JSONException, CircularizedFileException, EbdTimeoutException {
     final boolean includeTagGroupA = true;
     final boolean includeTagGroupB = true;
     final boolean includeTagGroupC = true;
@@ -311,6 +312,7 @@ public class HistoricalDataQueueManager {
    * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
    * @throws JSONException if unable to parse int to string enumeration file
    * @throws EbdTimeoutException when EBD call times out
+   * @throws CircularizedFileException if circularized file exception was found
    */
   public static synchronized ArrayList getFifoNextSpanData(
       boolean startNewTimeTracker,
@@ -319,7 +321,7 @@ public class HistoricalDataQueueManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD)
       throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException, EbdTimeoutException {
+          JSONException, EbdTimeoutException, CircularizedFileException {
 
     if (!hasInitTime) {
       initTimeTrackerFiles();
