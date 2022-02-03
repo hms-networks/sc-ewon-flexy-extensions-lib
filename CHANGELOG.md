@@ -1,5 +1,17 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.6.0
+### Features
+- Added new method setQueueFifoTimeSpanMins
+- Add maximum duration that historical fifo can get behind (48 hours)
+- Make maximum duration configurable by library user 
+- Changed historical log read to stream from file based 
+- Add check and exception fo circularized file errors
+- Add function for library user to advance historical tracking time
+- Add eventfile module for reading the Flexy event file 
+### Bug Fixes
+- Fix bug where historical data log is circularized
+
 ## Version 1.5.0
 ### Features
 - Add milliseconds to days, hours, minutes, seconds utility method
