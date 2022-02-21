@@ -28,6 +28,9 @@ package com.hms_networks.americas.sc.extensions.util;
  * <p>Change Log:
  *
  * <ul>
+ *   <li>v2.3.7_J4 - Add support for Java 4 by removing all instances of <code>String.format()
+ *       </code>, <code>@Override</code>, and type parameters. (Author: HMS Networks, MU Americas
+ *       Solution Center)
  *   <li>v2.3.7 - Fixed subtle bug when base 64 input stream contained the value 01111111, which is
  *       an invalid base 64 character but should not throw an ArrayIndexOutOfBoundsException either.
  *       Led to discovery of mishandling (or potential for better handling) of other bad input
@@ -125,7 +128,9 @@ package com.hms_networks.americas.sc.extensions.util;
  *
  * @author Robert Harder
  * @author rob@iharder.net
- * @version 2.3.7
+ * @author HMS Networks, MU Americas Solution Center
+ * @version 2.3.7_J4
+ * @since 1.7.0
  */
 public class Base64 {
 
@@ -1478,9 +1483,12 @@ public class Base64 {
 
     if (off + len > source.length) {
       throw new IllegalArgumentException(
-          String.format(
-              "Cannot have offset of %d and length of %d with array of length %d",
-              off, len, source.length));
+          "Cannot have offset of "
+              + off
+              + " and length of "
+              + len
+              + " with array of length "
+              + source.length);
     } // end if: off < 0
 
     // Compress?
@@ -1611,15 +1619,19 @@ public class Base64 {
     } // end if
     if (srcOffset < 0 || srcOffset + 3 >= source.length) {
       throw new IllegalArgumentException(
-          String.format(
-              "Source array with length %d cannot have offset of %d and still process four bytes.",
-              source.length, srcOffset));
+          "Source array with length "
+              + source.length
+              + " cannot have offset of "
+              + srcOffset
+              + " and still process four bytes.");
     } // end if
     if (destOffset < 0 || destOffset + 2 >= destination.length) {
       throw new IllegalArgumentException(
-          String.format(
-              "Destination array with length %d cannot have offset of %d and still store three bytes.",
-              destination.length, destOffset));
+          "Destination array with length "
+              + destination.length
+              + " cannot have offset of "
+              + destOffset
+              + " and still store three bytes.");
     } // end if
 
     byte[] DECODABET = getDecodabet(options);
@@ -1720,9 +1732,13 @@ public class Base64 {
     } // end if
     if (off < 0 || off + len > source.length) {
       throw new IllegalArgumentException(
-          String.format(
-              "Source array with length %d cannot have offset of %d and process %d bytes.",
-              source.length, off, len));
+          "Source array with length "
+              + source.length
+              + " cannot have offset of "
+              + off
+              + " and process "
+              + len
+              + " bytes.");
     } // end if
 
     if (len == 0) {
@@ -1768,9 +1784,10 @@ public class Base64 {
       else {
         // There's a bad input character in the Base64 stream.
         throw new java.io.IOException(
-            String.format(
-                "Bad Base64 input character decimal %d in array position %d",
-                ((int) source[i]) & 0xFF, i));
+            "Bad Base64 input character decimal "
+                + (((int) source[i]) & 0xFF)
+                + " in array position "
+                + i);
       } // end else:
     } // each input character
 
@@ -1926,8 +1943,7 @@ public class Base64 {
       else {
         ois =
             new java.io.ObjectInputStream(bais) {
-              @Override
-              public Class<?> resolveClass(java.io.ObjectStreamClass streamClass)
+              public Class resolveClass(java.io.ObjectStreamClass streamClass)
                   throws java.io.IOException, ClassNotFoundException {
                 Class c = Class.forName(streamClass.getName(), false, loader);
                 if (c == null) {
@@ -2108,7 +2124,7 @@ public class Base64 {
               [Math.max(
                   (int) (file.length() * 1.4 + 1),
                   40)]; // Need max() for math on small files (v2.2.1); Need +1 for a few corner
-                        // cases (v2.3.5)
+      // cases (v2.3.5)
       int length = 0;
       int numBytes = 0;
 
@@ -2232,7 +2248,7 @@ public class Base64 {
      * <pre>
      *   ENCODE or DECODE: Encode or Decode as data is read.
      *   DO_BREAK_LINES: break lines at 76 characters
-     *     (only meaningful when encoding)</i>
+     *     (only meaningful when encoding)
      * </pre>
      *
      * <p>Example: <code>new Base64.InputStream( in, Base64.DECODE )</code>
@@ -2263,7 +2279,6 @@ public class Base64 {
      * @return next byte
      * @since 1.3
      */
-    @Override
     public int read() throws java.io.IOException {
 
       // Do we need to get data?
@@ -2369,7 +2384,6 @@ public class Base64 {
      * @return bytes read into array or -1 if end of stream is encountered.
      * @since 1.3
      */
-    @Override
     public int read(byte[] dest, int off, int len) throws java.io.IOException {
       int i;
       int b;
@@ -2428,7 +2442,7 @@ public class Base64 {
      * <pre>
      *   ENCODE or DECODE: Encode or Decode as data is read.
      *   DO_BREAK_LINES: don't break lines at 76 characters
-     *     (only meaningful when encoding)</i>
+     *     (only meaningful when encoding)
      * </pre>
      *
      * <p>Example: <code>new Base64.OutputStream( out, Base64.ENCODE )</code>
@@ -2462,7 +2476,6 @@ public class Base64 {
      * @param theByte the byte to write
      * @since 1.3
      */
-    @Override
     public void write(int theByte) throws java.io.IOException {
       // Encoding suspended?
       if (suspendEncoding) {
@@ -2513,7 +2526,6 @@ public class Base64 {
      * @param len max number of bytes to read into array
      * @since 1.3
      */
-    @Override
     public void write(byte[] theBytes, int off, int len) throws java.io.IOException {
       // Encoding suspended?
       if (suspendEncoding) {
@@ -2548,7 +2560,6 @@ public class Base64 {
      *
      * @since 1.3
      */
-    @Override
     public void close() throws java.io.IOException {
       // 1. Ensure that pending characters are written
       flushBase64();
