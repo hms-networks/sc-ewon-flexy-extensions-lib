@@ -130,7 +130,7 @@ package com.hms_networks.americas.sc.extensions.util;
  * @author rob@iharder.net
  * @author HMS Networks, MU Americas Solution Center
  * @version 2.3.7_J4
- * @since 1.7.0
+ * @since 1.7.0-pre1
  */
 public class Base64 {
 

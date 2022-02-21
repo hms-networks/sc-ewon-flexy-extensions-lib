@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.7.0-pre1
+### Features
+- Added Base64 utility class from public domain
+### Bug Fixes
+- N/A
+
 ## Version 1.6.0
 ### Features
 - Added new method setQueueFifoTimeSpanMins
