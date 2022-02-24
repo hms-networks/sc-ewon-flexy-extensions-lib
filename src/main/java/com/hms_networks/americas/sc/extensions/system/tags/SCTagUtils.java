@@ -31,6 +31,43 @@ public class SCTagUtils {
   /** The value used for the tag do-delete item which indicates that the tag should be deleted. */
   private static final String SCB_TAG_DO_DELETE_TRUE_VALUE = "1";
 
+  /** The name of the MEM IO server. */
+  private static final String SCB_MEM_TAG_IO_SERVER_NAME = "MEM";
+
+  /** The topic name used for retaining values of a MEM tag persistently. */
+  private static final String SCB_MEM_TAG_TOPIC_NAME_RETAIN = "RET";
+
+  /**
+   * Creates a new tag on the Ewon Flexy with the specified tag name and tag type using the MEM IO
+   * server and topic name for retaining its value persistently.
+   *
+   * @param tagName name of tag to add
+   * @param tagType type of tag to add (0: boolean, 1: float, 2: integer, 3: dword, 6: string)
+   * @throws Exception if unable to create tag with specified information
+   */
+  public static void createPersistentMemTag(String tagName, int tagType) throws Exception {
+    createTag(tagName, null, SCB_MEM_TAG_IO_SERVER_NAME, SCB_MEM_TAG_TOPIC_NAME_RETAIN, tagType);
+  }
+
+  /**
+   * Creates a new tag on the Ewon Flexy with the specified tag name, tag description, and tag type
+   * using the MEM IO server and topic name for retaining its value persistently.
+   *
+   * @param tagName name of tag to add
+   * @param tagDescription description of tag to add
+   * @param tagType type of tag to add (0: boolean, 1: float, 2: integer, 3: dword, 6: string)
+   * @throws Exception if unable to create tag with specified information
+   */
+  public static void createPersistentMemTag(String tagName, String tagDescription, int tagType)
+      throws Exception {
+    createTag(
+        tagName,
+        tagDescription,
+        SCB_MEM_TAG_IO_SERVER_NAME,
+        SCB_MEM_TAG_TOPIC_NAME_RETAIN,
+        tagType);
+  }
+
   /**
    * Creates a new tag on the Ewon Flexy with the specified tag name, tag IO server name, and tag
    * type.
