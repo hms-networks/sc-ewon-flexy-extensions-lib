@@ -1,5 +1,12 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.8.0
+### Features
+- Added support for topic name in tag creation
+  - Added helper methods for persistent MEM tag creation
+### Bug Fixes
+- N/A
+
 ## Version 1.7.0
 ### Features
 - Added Base64 utility class from public domain
