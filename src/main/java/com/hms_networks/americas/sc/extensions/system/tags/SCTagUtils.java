@@ -22,6 +22,9 @@ public class SCTagUtils {
   /** Key for accessing/manipulating the tag type item in a system control block. */
   private static final String SCB_TAG_TYPE_KEY = "Type";
 
+  /** Key for accessing/manipulating the tag topic name item in a system control block. */
+  private static final String SCB_TAG_TOPIC_NAME_KEY = "TopicName";
+
   /** Key for accessing/manipulating the tag do-delete item in a system control block. */
   private static final String SCB_TAG_DO_DELETE_KEY = "DoDelete";
 
@@ -38,7 +41,7 @@ public class SCTagUtils {
    * @throws Exception if unable to create tag with specified information
    */
   public static void createTag(String tagName, String ioServerName, int tagType) throws Exception {
-    createTag(tagName, null, ioServerName, tagType);
+    createTag(tagName, null, ioServerName, null, tagType);
   }
 
   /**
@@ -53,6 +56,23 @@ public class SCTagUtils {
    */
   public static void createTag(
       String tagName, String tagDescription, String ioServerName, int tagType) throws Exception {
+    createTag(tagName, tagDescription, ioServerName, null, tagType);
+  }
+
+  /**
+   * Creates a new tag on the Ewon Flexy with the specified tag name, tag description, tag IO server
+   * name, and tag type.
+   *
+   * @param tagName name of tag to add
+   * @param tagDescription description of tag to add
+   * @param ioServerName IO server name of tag to add
+   * @param topicName topic name of tag to add
+   * @param tagType type of tag to add (0: boolean, 1: float, 2: integer, 3: dword, 6: string)
+   * @throws Exception if unable to create tag with specified information
+   */
+  public static void createTag(
+      String tagName, String tagDescription, String ioServerName, String topicName, int tagType)
+      throws Exception {
     // Create tag system control block
     SysControlBlock tagSysControlBlock = new SysControlBlock(SysControlBlock.TAG);
 
@@ -64,6 +84,11 @@ public class SCTagUtils {
     // Set tag description, if not null
     if (tagDescription != null) {
       tagSysControlBlock.setItem(SCB_TAG_DESCRIPTION_KEY, tagDescription);
+    }
+
+    // Set tag topic name, if not null
+    if (topicName != null) {
+      tagSysControlBlock.setItem(SCB_TAG_TOPIC_NAME_KEY, topicName);
     }
 
     // Save system control block
