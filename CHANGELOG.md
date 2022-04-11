@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.9.0
+### Features
+- Added application control API class
+### Bug Fixes
+- N/A
+
 ## Version 1.8.0
 ### Features
 - Added support for topic name in tag creation
