@@ -52,4 +52,10 @@ class HistoricalDataConstants {
 
   /** Name of historical data queue time tracker file 2. */
   static final String QUEUE_TIME_FILE_2_NAME = "histDataTime2";
+
+  /** Default thread sleep time waiting for EBD in ms. */
+  static final int DEFAULT_EBD_THREAD_SLEEP_MS = 5;
+
+  /** Maximum amount of time that EBD call should wait in milliseconds before timing out. */
+  static final long MAX_EBD_WAIT_MS = 15000;
 }

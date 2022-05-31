@@ -112,7 +112,8 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if unable to read both time tracker files
    */
   public static long getQueueTimeBehindMillis()
-      throws IOException, TimeTrackerUnrecoverableException {
+      throws IOException, TimeTrackerUnrecoverableException, CircularizedFileException,
+          EbdTimeoutException {
     return System.currentTimeMillis() - getCurrentTimeTrackerValue();
   }
 
@@ -125,7 +126,8 @@ public class HistoricalDataQueueManager {
    * @return time tracker file value
    */
   public static long getCurrentTimeTrackerValue()
-      throws IOException, CorruptedTimeTrackerException, TimeTrackerUnrecoverableException {
+      throws IOException, CorruptedTimeTrackerException, TimeTrackerUnrecoverableException,
+          CircularizedFileException, EbdTimeoutException {
     String readFile;
     long startTimeTrackerMsLong = 0;
     if (isFile1CurrTimeTrackerFile) {
@@ -155,10 +157,12 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException if the current time tracking file is corrupted
    * @throws JSONException if unable to parse int to string enumeration file
+   * @throws CircularizedFileException if circularized file exception was found
+   * @throws EbdTimeoutException for EBD timeouts
    */
   public static synchronized ArrayList getFifoNextSpanDataAllGroups(boolean startNewTimeTracker)
       throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException {
+          JSONException, CircularizedFileException, EbdTimeoutException {
     final boolean includeTagGroupA = true;
     final boolean includeTagGroupB = true;
     final boolean includeTagGroupC = true;
@@ -179,9 +183,12 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws IOException if unable to read or write files
    * @throws CorruptedTimeTrackerException if the one of the tracking files is corrupted
+   * @throws CircularizedFileException if circularized file exception was found
+   * @throws EbdTimeoutException for EBD timeouts
    */
   private static void initTimeTrackerFiles()
-      throws TimeTrackerUnrecoverableException, IOException, CorruptedTimeTrackerException {
+      throws TimeTrackerUnrecoverableException, IOException, CorruptedTimeTrackerException,
+          CircularizedFileException, EbdTimeoutException {
     hasInitTime = true;
     String startTimeTrackerMsMain;
     String startTimeTrackerMsFallBack;
@@ -234,7 +241,8 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    */
   private static long getStartTime(boolean startNewTimeTracker, String readFile, String writeFile)
-      throws IOException, CorruptedTimeTrackerException, TimeTrackerUnrecoverableException {
+      throws IOException, CorruptedTimeTrackerException, TimeTrackerUnrecoverableException,
+          CircularizedFileException, EbdTimeoutException {
     long startTimeTrackerMsLong = 0;
     String startTimeTrackerMs;
     if (startNewTimeTracker) {
@@ -281,6 +289,7 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
    * @throws JSONException if unable to parse int to string enumeration file
+   * @throws CircularizedFileException if circularized file exception was found
    */
   public static synchronized ArrayList getFifoNextSpanData(
       boolean startNewTimeTracker,
@@ -289,28 +298,14 @@ public class HistoricalDataQueueManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD)
       throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException {
+          JSONException, CircularizedFileException, EbdTimeoutException {
 
     if (!hasInitTime) {
       initTimeTrackerFiles();
     }
 
-    /*
-     * The two time tracking files will swap on every iteration of grabbing new
-     * data points. Set the correct file using the isFile1CurrTimeTrackerFile flag.
-     */
-    String readFile;
-    String writeFile;
-    if (isFile1CurrTimeTrackerFile) {
-      readFile = timeMarkerFile1Name;
-      writeFile = timeMarkerFile2Name;
-    } else {
-      readFile = timeMarkerFile2Name;
-      writeFile = timeMarkerFile1Name;
-    }
-
     // Get start time from file, or start new time tracker if startNewTimeTracker is true.
-    long startTimeTrackerMsLong = getStartTime(startNewTimeTracker, readFile, writeFile);
+    long startTimeTrackerMsLong = getTrackingStartTime(startNewTimeTracker);
 
     /*
      * Calculate end time from start time + time span. Use current time if calculated
@@ -371,11 +366,8 @@ public class HistoricalDataQueueManager {
       }
 
       // Store end time +1 ms (to prevent duplicate data)
-      final String newTimeTrackerVal = Long.toString(endTimeTrackerMsLong + 1);
-      FileAccessManager.writeStringToFile(writeFile, newTimeTrackerVal);
+      updateTrackingStartTime(endTimeTrackerMsLong + 1);
     }
-
-    isFile1CurrTimeTrackerFile = !isFile1CurrTimeTrackerFile;
 
     // Return data
     return queueData;
@@ -403,5 +395,88 @@ public class HistoricalDataQueueManager {
     }
 
     return enoughTimePassed;
+  }
+
+  /**
+   * Advance Historical FIFO tracking time. The intention is for exception handlers to make the
+   * decision to advance time.
+   *
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
+   */
+  public static void advanceTrackingStartTime()
+      throws CorruptedTimeTrackerException, IOException, TimeTrackerUnrecoverableException,
+          CircularizedFileException, EbdTimeoutException {
+
+    long startTimeTrackerMsLong = getTrackingStartTime(false);
+
+    /*
+     * Calculate end time from start time + time span. Use current time if calculated
+     * end time is in the future.
+     */
+    long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
+    long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
+
+    updateTrackingStartTime(endTimeTrackerMsLong);
+  }
+
+  /**
+   * Get the Historical FIFO starting time from the tracking files
+   *
+   * @param startNewTimeTracker boolean to start a new time tracker
+   * @return tracking start time
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
+   */
+  private static long getTrackingStartTime(boolean startNewTimeTracker)
+      throws CorruptedTimeTrackerException, IOException, TimeTrackerUnrecoverableException,
+          CircularizedFileException, EbdTimeoutException {
+
+    /*
+     * The two time tracking files will swap on every iteration of grabbing new
+     * data points. Set the correct file using the isFile1CurrTimeTrackerFile flag.
+     */
+    String readFile;
+    String writeFile;
+    if (isFile1CurrTimeTrackerFile) {
+      readFile = timeMarkerFile1Name;
+      writeFile = timeMarkerFile2Name;
+    } else {
+      readFile = timeMarkerFile2Name;
+      writeFile = timeMarkerFile1Name;
+    }
+
+    // Get start time from file, or start new time tracker if startNewTimeTracker is true.
+    return getStartTime(startNewTimeTracker, readFile, writeFile);
+  }
+
+  /**
+   * Update Historical FIFO tracking time
+   *
+   * @param updateTime the time to be written
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
+   */
+  private static void updateTrackingStartTime(long updateTime)
+      throws CorruptedTimeTrackerException, IOException, TimeTrackerUnrecoverableException {
+
+    /*
+     * The two time tracking files will swap on every iteration of grabbing new
+     * data points. Set the correct file using the isFile1CurrTimeTrackerFile flag.
+     */
+    String writeFile;
+    if (isFile1CurrTimeTrackerFile) {
+      writeFile = timeMarkerFile2Name;
+    } else {
+      writeFile = timeMarkerFile1Name;
+    }
+
+    final String newTimeTrackerVal = Long.toString(updateTime);
+    FileAccessManager.writeStringToFile(writeFile, newTimeTrackerVal);
+
+    isFile1CurrTimeTrackerFile = !isFile1CurrTimeTrackerFile;
   }
 }
