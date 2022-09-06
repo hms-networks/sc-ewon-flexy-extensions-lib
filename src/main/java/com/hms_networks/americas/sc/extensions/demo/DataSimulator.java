@@ -4,6 +4,7 @@ import com.ewon.ewonitf.TagControl;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
+import com.hms_networks.americas.sc.extensions.taginfo.TagType;
 import java.util.List;
 
 public class DataSimulator{
@@ -16,7 +17,7 @@ public class DataSimulator{
   /**
    * The list of tags to run data simulations on.
    */
-  private List tagNameList;
+  private List tagInfoList;
 
   /**
    * Sets the array of tags to manipulate with fake data to all tags on the Ewon in the tag name list.
@@ -24,6 +25,8 @@ public class DataSimulator{
    * @param tagNameList list of tag names to manipulate with fake data.
    */
   public void setTagListByIncludeTags(List tagNameList){
+    // TODO get tag info from tag name
+
     this.tagNameList = tagNameList;
   }
 
@@ -34,13 +37,15 @@ public class DataSimulator{
    */
   public void setTagListByExcludeTags(List excludedTagNames){
 
+    // TODO: check if this works
+
     // for each tag on the Ewon
     for(int indexTagInfo = 0; indexTagInfo < TagInfoManager.getTagInfoList().size(); indexTagInfo++) {
 
-      String currentTag = ((TagInfo) TagInfoManager.getTagInfoList().get(indexTagInfo)).getName();
+      TagInfo currentTag = ((TagInfo) TagInfoManager.getTagInfoList().get(indexTagInfo));
 
       // add to tag list if not excluded
-      if(!excludedTagNames.contains(currentTag)) {
+      if(!excludedTagNames.contains(currentTag.getName())) {
         tagNameList.add(currentTag);
       }
     }
@@ -54,26 +59,28 @@ public class DataSimulator{
     // seconds * milliseconds
     long waitTime = 5 * 1000;
 
+    // check all tags are float or int
+    // if they are not, remove from list and log error
+
     // loop forever
     while (true) {
       simulationCounter++;
 
-
-      for (int i = 0; i < tagNameList.size(); i++) {
-        String currentTagName = (String) tagNameList.get(i);
+      for (int i = 0; i < tagInfoList.size(); i++) {
+        String currentTagInfo = (String) tagInfoList.get(i);
         int numberSimFunctions = 4;
 
         if(i % numberSimFunctions == 3){
-          randomValues(currentTagName);
+          randomValues(currentTagInfo);
         }
         if ( i % numberSimFunctions ==  2) {
-          sinWave(currentTagName);
+          sinWave(currentTagInfo);
         }
         if ( i % numberSimFunctions ==  1) {
-          triangles(currentTagName);
+          triangles(currentTagInfo);
         }
         if ( i % numberSimFunctions ==  0) {
-          slantedLines(currentTagName);
+          slantedLines(currentTagInfo);
         }
 
         // sleep in between each individual tag manipulation to not lock up Ewon
@@ -95,7 +102,13 @@ public class DataSimulator{
     }
   }
 
-  private void randomValues(String tagName){
+  private void randomValues(String tagName, TagType tagType){
+
+    // add in check for edge cases for float and int
+    // generate for float
+
+    // generate for int
+
     try {
       TagControl tc = new TagControl(tagName);
       tc.setTagValueAsDouble(Math.random()); // make this random and get edge cases per type.
@@ -108,6 +121,7 @@ public class DataSimulator{
    * Takes in a tag to manipulate and transforms the tag value according to a preset rule.
    */
   private void sinWave(String tagName){
+
     try {
       TagControl tc = new TagControl(tagName);
       double sinWave = 100 * Math.sin( (2*Math.PI)*(simulationCounter/60));
@@ -123,6 +137,7 @@ public class DataSimulator{
   private void slantedLines(String tagName){
     int maxSlantedLinesCounter = 20;
     int slantedLinesCounter = simulationCounter % maxSlantedLinesCounter;
+
     try {
       TagControl tc = new TagControl(tagName);
       tc.setTagValueAsDouble(slantedLinesCounter);
@@ -137,6 +152,7 @@ public class DataSimulator{
 
     try {
       TagControl tc = new TagControl(tagName);
+
       if(triangleCounter < (maxTriangleCounter / 2)){
         tc.setTagValueAsDouble(maxTriangleCounter - triangleCounter);
       } else {
@@ -145,5 +161,9 @@ public class DataSimulator{
     } catch (EWException e) {
       Logger.LOG_EXCEPTION(e);
     }
+  }
+
+  private void incorrectTagTypeError(){
+    Logger.LOG_SERIOUS("Data simulator tag types must be integers or floats.");
   }
 }
