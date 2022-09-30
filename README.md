@@ -62,7 +62,7 @@ As required, you can include additional libraries or dependencies using the Mave
    <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>extensions</artifactId>
-      <version>1.9.0</version>
+      <version>1.10.0</version>
    </dependency>
    ...
 </dependencies>
