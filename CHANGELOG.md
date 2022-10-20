@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.11.0
+### Features
+- Added support for application pause when no WAN IP address is available
+### Bug Fixes
+- N/A
+ 
 ## Version 1.10.0
 ### Features
 - Added application arguments parser class
