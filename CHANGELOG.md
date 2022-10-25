@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.11.1
+### Features
+- M/A
+### Bug Fixes
+- Fix inverted logic with WAN IP detection
+
 ## Version 1.11.0
 ### Features
 - Added support for application pause when no WAN IP address is available
