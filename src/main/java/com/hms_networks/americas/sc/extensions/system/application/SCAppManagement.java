@@ -69,7 +69,7 @@ public class SCAppManagement {
    */
   public static boolean deviceHasWanIP() {
     final String uninitializedWanIp = "0.0.0.0";
-    return NetManager.getWanIp().equalsIgnoreCase(uninitializedWanIp);
+    return !(NetManager.getWanIp().equalsIgnoreCase(uninitializedWanIp));
   }
 
   /**
@@ -91,7 +91,7 @@ public class SCAppManagement {
     // Ensure there is a valid WAN IP address
     for (int i = 0; i < maxWaitPeriods; i++) {
 
-      if (deviceHasWanIP()) {
+      if (!deviceHasWanIP()) {
         // If no connection is established by end of wait time
         if (i == (maxWaitPeriods - 1)) {
           wanConnectionEstablished = false;
