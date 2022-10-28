@@ -48,7 +48,8 @@ public class HistoricalDataQueueManager {
           + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
 
   /** Maximum amount of time that the historical Fifo can get behind in milliseconds. */
-  private static long maxQueueGetsBehindMs = HistoricalDataConstants.MAX_HIST_FIFO_GET_BEHIND_MS;
+  private static long maxQueueGetsBehindMs =
+      HistoricalDataConstants.DEFAULT_MAX_HIST_FIFO_GET_BEHIND_MS;
 
   /**
    * Get the current configured FIFO queue time span in milliseconds.
