@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.11.3
+### Features
+- N/A
+### Bug Fixes
+- Fixed exception when disabling historical data queue max behind time enforcement
+### Other
+- Add historical data queue max behind time accessor
+
 ## Version 1.11.2
 ### Features
 - Added option to disable historical data queue max behind time enforcement
