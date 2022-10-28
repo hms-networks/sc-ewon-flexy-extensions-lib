@@ -243,7 +243,7 @@ public class HistoricalDataQueueManager {
       throw new CorruptedTimeTrackerException(errorMessageSingle);
     } else {
       // Both files are in a good state, compare for more recent time.
-      isFile1CurrTimeTrackerFile = (file1Time > file2Time) ? true : false;
+      isFile1CurrTimeTrackerFile = file1Time > file2Time;
     }
   }
 
@@ -274,7 +274,7 @@ public class HistoricalDataQueueManager {
         initTimeTrackerFiles();
       }
     }
-    /* Here we enforce the cannot get behind maxQueueGetsBehind value. */
+    // Here we enforce the cannot get behind maxQueueGetsBehind value.
     if (enforceMaxGetsBehindMs > startTimeTrackerMsLong) {
       startTimeTrackerMsLong = enforceMaxGetsBehindMs;
     }
@@ -289,8 +289,7 @@ public class HistoricalDataQueueManager {
    * @throws IOException if unable to read or write files
    */
   private static long writeNewTime(String writeFile) throws IOException {
-    long startTimeTrackerMsLong = 0;
-    startTimeTrackerMsLong = System.currentTimeMillis();
+    long startTimeTrackerMsLong = System.currentTimeMillis();
     String startTimeTrackerMs = Long.toString(startTimeTrackerMsLong);
     FileAccessManager.writeStringToFile(writeFile, startTimeTrackerMs);
     return startTimeTrackerMsLong;
@@ -338,8 +337,6 @@ public class HistoricalDataQueueManager {
     long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
     long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
 
-    ArrayList queueData = new ArrayList();
-
     // Calculate EBD start and end time
     final String ebdStartTime = convertToEBDTimeFormat(startTimeTrackerMsLong);
     final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
@@ -347,7 +344,7 @@ public class HistoricalDataQueueManager {
     // Run standard EBD export call (int, float, ...)
     boolean stringHistorical = false;
 
-    queueData =
+    ArrayList queueData =
         HistoricalDataManager.readHistoricalFifo(
             ebdStartTime,
             ebdEndTime,
@@ -422,11 +419,10 @@ public class HistoricalDataQueueManager {
    *
    * @param updateTime the time to be written
    * @throws IOException if unable to read or write files
-   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
    */
   private static void updateTrackingStartTime(long updateTime)
-      throws CorruptedTimeTrackerException, IOException, TimeTrackerUnrecoverableException {
+      throws CorruptedTimeTrackerException, IOException {
 
     /*
      * The two time tracking files will swap on every iteration of grabbing new
