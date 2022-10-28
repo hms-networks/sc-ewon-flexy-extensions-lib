@@ -2,7 +2,7 @@
 
 ## Version 1.11.1
 ### Features
-- M/A
+- N/A
 ### Bug Fixes
 - Fix inverted logic with WAN IP detection
 
