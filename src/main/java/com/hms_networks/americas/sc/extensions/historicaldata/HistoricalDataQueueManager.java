@@ -109,6 +109,15 @@ public class HistoricalDataQueueManager {
   }
 
   /**
+   * Get the maximum amount the Historical FIFO queue can get behind in minutes.
+   *
+   * @return maximum amount the Historical FIFO queue can get behind in minutes
+   */
+  public static synchronized long getQueueMaxBehindMins() {
+    return SCTimeUnit.MILLISECONDS.toMinutes(maxQueueGetsBehindMs);
+  }
+
+  /**
    * Convert a <code>long</code> time value to format required for EDB calls.
    *
    * @param time <code>long</code> time value to format
