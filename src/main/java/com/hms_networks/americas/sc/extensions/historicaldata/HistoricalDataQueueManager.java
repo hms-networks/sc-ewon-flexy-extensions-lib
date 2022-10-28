@@ -99,8 +99,11 @@ public class HistoricalDataQueueManager {
    * @throws IllegalArgumentException if parameter is not greater than 0
    */
   public static synchronized void setQueueMaxBehindMins(long timeMins) {
-    if (timeMins <= 0) {
-      throw new IllegalArgumentException("The parameter passed must be greater than 0.");
+    if (timeMins <= 0 && timeMins != DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS) {
+      throw new IllegalArgumentException(
+          "The parameter passed must be greater than 0 or be "
+              + DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS
+              + ".");
     }
     maxQueueGetsBehindMs = SCTimeUnit.MINUTES.toMillis(timeMins);
   }
