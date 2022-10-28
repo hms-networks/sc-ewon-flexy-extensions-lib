@@ -18,6 +18,12 @@ import java.util.Date;
  */
 public class HistoricalDataQueueManager {
 
+  /**
+   * Value for the maximum amount of time Historical FIFO can get behind which indicates that there
+   * is no maximum (disable check).
+   */
+  public static final long DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS = -1;
+
   /** Time span for fetching FIFO queue data. Default is 1 minute. */
   private static long queueFifoTimeSpanMins = 1;
 
@@ -86,7 +92,8 @@ public class HistoricalDataQueueManager {
   }
 
   /**
-   * Set the maximum amount the Historical FIFO queue can get behind in minutes.
+   * Set the maximum amount the Historical FIFO queue can get behind in minutes. This check can be
+   * disabled by setting the value to {@link #DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS}.
    *
    * @param timeMins new maximum amount the Historical FIFO queue can get behind in minutes
    * @throws IllegalArgumentException if parameter is not greater than 0
@@ -272,8 +279,9 @@ public class HistoricalDataQueueManager {
         initTimeTrackerFiles();
       }
     }
-    // Here we enforce the cannot get behind maxQueueGetsBehind value.
-    if (enforceMaxGetsBehindMs > startTimeTrackerMsLong) {
+    // Here we enforce the cannot get behind maxQueueGetsBehind value if not disabled
+    if (maxQueueGetsBehindMs != DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS
+        && enforceMaxGetsBehindMs > startTimeTrackerMsLong) {
       startTimeTrackerMsLong = enforceMaxGetsBehindMs;
     }
     return startTimeTrackerMsLong;
