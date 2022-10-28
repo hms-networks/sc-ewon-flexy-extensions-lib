@@ -89,7 +89,7 @@ public class HistoricalDataQueueManager {
   /**
    * Set the maximum amount the Historical FIFO queue can get behind in minutes.
    *
-   * @param timeMins new FIFO queue time span in minutes
+   * @param timeMins new maximum amount the Historical FIFO queue can get behind in minutes
    * @throws IllegalArgumentException if parameter is not greater than 0
    */
   public static synchronized void setQueueMaxBehindMins(long timeMins) {
