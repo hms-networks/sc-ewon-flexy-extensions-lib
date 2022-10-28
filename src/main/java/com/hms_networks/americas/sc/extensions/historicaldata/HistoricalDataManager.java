@@ -316,7 +316,8 @@ public class HistoricalDataManager {
    * @throws IOException if unable to access or read file
    * @throws JSONException if unable to parse int to string enumeration file
    */
-  public static ArrayList parseHistoricalFile(String filename) throws IOException, JSONException {
+  public static ArrayList parseHistoricalFile(String filename)
+      throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
     final int sleepBetweenLinesMs = 5;
     final BufferedReader reader = new BufferedReader(new FileReader(filename));
 
@@ -355,6 +356,12 @@ public class HistoricalDataManager {
       // Read next line before looping again
       line = reader.readLine();
     }
+
+    // Check for Circularized Event
+    if (EventFile.didFileCircularizedEventOccur()) {
+      throw new CircularizedFileException("A circularized event was found in the event logs.");
+    }
+
     reader.close();
 
     return dataPoints;
