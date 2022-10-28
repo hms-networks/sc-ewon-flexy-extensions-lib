@@ -57,9 +57,7 @@ public class HistoricalDataQueueManager {
    * @return FIFO queue time span in ms
    */
   private static synchronized long getQueueFifoTimeSpanMillis() {
-    return queueFifoTimeSpanMins
-        * HistoricalDataConstants.TIME_SECS_PER_MIN
-        * HistoricalDataConstants.TIME_MS_PER_SEC;
+    return SCTimeUnit.MINUTES.toMillis(queueFifoTimeSpanMins);
   }
 
   /**
