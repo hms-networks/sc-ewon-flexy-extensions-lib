@@ -10,12 +10,6 @@ import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
  */
 class HistoricalDataConstants {
 
-  /** Number of seconds in one minute */
-  static final int TIME_SECS_PER_MIN = 60;
-
-  /** Number of milliseconds in one second */
-  static final int TIME_MS_PER_SEC = 1000;
-
   /** Delimiter used in EBD lines */
   static final String EBD_LINE_DELIMITER = ";";
 
