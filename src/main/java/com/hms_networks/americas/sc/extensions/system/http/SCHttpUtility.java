@@ -75,12 +75,15 @@ public class SCHttpUtility {
 
   /**
    * Performs an HTTP request to the specified URL using the specified method, request header and
-   * body.
+   * body. If the specified {@code outputFile} is null, a temporary file will be used to store the
+   * response. If the specified {@code outputFile} is not null, and the file exists, it will be
+   * overwritten.
    *
    * @param url URL to make request
    * @param header request header
    * @param body request body
    * @param method HTTP method to use (POST or GET)
+   * @param outputFile file to store response in (if null, a temporary file will be used)
    * @throws EWException if unable to make request
    * @throws IOException if unable to read response file
    * @throws SCHttpEwonException if an Ewon error occurs during the request
@@ -89,7 +92,8 @@ public class SCHttpUtility {
    * @throws SCHttpUnknownException if an unknown error occurs during the request
    * @return http response string
    */
-  private static String httpRequest(String url, String header, String body, String method)
+  private static String httpRequest(
+      String url, String header, String body, String method, String outputFile)
       throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
           SCHttpConnectionException, SCHttpUnknownException {
     // Reset counter if it reaches max
@@ -97,14 +101,19 @@ public class SCHttpUtility {
       tempResponseFileNameCounter = 0;
     }
 
-    // Create file for storing response
-    final File responseFile =
-        new File(
-            TEMP_RESPONSE_FILE_FOLDER
-                + TEMP_RESPONSE_FILE_NAME_PREFIX
-                + tempResponseFileNameCounter++
-                + "."
-                + method);
+    // Create file for storing response. File is deleted if it already exists.
+    final File responseFile;
+    if (outputFile != null) {
+      responseFile = new File(outputFile);
+    } else {
+      responseFile =
+          new File(
+              TEMP_RESPONSE_FILE_FOLDER
+                  + TEMP_RESPONSE_FILE_NAME_PREFIX
+                  + tempResponseFileNameCounter++
+                  + "."
+                  + method);
+    }
     responseFile.getParentFile().mkdirs();
     responseFile.delete();
 
@@ -118,37 +127,30 @@ public class SCHttpUtility {
     if (httpStatus == HTTPX_CODE_NO_ERROR) {
       responseFileString = FileAccessManager.readFileToString(responseFile.getAbsolutePath());
     } else if (httpStatus == HTTPX_CODE_EWON_ERROR) {
-      boolean responseFileCleaned = responseFile.delete();
       throw new SCHttpEwonException(
           "An Ewon error was encountered while performing an HTTP "
               + method
               + " request to "
               + url
-              + "! Data loss may result. (Temporary Response File Cleaned: "
-              + responseFileCleaned
-              + ")");
+              + "! Data loss may result."
+              + (outputFile == null ? "(Temporary File Cleaned: " + responseFile.delete() : ""));
     } else if (httpStatus == HTTPX_CODE_AUTH_ERROR) {
-      boolean responseFileCleaned = responseFile.delete();
       throw new SCHttpAuthException(
           "An authentication error was encountered while performing an HTTP "
               + method
               + " request to "
               + url
-              + "! Data loss may result. (Temporary Response File Cleaned: "
-              + responseFileCleaned
-              + ")");
+              + "! Data loss may result."
+              + (outputFile == null ? "(Temporary File Cleaned: " + responseFile.delete() : ""));
     } else if (httpStatus == HTTPX_CODE_CONNECTION_ERROR) {
-      boolean responseFileCleaned = responseFile.delete();
       throw new SCHttpConnectionException(
           "A connection error was encountered while performing an HTTP "
               + method
               + " request to "
               + url
-              + "! Data loss may result. (Temporary Response File Cleaned: "
-              + responseFileCleaned
-              + ")");
+              + "! Data loss may result."
+              + (outputFile == null ? "(Temporary File Cleaned: " + responseFile.delete() : ""));
     } else {
-      boolean responseFileCleaned = responseFile.delete();
       throw new SCHttpUnknownException(
           "An unknown error ("
               + httpStatus
@@ -156,12 +158,14 @@ public class SCHttpUtility {
               + method
               + " request to "
               + url
-              + "! Data loss may result. (Temporary Response File Cleaned: "
-              + responseFileCleaned
-              + ")");
+              + "! Data loss may result."
+              + (outputFile == null ? "(Temporary File Cleaned: " + responseFile.delete() : ""));
     }
 
-    responseFile.delete();
+    // Delete response file (if temporary)
+    if (outputFile == null) {
+      responseFile.delete();
+    }
     return responseFileString;
   }
 
@@ -182,7 +186,30 @@ public class SCHttpUtility {
   public static String httpPost(String url, String header, String body)
       throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
           SCHttpConnectionException, SCHttpUnknownException {
-    return httpRequest(url, header, body, HTTPX_POST_STRING);
+    return httpRequest(url, header, body, HTTPX_POST_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP POST request to the specified URL using the specified request header and body,
+   * then outputs the response to the specified file. If the specified file already exists, it will
+   * be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return response string
+   */
+  public static String httpPost(String url, String header, String body, String outputFile)
+      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
+          SCHttpConnectionException, SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_POST_STRING, outputFile);
   }
 
   /**
@@ -202,6 +229,29 @@ public class SCHttpUtility {
   public static String httpGet(String url, String header, String body)
       throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
           SCHttpConnectionException, SCHttpUnknownException {
-    return httpRequest(url, header, body, HTTPX_GET_STRING);
+    return httpRequest(url, header, body, HTTPX_GET_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP GET request to the specified URL using the specified request header and body,
+   * then outputs the response to the specified file. If the specified file already exists, it will
+   * be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   */
+  public static String httpGet(String url, String header, String body, String outputFile)
+      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
+          SCHttpConnectionException, SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_GET_STRING, outputFile);
   }
 }
