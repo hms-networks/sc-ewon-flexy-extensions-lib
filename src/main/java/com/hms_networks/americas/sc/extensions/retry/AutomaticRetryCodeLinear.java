@@ -41,7 +41,7 @@ public abstract class AutomaticRetryCodeLinear extends AutomaticRetryCode {
    * (milliseconds). The linear slope is the number of milliseconds increase in delay between each
    * retry.
    *
-   * @return maximum number of retries
+   * @return slope of the linear backoff algorithm (milliseconds)
    */
   protected abstract long getLinearSlopeMillis();
 
