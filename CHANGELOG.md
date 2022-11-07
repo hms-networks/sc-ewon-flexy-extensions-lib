@@ -1,5 +1,15 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.12.0
+### Features
+- Added additional status codes in MqttStatusCode class
+- Added ConstrainedMqttManager.java (a wrapper of MqttManager.java) to handle common MQTT use cases
+- Added SCHttpUtility methods to output HTTP request response data to a file
+### Bug Fixes
+- Fixed improper Javadoc in AutomaticRetryCodeLinear.java
+### Other
+- Simplified MqttManager.java by internally getting status and passing to implementation methods 
+
 ## Version 1.11.3
 ### Features
 - N/A
