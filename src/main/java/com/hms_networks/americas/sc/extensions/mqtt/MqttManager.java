@@ -131,7 +131,15 @@ public abstract class MqttManager extends MqttClient {
     // Loop while MQTT thread run flag is true
     while (mqttThreadRun) {
       // Run abstract MQTT loop function
-      runOnMqttLoop();
+      try {
+        int status = getStatus();
+        runOnMqttLoop(status);
+      } catch (EWException e) {
+        // Create human-readable exception explanation and call onError().
+        String exceptionMsg = "Unable to get the MQTT status value!";
+        MqttException mqttException = new MqttException(exceptionMsg, e);
+        onError(mqttException);
+      }
 
       // Delay for configured seconds before running again
       try {
@@ -333,9 +341,10 @@ public abstract class MqttManager extends MqttClient {
    * Abstract method to be implemented by the inheriting application for processing or performing
    * tasks on the looping MQTT thread.
    *
+   * @param currentMqttStatus the current MQTT status integer
    * @see #mqttThread
    */
-  public abstract void runOnMqttLoop();
+  public abstract void runOnMqttLoop(int currentMqttStatus);
 
   /**
    * Abstract method to be implemented by the inheriting application for managing MQTT status
