@@ -19,10 +19,17 @@ import java.util.Date;
 public class HistoricalDataQueueManager {
 
   /**
-   * Value for the maximum amount of time Historical FIFO can get behind which indicates that there
-   * is no maximum (disable check).
+   * Value for the maximum amount of time (in minutes) Historical FIFO can get behind which
+   * indicates that there is no maximum (disable check).
    */
-  public static final long DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS = -1;
+  public static final long DISABLED_MAX_HIST_FIFO_GET_BEHIND_MINS = -1;
+
+  /**
+   * Value for the maximum amount of time (in milliseconds) Historical FIFO can get behind which
+   * indicates that there is no maximum (disable check).
+   */
+  private static final long DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS =
+      SCTimeUnit.MINUTES.toMillis(DISABLED_MAX_HIST_FIFO_GET_BEHIND_MINS);
 
   /** Time span for fetching FIFO queue data. Default is 1 minute. */
   private static long queueFifoTimeSpanMins = 1;
@@ -92,16 +99,16 @@ public class HistoricalDataQueueManager {
 
   /**
    * Set the maximum amount the Historical FIFO queue can get behind in minutes. This check can be
-   * disabled by setting the value to {@link #DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS}.
+   * disabled by setting the value to {@link #DISABLED_MAX_HIST_FIFO_GET_BEHIND_MINS}.
    *
    * @param timeMins new maximum amount the Historical FIFO queue can get behind in minutes
    * @throws IllegalArgumentException if parameter is not greater than 0
    */
   public static synchronized void setQueueMaxBehindMins(long timeMins) {
-    if (timeMins <= 0 && timeMins != DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS) {
+    if (timeMins <= 0 && timeMins != DISABLED_MAX_HIST_FIFO_GET_BEHIND_MINS) {
       throw new IllegalArgumentException(
           "The parameter passed must be greater than 0 or be "
-              + DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS
+              + DISABLED_MAX_HIST_FIFO_GET_BEHIND_MINS
               + ".");
     }
     maxQueueGetsBehindMs = SCTimeUnit.MINUTES.toMillis(timeMins);
