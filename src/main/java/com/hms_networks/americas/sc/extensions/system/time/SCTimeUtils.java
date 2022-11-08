@@ -2,6 +2,8 @@ package com.hms_networks.americas.sc.extensions.system.time;
 
 import com.ewon.ewonitf.SysControlBlock;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
+import com.hms_networks.americas.sc.extensions.localization.LocalizationManager;
+import com.hms_networks.americas.sc.extensions.localization.LocalizationManager.DateTimeKey;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
@@ -205,6 +207,23 @@ public class SCTimeUtils {
       formattedTimestamp = getIso8601LocalTimeFormat().format(dataPoint.getTimeStampAsDate());
     }
     return formattedTimestamp;
+  }
+
+  /**
+   * Returns a string representing the specified time span (in milliseconds) in the format of
+   * '[days] [days text], [hours] [hours text], [minutes] [minutes text], [seconds] [seconds text]'.
+   * The text for each time span is determined by the current locale.
+   *
+   * @param milliseconds time span (in milliseconds)
+   * @return string representing the specified time span (in milliseconds) in the format of '[days]
+   *     [days text], [hours] [hours text], [minutes] [minutes text], [seconds] [seconds text]'
+   */
+  public static String getDayHourMinSecsForMillis(long milliseconds) {
+    final String daysText = LocalizationManager.getDateTimeString(DateTimeKey.DAYS);
+    final String hoursText = LocalizationManager.getDateTimeString(DateTimeKey.HOURS);
+    final String minutesText = LocalizationManager.getDateTimeString(DateTimeKey.MINUTES);
+    final String secondsText = LocalizationManager.getDateTimeString(DateTimeKey.SECONDS);
+    return getDayHourMinSecsForMillis(milliseconds, daysText, hoursText, minutesText, secondsText);
   }
 
   /**
