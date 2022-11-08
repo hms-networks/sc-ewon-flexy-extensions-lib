@@ -220,7 +220,7 @@ public class SCTimeUtils {
    *     [days text], [hours] [hours text], [minutes] [minutes text], [seconds] [seconds text]'
    */
   public static String getDayHourMinSecsForMillis(
-      int milliseconds, String daysText, String hoursText, String minutesText, String secondsText) {
+      long milliseconds, String daysText, String hoursText, String minutesText, String secondsText) {
     final long days = SCTimeUnit.MILLISECONDS.toDays(milliseconds);
     final long hours =
         SCTimeUnit.MILLISECONDS.toHours(milliseconds)
