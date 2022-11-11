@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.12.1
+### Features
+- N/A
+### Bug Fixes
+- N/A
+### Other
+- Deprecated the PreAllocatedStringBuilder.java class in favor of the Java native StringBuffer class
+
 ## Version 1.12.0
 ### Features
 - Added additional status codes in MqttStatusCode class
