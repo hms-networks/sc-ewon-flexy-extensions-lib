@@ -1,82 +1,101 @@
 package com.hms_networks.americas.sc.extensions.string;
 
 /**
- * PreAllocatedStringBuilder class
+ * PreAllocatedStringBuilder class. As of version 2.0.0, this class is deprecated and its underlying
+ * functionality redirects to the {@link StringBuffer} class.
  *
  * <p>Class for building large pre-allocated strings
  *
  * @author HMS Networks, MU Americas Solution Center
  * @since 1.0.0
+ * @version 2.0.0
+ * @deprecated Use {@link StringBuffer} directly instead.
  */
 public class PreAllocatedStringBuilder {
 
-  /** The length, in number of characters, of the string being formed. */
-  private int length = 0;
-
   /**
-   * The current index of the end of the string being formed. Used as a placement index for strings
-   * and chars that are being appended.
+   * The underlying {@link StringBuffer} for building the string.
+   *
+   * @since 2.0.0
    */
-  private int index = 0;
-
-  /** The character array forming the string that is being formed. */
-  private final char[] strValue;
+  private final StringBuffer stringBuffer;
 
   /**
    * Create a new <code>PreAllocatedStringBuilder</code> with the specified number of characters as
-   * the maximum length.
+   * the maximum length. As of version 2.0.0, this class is deprecated and its underlying
+   * functionality redirects to the {@link StringBuffer} class. The equivalent constructor for
+   * {@link StringBuffer} is {@link StringBuffer#StringBuffer(int)}.
    *
    * @param numChars maximum string length
+   * @since 1.0.0
+   * @deprecated Implement using {@link StringBuffer} directly and use {@link
+   *     StringBuffer#StringBuffer(int)}.
    */
   public PreAllocatedStringBuilder(int numChars) {
-    strValue = new char[numChars];
+    stringBuffer = new StringBuffer(numChars);
   }
 
   /**
-   * Get the current length of the string that is being formed.
+   * Get the current length of the string that is being formed. As of version 2.0.0, this class is
+   * deprecated and its underlying functionality redirects to the {@link StringBuffer} class. The
+   * equivalent method for {@link StringBuffer} is {@link StringBuffer#length()}.
    *
    * @return current string length
+   * @since 1.0.0
+   * @deprecated Implement using {@link StringBuffer} directly and use {@link
+   *     StringBuffer#length()}.
    */
   public int getLength() {
-    return length;
-  }
-
-  /** Clear the contents of the string by setting the placement index at 0 (start). */
-  public void clearString() {
-    index = 0;
-    length = 0;
+    return stringBuffer.length();
   }
 
   /**
-   * Get the contents of the string that is being formed.
+   * Clear the contents of the string. As of version 2.0.0, this class is deprecated and its
+   * underlying functionality redirects to the {@link StringBuffer} class. There is no equivalent
+   * method for {@link StringBuffer}, but the equivalent functionality can be achieved by using
+   * {@link StringBuffer#setLength(int)} with the argument 0.
+   *
+   * @since 1.0.0
+   * @deprecated Implement using {@link StringBuffer} directly and use {@link
+   *     StringBuffer#setLength(int)} with the argument 0.
+   */
+  public void clearString() {
+    stringBuffer.setLength(0);
+  }
+
+  /**
+   * Get the contents of the string that is being formed. As of version 2.0.0, this class is
+   * deprecated and its underlying functionality redirects to the {@link StringBuffer} class. The
+   * equivalent method for {@link StringBuffer} is {@link StringBuffer#toString()}.
    *
    * @return string contents
+   * @since 1.0.0
+   * @deprecated Implement using {@link StringBuffer} directly and use {@link
+   *     StringBuffer#toString()}.
    */
   public String toString() {
-    return String.valueOf(strValue, 0, index);
+    return stringBuffer.toString();
   }
 
   /**
-   * Append a specified string to the string that is being formed.
+   * Append a specified string to the string that is being formed. As of version 2.0.0, this class
+   * is deprecated and its underlying functionality redirects to the {@link StringBuffer} class. The
+   * equivalent method for {@link StringBuffer} is {@link StringBuffer#append(String)}.
    *
    * @param s string to append
    * @return true if successful, otherwise false
+   * @since 1.0.0
+   * @deprecated Implement using {@link StringBuffer} directly and use {@link
+   *     StringBuffer#append(String)}. Note that the return value for {@link
+   *     StringBuffer#append(String)} is different, and is a reference to the {@link StringBuffer}.
+   *     The result of the append operation can be verified by comparing {@link
+   *     StringBuffer#length()} before and after the append operation.
    */
   public boolean append(String s) {
-    boolean retval = true;
-    if (s == null) {
-      s = "";
-    }
-    int len = s.length();
-    length += len;
-    try {
-      // copy the characters in the appended sting s into the char array strValue
-      s.getChars(0, len, strValue, index);
-      index += len;
-    } catch (IndexOutOfBoundsException e) {
-      e.printStackTrace();
-      retval = false;
-    }
-    return retval;
+    int origLength = stringBuffer.length();
+    int expectedLength = origLength + s.length();
+    stringBuffer.append(s);
+    int newLength = stringBuffer.length();
+    return newLength == expectedLength;
   }
 }
