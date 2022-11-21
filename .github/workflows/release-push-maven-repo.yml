@@ -1,6 +1,6 @@
 # HMS Networks Solution Center
 # Maven Release Push Action for Maven-based Ewon ETK Project Releases
-# Version: 1.0
+# Version: 2.0
 #
 # This action is configured to automatically run when a release
 # tag is created in the following syntax: `v*`.
@@ -17,17 +17,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: './project'
 
       - name: Set Up JDK
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
+          distribution: 'corretto'
           java-version: 16
 
       - name: Cache local Maven repository
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.m2/repository
