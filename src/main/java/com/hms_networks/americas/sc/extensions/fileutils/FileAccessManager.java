@@ -49,20 +49,20 @@ public class FileAccessManager {
   }
 
   /**
-   * Reads the specified file into a string.
+   * Reads the contents of the specified {@link File} as a {@link String}.
    *
-   * @param filename file to read
-   * @return file contents
-   * @throws IOException if unable to access or read file
+   * @param file the {@link File} to get the contents of
+   * @return {@link String} of of the contents of the specified {@link File}
+   * @throws IOException if an error occurs while reading the file
+   * @since 1.1.0
    */
-  public static String readFileToString(String filename) throws IOException {
+  public static String readFileToString(File file) throws IOException {
     // If file does not exist, return null
-    File file = new File(filename);
     String returnVal = null;
 
     if (file.exists()) {
       // Create input stream and buffered reader
-      InputStream inputStream = new FileInputStream(filename);
+      InputStream inputStream = new FileInputStream(file.getAbsolutePath());
       BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
       // Create string for file contents
@@ -91,6 +91,18 @@ public class FileAccessManager {
     }
 
     return returnVal;
+  }
+
+  /**
+   * Reads the contents of the file with the specified name as a {@link String}.
+   *
+   * @param fileName the name of the file to get the contents of
+   * @return {@link String} of the contents of the file with the specified name
+   * @throws IOException if an error occurs while reading the file
+   * @since 1.0.0
+   */
+  public static String readFileToString(String fileName) throws IOException {
+    return readFileToString(new File(fileName));
   }
 
   /**
