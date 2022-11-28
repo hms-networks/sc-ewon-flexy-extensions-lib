@@ -1,5 +1,16 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.0
+### Features
+- Added HashUtilities.java class to allow for easy hashing (MD5 and SHA-1) of strings, files, and byte arrays.
+- Added SecurityProviderUtilites.java class to provide a simple API for adding and removing security providers in the JVM.
+- Added SCWonkaSecurityProvider.java class to allow access to the Wonka JVM MD5 and SHA-1 MessageDigest algorithms.
+  - SecurityProviderUtilities.java can be used to add SCWonkaSecurityProvider.java to the JVM.
+### Bug Fixes
+- N/A
+### Other
+- N/A
+
 ## Version 1.12.1
 ### Features
 - N/A
