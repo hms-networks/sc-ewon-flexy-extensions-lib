@@ -16,8 +16,38 @@ import java.io.OutputStreamWriter;
  *
  * @author HMS Networks, MU Americas Solution Center
  * @since 1.0.0
+ * @version 1.1.0
  */
 public class FileAccessManager {
+
+  /**
+   * Reads the contents of the specified {@link File} as a byte array ({@link byte[]}).
+   *
+   * @param file the {@link File} to get the contents of
+   * @return byte array ({@link byte[]}) of the contents of the specified {@link File}
+   * @throws IOException if an error occurs while reading the file
+   * @since 1.1.0
+   */
+  public static byte[] readFileToByteArray(File file) throws IOException {
+    byte[] fileBytes = new byte[(int) file.length()];
+    FileInputStream fileInputStream = new FileInputStream(file);
+    fileInputStream.read(fileBytes);
+    fileInputStream.close();
+    return fileBytes;
+  }
+
+  /**
+   * Reads the contents of the file with the specified name as a byte array ({@link byte[]}).
+   *
+   * @param fileName the name of the file to get the contents of
+   * @return byte array ({@link byte[]}) of the contents of the file with the specified name
+   * @throws IOException if an error occurs while reading the file
+   * @since 1.1.0
+   */
+  public static byte[] readFileToByteArray(String fileName) throws IOException {
+    return readFileToByteArray(new File(fileName));
+  }
+
   /**
    * Reads the specified file into a string.
    *
