@@ -27,7 +27,7 @@
 ### Bug Fixes
 - Fixed improper Javadoc in AutomaticRetryCodeLinear.java
 ### Other
-- Simplified MqttManager.java by internally getting status and passing to implementation methods 
+- Simplified MqttManager.java by internally getting status and passing to implementation methods
 
 ## Version 1.11.3
 ### Features
@@ -57,7 +57,7 @@
 - Added support for application pause when no WAN IP address is available
 ### Bug Fixes
 - N/A
- 
+
 ## Version 1.10.0
 ### Features
 - Added application arguments parser class
@@ -87,8 +87,8 @@
 ### Features
 - Added new method setQueueFifoTimeSpanMins
 - Add maximum duration that historical fifo can get behind (48 hours)
-- Make maximum duration configurable by library user 
-- Changed historical log read to stream from file based 
+- Make maximum duration configurable by library user
+- Changed historical log read to stream from file based
 - Add check and exception fo circularized file errors
 - Add function for library user to advance historical tracking time
 - Add eventfile module for reading the Flexy event file
