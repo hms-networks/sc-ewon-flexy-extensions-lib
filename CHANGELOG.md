@@ -97,7 +97,7 @@
 - Add maximum duration that historical fifo can get behind (48 hours)
 - Make maximum duration configurable by library user
 - Changed historical log read to stream from file based
-- Add check and exception fo circularized file errors
+- Add check and exception for circularized file errors
 - Add function for library user to advance historical tracking time
 - Add eventfile module for reading the Flexy event file
 - Add alarm configuration to tag information objects
