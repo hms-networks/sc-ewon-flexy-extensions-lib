@@ -22,6 +22,17 @@ public class SCAppManagement {
   private static final int SECONDS_IN_WAIT_PERIOD = 20;
 
   /**
+   * Helper function to pause application for set period of time while a WAN connection is being
+   * established.
+   *
+   * @param seconds number of seconds to pause the current thread
+   */
+  private static void waitForWanHelper(int seconds) throws InterruptedException {
+    long sleepTimeMillis = SCTimeUnit.SECONDS.toMillis(seconds);
+    Thread.sleep(sleepTimeMillis);
+  }
+
+  /**
    * Gets the JVM command from the jvmrun file.
    *
    * @return The JVM command
@@ -117,16 +128,5 @@ public class SCAppManagement {
     while (!deviceHasWanIP()) {
       waitForWanHelper(SECONDS_IN_WAIT_PERIOD);
     }
-  }
-
-  /**
-   * Helper function to pause application for set period of time while a WAN connection is being
-   * established.
-   *
-   * @param seconds number of seconds to pause the current thread
-   */
-  private static void waitForWanHelper(int seconds) throws InterruptedException {
-    long sleepTimeMillis = SCTimeUnit.SECONDS.toMillis(seconds);
-    Thread.sleep(sleepTimeMillis);
   }
 }
