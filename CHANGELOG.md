@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.3
+### Features
+- N/A
+### Bug Fixes
+- Fixed minimum firmware version.
+### Other
+- N/A
+
 ## Version 1.13.2
 ### Features
 - Added Ewon firmware version checking.
