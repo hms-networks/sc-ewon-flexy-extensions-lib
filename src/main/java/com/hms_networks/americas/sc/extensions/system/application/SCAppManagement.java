@@ -19,7 +19,7 @@ public class SCAppManagement {
   private static final String JVM_RUN_PATH = "/usr/jvmrun";
 
   /** Seconds to pause thread when waiting for WAN IP */
-  private static final int SECONDS_IN_WAIT_PERIOD = 20;
+  private static final int WAN_WAIT_PERIOD_SECONDS = 20;
 
   /**
    * Helper function to pause application for set period of time while a WAN connection is being
@@ -96,7 +96,8 @@ public class SCAppManagement {
     long timeoutSeconds = timeUnit.toSeconds(timeout);
 
     // Get rounded up number of wait periods in timeout (double cast to avoid integer division)
-    int maxWaitPeriods = (int) Math.ceil((double) timeoutSeconds / (double) SECONDS_IN_WAIT_PERIOD);
+    int maxWaitPeriods =
+        (int) Math.ceil((double) timeoutSeconds / (double) WAN_WAIT_PERIOD_SECONDS);
 
     boolean wanConnectionEstablished = false;
     // Ensure there is a valid WAN IP address
@@ -108,7 +109,7 @@ public class SCAppManagement {
           wanConnectionEstablished = false;
           i = maxWaitPeriods;
         } else {
-          waitForWanHelper(SECONDS_IN_WAIT_PERIOD);
+          waitForWanHelper(WAN_WAIT_PERIOD_SECONDS);
         }
       } else {
         wanConnectionEstablished = true;
@@ -126,7 +127,7 @@ public class SCAppManagement {
   public static void waitForWanIp() throws InterruptedException {
     // Ensure there is a valid WAN IP address
     while (!deviceHasWanIP()) {
-      waitForWanHelper(SECONDS_IN_WAIT_PERIOD);
+      waitForWanHelper(WAN_WAIT_PERIOD_SECONDS);
     }
   }
 }
