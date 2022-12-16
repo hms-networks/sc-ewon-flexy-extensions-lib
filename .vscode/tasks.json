@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "INSTALL (Upload to Device)",
+            "label": "INSTALL (Install to local Maven Repo)",
             "type": "shell",
             "command": "mvn install -f pom.xml",
             "group": "build"

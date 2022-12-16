@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="INSTALL (Upload to Device)" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="INSTALL (Install to Local Maven Repo)" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
