@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.1
+### Features
+- Removed loading of jar to Ewon via FTP during install phase.
+### Bug Fixes
+- N/A
+### Other
+- Removed unused IDE run configurations.
+
 ## Version 1.13.0
 ### Features
 - Added HashUtilities.java class to allow for easy hashing (MD5 and SHA-1) of strings, files, and byte arrays.
