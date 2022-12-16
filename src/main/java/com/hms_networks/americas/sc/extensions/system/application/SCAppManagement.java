@@ -1,9 +1,11 @@
 package com.hms_networks.americas.sc.extensions.system.application;
 
+import com.ewon.ewonitf.EWException;
 import com.ewon.ewonitf.NetManager;
 import com.ewon.ewonitf.RuntimeControl;
 import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
+import com.hms_networks.americas.sc.extensions.system.info.SCSystemInfo;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import java.io.IOException;
 
@@ -71,6 +73,55 @@ public class SCAppManagement {
     String jvmCommand = null;
     Logger.LOG_DEBUG("Disabling next JVM run command.");
     RuntimeControl.configureNextRunCommand(jvmCommand);
+  }
+
+  /**
+   * Handles checking minimum firmware version. If current firmware version is less than the
+   * configured minimum version this function can optionally end the application.
+   *
+   * @param shouldExit If the application should be terminated duo to too low of a firmware version
+   * @param exitMessage String to be printed if the firmware version is too low and the application
+   *     has to exit
+   * @return If the current firmware version is equal to or greater than the configured minimum
+   *     version
+   */
+  public static boolean handleFirmwareCheck(boolean shouldExit, String exitMessage) {
+    boolean isFwVerValid = false;
+
+    try {
+      isFwVerValid = SCSystemInfo.checkMinFirmwareVersion();
+    } catch (EWException e) {
+      Logger.LOG_SERIOUS("Checking firmware version failed.");
+      Logger.LOG_EXCEPTION(e);
+    }
+
+    if (!isFwVerValid) {
+      try {
+        String fwVerTooLowMessage =
+            "Current firmware version: "
+                + SCSystemInfo.getFirmwareString()
+                + " is too low. Please update to Ewon Firmware Version: "
+                + SCSystemInfo.getRequiredFirmwareString()
+                + " or higher!";
+        Logger.LOG_CRITICAL(fwVerTooLowMessage);
+      } catch (EWException e) {
+        Logger.LOG_EXCEPTION(e);
+      }
+
+      if (shouldExit) {
+        if (exitMessage == null) {
+          exitMessage = "Application ending!";
+        }
+
+        Logger.LOG_CRITICAL(exitMessage);
+
+        // Close application
+        final int exitStatusCode = 0;
+        System.exit(exitStatusCode);
+      }
+    }
+
+    return isFwVerValid;
   }
 
   /**
