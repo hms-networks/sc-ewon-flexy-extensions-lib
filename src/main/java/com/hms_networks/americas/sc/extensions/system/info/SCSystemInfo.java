@@ -27,7 +27,7 @@ public class SCSystemInfo {
   private static final int DEFAULT_MIN_MAJOR_FW_VER = 14;
 
   /** Default minor firmware version requirement */
-  private static final int DEFAULT_MIN_MINOR_FW_VER = 8;
+  private static final int DEFAULT_MIN_MINOR_FW_VER = 6;
 
   /** Constant for non set firmware version identifier */
   private static final int FW_VER_NON_INIT = -1;
