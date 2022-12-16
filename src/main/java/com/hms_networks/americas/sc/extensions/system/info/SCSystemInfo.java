@@ -23,6 +23,90 @@ public class SCSystemInfo {
   /** Key for accessing the java version item in a system control block. */
   private static final String SCB_JAVA_VER_KEY = "JavaVersion";
 
+  /** Default major firmware version requirement */
+  private static final int DEFAULT_MIN_MAJOR_FW_VER = 14;
+
+  /** Default minor firmware version requirement */
+  private static final int DEFAULT_MIN_MINOR_FW_VER = 8;
+
+  /** Constant for non set firmware version identifier */
+  private static final int FW_VER_NON_INIT = -1;
+
+  /** Value for current Ewon firmware major version */
+  private static int currFwVerMajor = FW_VER_NON_INIT;
+
+  /** Value for current Ewon firmware minor version */
+  private static int currFwVerMinor = FW_VER_NON_INIT;
+
+  /** Value for current required Ewon firmware major version */
+  private static int currReqFwVerMajor = DEFAULT_MIN_MAJOR_FW_VER;
+
+  /** Value for current required Ewon firmware major version */
+  private static int currReqFwVerMinor = DEFAULT_MIN_MINOR_FW_VER;
+
+  /**
+   * Gets the minor firmware version as an int.
+   *
+   * @return minor firmware version
+   * @throws EWException for Flexy specific Exception
+   */
+  public static int getFirmwareVerMinor() throws EWException {
+
+    if (currFwVerMinor == FW_VER_NON_INIT) {
+      SysControlBlock SCB = new SysControlBlock(SysControlBlock.INF);
+      currFwVerMinor = Integer.parseInt(SCB.getItem(SCB_FW_VER_LO_KEY));
+    }
+
+    return currFwVerMinor;
+  }
+
+  /**
+   * Gets the major firmware version as an int.
+   *
+   * @return major firmware version
+   * @throws EWException for Flexy specific Exception
+   */
+  public static int getFirmwareVerMajor() throws EWException {
+
+    if (currFwVerMajor == FW_VER_NON_INIT) {
+      SysControlBlock SCB = new SysControlBlock(SysControlBlock.INF);
+      currFwVerMajor = Integer.parseInt(SCB.getItem(SCB_FW_VER_HI_KEY));
+    }
+
+    return currFwVerMajor;
+  }
+
+  /**
+   * Checks if current firmware version is equal or greater than the default required version.
+   *
+   * @return is the firmware version equal or greater than the minium version
+   * @throws EWException for Flexy specific Exception
+   */
+  public static boolean checkMinFirmwareVersion() throws EWException {
+    boolean isFwVerValid = false;
+    int fwVerMajor = getFirmwareVerMajor();
+    int fwVerMinor = getFirmwareVerMinor();
+
+    if (fwVerMajor > currReqFwVerMajor) {
+      isFwVerValid = true;
+    } else if ((fwVerMajor == currReqFwVerMajor) && (fwVerMinor >= currReqFwVerMinor)) {
+      isFwVerValid = true;
+    }
+
+    return isFwVerValid;
+  }
+
+  /**
+   * Sets the required minimum firmware version
+   *
+   * @param requiredFwrVerMajor Major firmware version requirement
+   * @param requiredFwrVerMinor Minor firmware version requirement
+   */
+  public static void setMinFirmwareVersion(int requiredFwrVerMajor, int requiredFwrVerMinor) {
+    currReqFwVerMajor = requiredFwrVerMajor;
+    currReqFwVerMinor = requiredFwrVerMinor;
+  }
+
   /**
    * Gets the configured name for the Ewon.
    *
@@ -41,8 +125,16 @@ public class SCSystemInfo {
    * @throws EWException for Flexy specific Exception
    */
   public static String getFirmwareString() throws EWException {
-    SysControlBlock SCB = new SysControlBlock(SysControlBlock.INF);
-    return SCB.getItem(SCB_FW_VER_HI_KEY) + "." + SCB.getItem(SCB_FW_VER_LO_KEY);
+    return getFirmwareVerMajor() + "." + getFirmwareVerMinor();
+  }
+
+  /**
+   * Gets the required firmware version string in "MAJOR.MINOR" format.
+   *
+   * @return Required firmware version in "MAJOR.MINOR" format. (Ex: "14.4")
+   */
+  public static String getRequiredFirmwareString() {
+    return currReqFwVerMajor + "." + currReqFwVerMinor;
   }
 
   /**
