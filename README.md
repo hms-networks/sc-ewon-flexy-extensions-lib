@@ -20,7 +20,7 @@ A library of extensions to the functionality of the Ewon Flexy Java environment 
 
 ### [Required Firmware Version](#table-of-contents)
 
-This project requires a minimum Ewon firmware version of 14.0 or higher. Older firmware versions may be incompatible and are not supported.
+This project requires a minimum Ewon firmware version of 14.6 or higher. Older firmware versions may be incompatible and are not supported.
 
 ### [Libraries and Dependencies](#table-of-contents)
 
