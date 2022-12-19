@@ -27,10 +27,10 @@ public class SCAppManagement {
    * Helper function to pause application for set period of time while a WAN connection is being
    * established.
    *
-   * @param seconds number of seconds to pause the current thread
+   * @param waitSeconds number of seconds to pause the current thread
    */
-  private static void waitForWanHelper(int seconds) throws InterruptedException {
-    long sleepTimeMillis = SCTimeUnit.SECONDS.toMillis(seconds);
+  private static void waitForWanHelper(int waitSeconds) throws InterruptedException {
+    long sleepTimeMillis = SCTimeUnit.SECONDS.toMillis(waitSeconds);
     Thread.sleep(sleepTimeMillis);
   }
 
