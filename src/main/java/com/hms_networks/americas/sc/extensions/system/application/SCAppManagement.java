@@ -151,10 +151,12 @@ public class SCAppManagement {
         (int) Math.ceil((double) timeoutSeconds / (double) WAN_WAIT_PERIOD_SECONDS);
 
     boolean wanConnectionEstablished = false;
+
     // Ensure there is a valid WAN IP address
     for (int i = 0; i < maxWaitPeriods; i++) {
 
       if (!deviceHasWanIP()) {
+
         // If no connection is established by end of wait time
         if (i == (maxWaitPeriods - 1)) {
           wanConnectionEstablished = false;
