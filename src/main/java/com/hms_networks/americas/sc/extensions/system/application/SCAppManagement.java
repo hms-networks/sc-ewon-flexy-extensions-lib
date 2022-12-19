@@ -153,20 +153,20 @@ public class SCAppManagement {
     boolean wanConnectionEstablished = false;
 
     // Ensure there is a valid WAN IP address
-    for (int i = 0; i < maxWaitPeriods; i++) {
+    for (int waitPeriodCount = 0; waitPeriodCount < maxWaitPeriods; waitPeriodCount++) {
 
       if (!deviceHasWanIP()) {
 
         // If no connection is established by end of wait time
-        if (i == (maxWaitPeriods - 1)) {
+        if (waitPeriodCount == (maxWaitPeriods - 1)) {
           wanConnectionEstablished = false;
-          i = maxWaitPeriods;
+          waitPeriodCount = maxWaitPeriods;
         } else {
           waitForWanHelper(WAN_WAIT_PERIOD_SECONDS);
         }
       } else {
         wanConnectionEstablished = true;
-        i = maxWaitPeriods;
+        waitPeriodCount = maxWaitPeriods;
       }
     }
 
