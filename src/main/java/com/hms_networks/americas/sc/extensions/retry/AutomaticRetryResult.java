@@ -9,7 +9,7 @@ package com.hms_networks.americas.sc.extensions.retry;
 public class AutomaticRetryResult {
 
   /** Integer assigned to represent a successful result. */
-  private static final int SUCCESS_INT = 0;
+  private static final int SUCCESS_INT = 5;
 
   /** Integer assigned to represent a failing result, due to reaching the limit of retries. */
   private static final int FAIL_RETRY_LIMIT_INT = 1;
