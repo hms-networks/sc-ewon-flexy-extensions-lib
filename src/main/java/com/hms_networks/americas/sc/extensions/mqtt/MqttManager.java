@@ -133,11 +133,18 @@ public abstract class MqttManager extends MqttClient {
       // Run abstract MQTT loop function
       try {
         int status = getStatus();
-        runOnMqttLoop(status);
-      } catch (EWException e) {
+        try {
+          runOnMqttLoop(status);
+        } catch (Exception e2) {
+          // Create human-readable exception explanation and call onError().
+          String exceptionMsg = "Unable to run MQTT loop!";
+          MqttException mqttException = new MqttException(exceptionMsg, e2);
+          onError(mqttException);
+        }
+      } catch (Exception e1) {
         // Create human-readable exception explanation and call onError().
         String exceptionMsg = "Unable to get the MQTT status value!";
-        MqttException mqttException = new MqttException(exceptionMsg, e);
+        MqttException mqttException = new MqttException(exceptionMsg, e1);
         onError(mqttException);
       }
 
