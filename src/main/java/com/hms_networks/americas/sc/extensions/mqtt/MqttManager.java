@@ -68,7 +68,8 @@ public abstract class MqttManager extends MqttClient {
   }
 
   /**
-   * Publish an MQTT message. This method will first create the MqttMessage and then publish it.
+   * Publish an MQTT message. This method will first create the MqttMessage and then publish it. If
+   * the MQTT client is not connected, an {@link IllegalStateException} will be thrown.
    *
    * @param topic MQTT topic
    * @param payload MQTT payload
@@ -76,9 +77,13 @@ public abstract class MqttManager extends MqttClient {
    * @param retain if the message should be retained by MQTT broker for future clients
    * @throws EWException Ewon exception - check Ewon events file for details
    * @throws UnsupportedEncodingException character encoding is not supported
+   * @throws IllegalStateException if the MQTT manager is not connected
    */
   public void mqttPublish(String topic, String payload, int qos, boolean retain)
       throws EWException, UnsupportedEncodingException {
+    if (getStatus() != MqttStatusCode.CONNECTED) {
+      throw new IllegalStateException("MQTT Manager is not connected!");
+    }
     MqttMessage mqttMessage;
     if (mqttUtf8Convert) {
       byte[] payloadUtf8Bytes = payload.getBytes(UTF_8);
