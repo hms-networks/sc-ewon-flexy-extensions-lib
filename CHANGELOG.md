@@ -1,5 +1,15 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.4-pre1
+### Features
+- Added connection check before publishing MQTT messages.
+- Improved MQTT manager error handling.
+### Bug Fixes
+- Removed unsupported Java 7 references to the 'java.nio' package.
+- Fixed AutomaticRetryCode.getCurrentTryNumber() so that it does not increment the try number.
+### Other
+- Reduced default MQTT keep alive internal to 10s to allow detecting connection issues faster.
+
 ## Version 1.13.3
 ### Features
 - N/A
