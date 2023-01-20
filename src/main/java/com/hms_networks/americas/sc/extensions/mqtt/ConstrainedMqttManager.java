@@ -765,10 +765,11 @@ public abstract class ConstrainedMqttManager {
    * @throws EWException if an Ewon exception occurs. See the Ewon event log for more details.
    * @throws UnsupportedEncodingException if the character encoding is not supported.
    * @throws IllegalStateException if the MQTT manager is not currently running.
+   * @throws IllegalAccessException if the MQTT client is not connected.
    * @see #getQos()
    */
   public void mqttPublish(String topic, String payload, boolean retain)
-      throws EWException, UnsupportedEncodingException {
+      throws EWException, UnsupportedEncodingException, IllegalAccessException {
     if (mqttManager == null) {
       throw new IllegalStateException("MQTT Manager is not started!");
     }
@@ -787,9 +788,10 @@ public abstract class ConstrainedMqttManager {
    * @throws EWException if an Ewon exception occurs. See the Ewon event log for more details.
    * @throws UnsupportedEncodingException if the character encoding is not supported.
    * @throws IllegalStateException if the MQTT manager is not currently running.
+   * @throws IllegalAccessException if the MQTT client is not connected.
    */
   public void mqttPublish(String topic, String payload, int qos, boolean retain)
-      throws EWException, UnsupportedEncodingException {
+      throws EWException, UnsupportedEncodingException, IllegalAccessException {
     if (mqttManager == null) {
       throw new IllegalStateException("MQTT Manager is not started!");
     }

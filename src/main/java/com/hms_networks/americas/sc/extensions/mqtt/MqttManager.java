@@ -76,9 +76,13 @@ public abstract class MqttManager extends MqttClient {
    * @param retain if the message should be retained by MQTT broker for future clients
    * @throws EWException Ewon exception - check Ewon events file for details
    * @throws UnsupportedEncodingException character encoding is not supported
+   * @throws IllegalAccessException if the MQTT client is not connected
    */
   public void mqttPublish(String topic, String payload, int qos, boolean retain)
-      throws EWException, UnsupportedEncodingException {
+      throws EWException, UnsupportedEncodingException, IllegalAccessException {
+    if (getStatus() != MqttStatusCode.CONNECTED) {
+      throw new IllegalAccessException("MQTT Manager is not connected!");
+    }
     MqttMessage mqttMessage;
     if (mqttUtf8Convert) {
       byte[] payloadUtf8Bytes = payload.getBytes(UTF_8);
