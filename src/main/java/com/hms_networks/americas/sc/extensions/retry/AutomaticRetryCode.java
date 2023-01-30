@@ -94,10 +94,6 @@ public abstract class AutomaticRetryCode {
    * @since 1.2
    */
   protected int getCurrentTryNumber() {
-    // Check the retryNumber int is not at max value
-    if (retryNumber < Integer.MAX_VALUE) {
-      retryNumber++;
-    }
     return retryNumber;
   }
 
