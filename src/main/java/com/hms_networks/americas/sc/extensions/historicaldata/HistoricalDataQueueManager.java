@@ -206,8 +206,12 @@ public class HistoricalDataQueueManager {
    * @throws EbdTimeoutException for EBD timeouts
    */
   public static synchronized ArrayList getFifoNextSpanDataAllGroups(boolean startNewTimeTracker)
-      throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException, CircularizedFileException, EbdTimeoutException {
+      throws IOException,
+          TimeTrackerUnrecoverableException,
+          CorruptedTimeTrackerException,
+          JSONException,
+          CircularizedFileException,
+          EbdTimeoutException {
     final boolean includeTagGroupA = true;
     final boolean includeTagGroupB = true;
     final boolean includeTagGroupC = true;
@@ -344,8 +348,12 @@ public class HistoricalDataQueueManager {
       boolean includeTagGroupB,
       boolean includeTagGroupC,
       boolean includeTagGroupD)
-      throws IOException, TimeTrackerUnrecoverableException, CorruptedTimeTrackerException,
-          JSONException, EbdTimeoutException, CircularizedFileException {
+      throws IOException,
+          TimeTrackerUnrecoverableException,
+          CorruptedTimeTrackerException,
+          JSONException,
+          EbdTimeoutException,
+          CircularizedFileException {
 
     if (!hasInitTime) {
       initTimeTrackerFiles();

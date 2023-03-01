@@ -94,8 +94,12 @@ public class SCHttpUtility {
    */
   private static String httpRequest(
       String url, String header, String body, String method, String outputFile)
-      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
-          SCHttpConnectionException, SCHttpUnknownException {
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
     // Reset counter if it reaches max
     if (tempResponseFileNameCounter >= Integer.MAX_VALUE) {
       tempResponseFileNameCounter = 0;
@@ -184,8 +188,12 @@ public class SCHttpUtility {
    * @return response string
    */
   public static String httpPost(String url, String header, String body)
-      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
-          SCHttpConnectionException, SCHttpUnknownException {
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
     return httpRequest(url, header, body, HTTPX_POST_STRING, null);
   }
 
@@ -207,8 +215,12 @@ public class SCHttpUtility {
    * @return response string
    */
   public static String httpPost(String url, String header, String body, String outputFile)
-      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
-          SCHttpConnectionException, SCHttpUnknownException {
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
     return httpRequest(url, header, body, HTTPX_POST_STRING, outputFile);
   }
 
@@ -227,8 +239,12 @@ public class SCHttpUtility {
    * @return http response string
    */
   public static String httpGet(String url, String header, String body)
-      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
-          SCHttpConnectionException, SCHttpUnknownException {
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
     return httpRequest(url, header, body, HTTPX_GET_STRING, null);
   }
 
@@ -250,8 +266,12 @@ public class SCHttpUtility {
    * @return http response string
    */
   public static String httpGet(String url, String header, String body, String outputFile)
-      throws EWException, IOException, SCHttpEwonException, SCHttpAuthException,
-          SCHttpConnectionException, SCHttpUnknownException {
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
     return httpRequest(url, header, body, HTTPX_GET_STRING, outputFile);
   }
 }
