@@ -17,20 +17,27 @@ import java.io.PrintStream;
  */
 public abstract class ApplicationControlApiListener extends EvtWebFormListener {
 
-  /** The API name used for the shutdown operation in the HTTP application control API. */
+  /**
+   * The API endpoint/operation name used for the shutdown operation in the HTTP application control
+   * API.
+   */
   private static final String SHUTDOWN_API_NAME = "shutdown";
 
-  /** The API name used for the restart operation in the HTTP application control API. */
+  /**
+   * The API endpoint/operation name used for the restart operation in the HTTP application control
+   * API.
+   */
   private static final String RESTART_API_NAME = "restart";
 
   /**
-   * The API name used for the get version information operation in the HTTP application control
-   * API.
+   * The API endpoint/operation name used for the get version information operation in the HTTP
+   * application status API.
    */
   private static final String GET_VERSION_API_NAME = "getVersion";
 
   /**
-   * The API name used for the get config information operation in the HTTP application control API.
+   * The API endpoint/operation name used for the get config information operation in the HTTP
+   * application status API.
    */
   private static final String GET_CONFIG_API_NAME = "getConfig";
 
@@ -151,6 +158,7 @@ public abstract class ApplicationControlApiListener extends EvtWebFormListener {
    * The abstract method which is called when the listener receives a request for the application to
    * restart.
    *
+   * @param value the value passed in the request
    * @return the response to the request
    */
   public abstract String onRestart(String value);
@@ -159,6 +167,7 @@ public abstract class ApplicationControlApiListener extends EvtWebFormListener {
    * The abstract method which is called when the listener receives a request for the application to
    * shutdown.
    *
+   * @param value the value passed in the request
    * @return the response to the request
    */
   public abstract String onShutdown(String value);
@@ -167,6 +176,7 @@ public abstract class ApplicationControlApiListener extends EvtWebFormListener {
    * The abstract method which is called when the listener receives a request for the application to
    * return version information.
    *
+   * @param value the value passed in the request
    * @return the response to the request
    */
   public abstract String onGetVersion(String value);
@@ -175,6 +185,7 @@ public abstract class ApplicationControlApiListener extends EvtWebFormListener {
    * The abstract method which is called when the listener receives a request for the application to
    * return configuration information.
    *
+   * @param value the value passed in the request
    * @return the response to the request
    */
   public abstract String onGetConfig(String value);
