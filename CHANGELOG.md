@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.5
+### Features
+- Added support for registering custom API forms in ApplicationControlApiListener.java.
+### Bug Fixes
+- N/A
+### Other
+- Updated code formatting to comply with Google Java Format v1.16.
+
 ## Version 1.13.4
 ### Features
 - Added connection check before publishing MQTT messages.
