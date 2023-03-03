@@ -54,20 +54,21 @@ public abstract class ApplicationControlApiListener extends EvtWebFormListener {
   };
 
   /** The content type for the response to the request. */
-  static final String RESPONSE_CONTENT_TYPE = "application/json";
+  protected static final String RESPONSE_CONTENT_TYPE = "application/json";
 
   /** The filler value used to indicate the error message in the bad request response. */
-  static final String RESPONSE_BAD_ERROR_FILLER = "%ERROR%";
+  protected static final String RESPONSE_BAD_ERROR_FILLER = "%ERROR%";
 
   /** The response to a bad request. */
-  static final String RESPONSE_BAD =
+  protected static final String RESPONSE_BAD =
       "{\"status\":\"error\",\"error\":\"" + RESPONSE_BAD_ERROR_FILLER + "\"}";
 
   /** The response to a request for an unknown or non-supported form. */
-  static final String RESPONSE_UNKNOWN_FORM = "{\"status\":\"error\",\"error\":\"unknown form\"}";
+  protected static final String RESPONSE_UNKNOWN_FORM =
+      "{\"status\":\"error\",\"error\":\"unknown form\"}";
 
   /** The response to a request for an unknown or non-supported parameter. */
-  static final String RESPONSE_UNKNOWN_PARAM =
+  protected static final String RESPONSE_UNKNOWN_PARAM =
       "{\"status\":\"error\",\"error\":\"unknown parameter\"}";
 
   /** The array of registered custom forms which are handled by this listener. */
