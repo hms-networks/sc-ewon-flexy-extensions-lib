@@ -1,6 +1,6 @@
 # HMS Networks Solution Center
 # Maven Release Push Action for Maven-based Ewon ETK Project Releases
-# Version: 2.0
+# Version: 2.1
 #
 # This action is configured to automatically run when a release
 # tag is created in the following syntax: `v*`.
@@ -61,9 +61,11 @@ jobs:
 
       - name: Add artifacts to SC Maven repo
         run: |
-          mvn install:install-file -Dfile=./project/target/${{ env.RELEASE_ARTIFACT_ID }}-${{ env.RELEASE_VERSION }}.jar -DpomFile=./project/pom.xml -Dpackaging=jar -DlocalRepositoryPath=./mavenRepo
-          mvn install:install-file -Dfile=./project/target/${{ env.RELEASE_ARTIFACT_ID }}-${{ env.RELEASE_VERSION }}-sources.jar -DpomFile=./project/pom.xml -Dpackaging=jar -Dclassifier=sources -DlocalRepositoryPath=./mavenRepo
-          mvn install:install-file -Dfile=./project/target/${{ env.RELEASE_ARTIFACT_ID }}-${{ env.RELEASE_VERSION }}-javadoc.jar -DpomFile=./project/pom.xml -Dpackaging=jar -Dclassifier=javadoc -DlocalRepositoryPath=./mavenRepo
+          cd ./project
+          mvn install:install-file -Dfile=./target/${{ env.RELEASE_ARTIFACT_ID }}-${{ env.RELEASE_VERSION }}.jar -DpomFile=./pom.xml -Dpackaging=jar -DlocalRepositoryPath=../mavenRepo
+          mvn install:install-file -Dfile=./target/${{ env.RELEASE_ARTIFACT_ID }}-${{ env.RELEASE_VERSION }}-sources.jar -DpomFile=./pom.xml -Dpackaging=jar -Dclassifier=sources -DlocalRepositoryPath=../mavenRepo
+          mvn install:install-file -Dfile=./target/${{ env.RELEASE_ARTIFACT_ID }}-${{ env.RELEASE_VERSION }}-javadoc.jar -DpomFile=./pom.xml -Dpackaging=jar -Dclassifier=javadoc -DlocalRepositoryPath=../mavenRepo
+          cd ../
 
       - name: Commit and Push to SC Maven repo
         run: |
