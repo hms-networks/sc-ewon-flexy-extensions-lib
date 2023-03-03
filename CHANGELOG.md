@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.6
+### Features
+- N/A
+### Bug Fixes
+- Fixed an issue in ApplicationControlApiListener.java where constants were not properly scoped for access by subclasses.
+
 ## Version 1.13.5
 ### Features
 - Added support for registering custom API forms in ApplicationControlApiListener.java.
