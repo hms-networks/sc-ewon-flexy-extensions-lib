@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.7
+### Features
+- Added support for managing the MQTT keep alive interval in ConstrainedMqttManager.java.
+### Bug Fixes
+- N/A
+
 ## Version 1.13.6
 ### Features
 - N/A
