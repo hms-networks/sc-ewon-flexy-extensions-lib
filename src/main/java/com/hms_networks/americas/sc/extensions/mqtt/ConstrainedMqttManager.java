@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  * @author HMS Networks, MU Americas Solution Center
  * @since 1.12.0
- * @version 1.0.0
+ * @version 1.0.1
  */
 public abstract class ConstrainedMqttManager {
 
@@ -122,6 +122,14 @@ public abstract class ConstrainedMqttManager {
   private long mqttThreadSleepIntervalMs;
 
   /**
+   * The time interval (in secs) for sending keep alive messages on the MQTT client connection. The
+   * default value is set to {@link MqttConstants#MQTT_KEEP_ALIVE_OPTION_DEFAULT}.
+   *
+   * @since 1.0.1
+   */
+  private String mqttKeepAliveIntervalSecs;
+
+  /**
    * The boolean indicating if the MQTT client has subscribed to the topics in the {@link
    * #mqttSubscriptions} list.
    *
@@ -131,7 +139,8 @@ public abstract class ConstrainedMqttManager {
 
   /**
    * Constructor for a new {@link ConstrainedMqttManager} instance which does not wait for a WAN IP
-   * address to be available.
+   * address to be available. The keep alive interval is set to the default value of {@link
+   * MqttConstants#MQTT_KEEP_ALIVE_OPTION_DEFAULT}.
    *
    * @param mqttId the ID of the MQTT client
    * @param mqttHost the host (URL) of the MQTT client connection
@@ -173,8 +182,56 @@ public abstract class ConstrainedMqttManager {
   }
 
   /**
+   * Constructor for a new {@link ConstrainedMqttManager} instance which does not wait for a WAN IP
+   * address to be available.
+   *
+   * @param mqttId the ID of the MQTT client
+   * @param mqttHost the host (URL) of the MQTT client connection
+   * @param utf8Enable the boolean indicating if UTF-8 encoding should be used for MQTT messages
+   * @param mqttPort the port number of the MQTT client connection
+   * @param mqttCaFilePath the CA file path of the MQTT client connection
+   * @param mqttTlsVersion the TLS version of the MQTT client connection
+   * @param mqttUsername the authentication username of the MQTT client connection
+   * @param mqttPassword the authentication password of the MQTT client connection
+   * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
+   *     the MQTT client connection.
+   * @throws IllegalStateException if a WAN IP address is not available.
+   * @throws Exception if unable to start the {@link MqttManager} instance using the provided
+   *     parameters.
+   * @since 1.0.1
+   */
+  public ConstrainedMqttManager(
+      String mqttId,
+      String mqttHost,
+      boolean utf8Enable,
+      String mqttPort,
+      String mqttCaFilePath,
+      String mqttTlsVersion,
+      String mqttUsername,
+      String mqttPassword,
+      int mqttQos,
+      String mqttKeepAliveIntervalSecs)
+      throws Exception {
+    this(
+        mqttId,
+        mqttHost,
+        utf8Enable,
+        mqttPort,
+        mqttCaFilePath,
+        mqttTlsVersion,
+        mqttUsername,
+        mqttPassword,
+        mqttQos,
+        mqttKeepAliveIntervalSecs,
+        WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
+        null);
+  }
+
+  /**
    * Constructor for a new {@link ConstrainedMqttManager} instance which waits for a WAN IP address
-   * to be available if the specified {@code waitForWanIp} boolean is {@code true}.
+   * to be available if the specified {@code waitForWanIp} boolean is {@code true}. The keep alive
+   * interval is set to the default value of {@link MqttConstants#MQTT_KEEP_ALIVE_OPTION_DEFAULT}.
    *
    * @param mqttId the ID of the MQTT client
    * @param mqttHost the host (URL) of the MQTT client connection
@@ -220,9 +277,60 @@ public abstract class ConstrainedMqttManager {
 
   /**
    * Constructor for a new {@link ConstrainedMqttManager} instance which waits for a WAN IP address
+   * to be available if the specified {@code waitForWanIp} boolean is {@code true}.
+   *
+   * @param mqttId the ID of the MQTT client
+   * @param mqttHost the host (URL) of the MQTT client connection
+   * @param utf8Enable the boolean indicating if UTF-8 encoding should be used for MQTT messages
+   * @param mqttPort the port number of the MQTT client connection
+   * @param mqttCaFilePath the CA file path of the MQTT client connection
+   * @param mqttTlsVersion the TLS version of the MQTT client connection
+   * @param mqttUsername the authentication username of the MQTT client connection
+   * @param mqttPassword the authentication password of the MQTT client connection
+   * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
+   *     the MQTT client connection.
+   * @param waitForWanIp the boolean indicating if the {@link MqttManager} instance should wait for
+   *     a WAN IP address to be available.
+   * @throws IllegalStateException if a WAN IP address is not available.
+   * @throws Exception if unable to start the {@link MqttManager} instance using the provided
+   *     parameters.
+   * @since 1.0.1
+   */
+  public ConstrainedMqttManager(
+      String mqttId,
+      String mqttHost,
+      boolean utf8Enable,
+      String mqttPort,
+      String mqttCaFilePath,
+      String mqttTlsVersion,
+      String mqttUsername,
+      String mqttPassword,
+      int mqttQos,
+      String mqttKeepAliveIntervalSecs,
+      boolean waitForWanIp)
+      throws Exception {
+    this(
+        mqttId,
+        mqttHost,
+        utf8Enable,
+        mqttPort,
+        mqttCaFilePath,
+        mqttTlsVersion,
+        mqttUsername,
+        mqttPassword,
+        mqttQos,
+        mqttKeepAliveIntervalSecs,
+        waitForWanIp ? WAIT_FOR_WAN_IP_TIMEOUT_INDEFINITE : WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
+        null);
+  }
+
+  /**
+   * Constructor for a new {@link ConstrainedMqttManager} instance which waits for a WAN IP address
    * to be available until the specified {@code wanIpTimeout} is reached. If the {@code
    * wanIpTimeout} (in the specified {@code wanIpTimeoutUnit}s) is reached before a WAN IP address
-   * is available, an {@link IllegalStateException} is thrown.
+   * is available, an {@link IllegalStateException} is thrown. The keep alive interval is set to the
+   * default value of {@link MqttConstants#MQTT_KEEP_ALIVE_OPTION_DEFAULT}.
    *
    * @param mqttId the ID of the MQTT client
    * @param mqttHost the host (URL) of the MQTT client connection
@@ -255,6 +363,61 @@ public abstract class ConstrainedMqttManager {
       int wanIpTimeout,
       SCTimeUnit wanIpTimeoutUnit)
       throws Exception {
+    this(
+        mqttId,
+        mqttHost,
+        utf8Enable,
+        mqttPort,
+        mqttCaFilePath,
+        mqttTlsVersion,
+        mqttUsername,
+        mqttPassword,
+        mqttQos,
+        MqttConstants.MQTT_KEEP_ALIVE_OPTION_DEFAULT,
+        wanIpTimeout,
+        wanIpTimeoutUnit);
+  }
+
+  /**
+   * Constructor for a new {@link ConstrainedMqttManager} instance which waits for a WAN IP address
+   * to be available until the specified {@code wanIpTimeout} is reached. If the {@code
+   * wanIpTimeout} (in the specified {@code wanIpTimeoutUnit}s) is reached before a WAN IP address
+   * is available, an {@link IllegalStateException} is thrown.
+   *
+   * @param mqttId the ID of the MQTT client
+   * @param mqttHost the host (URL) of the MQTT client connection
+   * @param utf8Enable the boolean indicating if UTF-8 encoding should be used for MQTT messages
+   * @param mqttPort the port number of the MQTT client connection
+   * @param mqttCaFilePath the CA file path of the MQTT client connection
+   * @param mqttTlsVersion the TLS version of the MQTT client connection
+   * @param mqttUsername the authentication username of the MQTT client connection
+   * @param mqttPassword the authentication password of the MQTT client connection
+   * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
+   *     the MQTT client connection.
+   * @param wanIpTimeout the timeout (in the specified {@code wanIpTimeoutUnit}s) to wait for a WAN
+   *     IP address to be available.
+   * @param wanIpTimeoutUnit the {@link SCTimeUnit} of the specified {@code wanIpTimeout}.
+   * @throws IllegalStateException if the specified {@code wanIpTimeout} (in the specified {@code
+   *     wanIpTimeoutUnit}s) is reached before a WAN IP address is available.
+   * @throws Exception if unable to start the {@link MqttManager} instance using the provided
+   *     parameters.
+   * @since 1.0.1
+   */
+  public ConstrainedMqttManager(
+      String mqttId,
+      String mqttHost,
+      boolean utf8Enable,
+      String mqttPort,
+      String mqttCaFilePath,
+      String mqttTlsVersion,
+      String mqttUsername,
+      String mqttPassword,
+      int mqttQos,
+      String mqttKeepAliveIntervalSecs,
+      int wanIpTimeout,
+      SCTimeUnit wanIpTimeoutUnit)
+      throws Exception {
     this.mqttId = mqttId;
     this.mqttHost = mqttHost;
     this.utf8Enable = utf8Enable;
@@ -264,6 +427,7 @@ public abstract class ConstrainedMqttManager {
     this.mqttUsername = mqttUsername;
     this.mqttPassword = mqttPassword;
     this.mqttQos = mqttQos;
+    this.mqttKeepAliveIntervalSecs = mqttKeepAliveIntervalSecs;
     this.mqttSubscriptions = new ArrayList();
     this.mqttSubscribed = false;
 
@@ -545,6 +709,7 @@ public abstract class ConstrainedMqttManager {
     mqttManager.setAuthUsername(mqttUsername);
     mqttManager.setAuthPassword(mqttPassword);
     mqttManager.setMqttThreadSleepIntervalMs(mqttThreadSleepIntervalMs);
+    mqttManager.setKeepAliveSecs(mqttKeepAliveIntervalSecs);
     mqttManager.startMqttThread();
     mqttManager.connect();
   }
@@ -660,6 +825,23 @@ public abstract class ConstrainedMqttManager {
    */
   public void setQos(int mqttQos) throws Exception {
     this.mqttQos = mqttQos;
+    if (mqttManager != null) {
+      restart();
+    }
+  }
+
+  /**
+   * Sets the time interval (in secs) for sending keep alive messages on the MQTT client connection.
+   * If the MQTT manager is currently running, the MQTT connection will be restarted with the new
+   * keep alive interval.
+   *
+   * @param mqttKeepAliveIntervalSecs time (in secs) for sending keep alive messages on the MQTT
+   *     client connection.
+   * @throws Exception if unable to configure MQTT keep alive interval or restart MQTT connection
+   * @since 1.0.1
+   */
+  public void setMqttKeepAliveIntervalSecs(String mqttKeepAliveIntervalSecs) throws Exception {
+    this.mqttKeepAliveIntervalSecs = mqttKeepAliveIntervalSecs;
     if (mqttManager != null) {
       restart();
     }
