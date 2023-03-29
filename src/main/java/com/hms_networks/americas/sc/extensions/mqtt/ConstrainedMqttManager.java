@@ -151,6 +151,8 @@ public abstract class ConstrainedMqttManager {
    * @param mqttUsername the authentication username of the MQTT client connection
    * @param mqttPassword the authentication password of the MQTT client connection
    * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
    * @throws IllegalStateException if a WAN IP address is not available.
    * @throws Exception if unable to start the {@link MqttManager} instance using the provided
    *     parameters.
@@ -165,7 +167,8 @@ public abstract class ConstrainedMqttManager {
       String mqttTlsVersion,
       String mqttUsername,
       String mqttPassword,
-      int mqttQos)
+      int mqttQos,
+      long mqttThreadSleepIntervalMs)
       throws Exception {
     this(
         mqttId,
@@ -177,6 +180,7 @@ public abstract class ConstrainedMqttManager {
         mqttUsername,
         mqttPassword,
         mqttQos,
+        mqttThreadSleepIntervalMs,
         WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
         null);
   }
@@ -194,6 +198,8 @@ public abstract class ConstrainedMqttManager {
    * @param mqttUsername the authentication username of the MQTT client connection
    * @param mqttPassword the authentication password of the MQTT client connection
    * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
    * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
    *     the MQTT client connection.
    * @throws IllegalStateException if a WAN IP address is not available.
@@ -211,6 +217,7 @@ public abstract class ConstrainedMqttManager {
       String mqttUsername,
       String mqttPassword,
       int mqttQos,
+      long mqttThreadSleepIntervalMs,
       String mqttKeepAliveIntervalSecs)
       throws Exception {
     this(
@@ -223,6 +230,7 @@ public abstract class ConstrainedMqttManager {
         mqttUsername,
         mqttPassword,
         mqttQos,
+        mqttThreadSleepIntervalMs,
         mqttKeepAliveIntervalSecs,
         WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
         null);
@@ -242,6 +250,8 @@ public abstract class ConstrainedMqttManager {
    * @param mqttUsername the authentication username of the MQTT client connection
    * @param mqttPassword the authentication password of the MQTT client connection
    * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
    * @param waitForWanIp the boolean indicating if the {@link MqttManager} instance should wait for
    *     a WAN IP address to be available.
    * @throws IllegalStateException if a WAN IP address is not available.
@@ -259,6 +269,7 @@ public abstract class ConstrainedMqttManager {
       String mqttUsername,
       String mqttPassword,
       int mqttQos,
+      long mqttThreadSleepIntervalMs,
       boolean waitForWanIp)
       throws Exception {
     this(
@@ -271,6 +282,7 @@ public abstract class ConstrainedMqttManager {
         mqttUsername,
         mqttPassword,
         mqttQos,
+        mqttThreadSleepIntervalMs,
         waitForWanIp ? WAIT_FOR_WAN_IP_TIMEOUT_INDEFINITE : WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
         null);
   }
@@ -288,6 +300,8 @@ public abstract class ConstrainedMqttManager {
    * @param mqttUsername the authentication username of the MQTT client connection
    * @param mqttPassword the authentication password of the MQTT client connection
    * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
    * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
    *     the MQTT client connection.
    * @param waitForWanIp the boolean indicating if the {@link MqttManager} instance should wait for
@@ -307,6 +321,7 @@ public abstract class ConstrainedMqttManager {
       String mqttUsername,
       String mqttPassword,
       int mqttQos,
+      long mqttThreadSleepIntervalMs,
       String mqttKeepAliveIntervalSecs,
       boolean waitForWanIp)
       throws Exception {
@@ -320,6 +335,7 @@ public abstract class ConstrainedMqttManager {
         mqttUsername,
         mqttPassword,
         mqttQos,
+        mqttThreadSleepIntervalMs,
         mqttKeepAliveIntervalSecs,
         waitForWanIp ? WAIT_FOR_WAN_IP_TIMEOUT_INDEFINITE : WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
         null);
@@ -341,6 +357,8 @@ public abstract class ConstrainedMqttManager {
    * @param mqttUsername the authentication username of the MQTT client connection
    * @param mqttPassword the authentication password of the MQTT client connection
    * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
    * @param wanIpTimeout the timeout (in the specified {@code wanIpTimeoutUnit}s) to wait for a WAN
    *     IP address to be available.
    * @param wanIpTimeoutUnit the {@link SCTimeUnit} of the specified {@code wanIpTimeout}.
@@ -360,6 +378,7 @@ public abstract class ConstrainedMqttManager {
       String mqttUsername,
       String mqttPassword,
       int mqttQos,
+      long mqttThreadSleepIntervalMs,
       int wanIpTimeout,
       SCTimeUnit wanIpTimeoutUnit)
       throws Exception {
@@ -373,6 +392,7 @@ public abstract class ConstrainedMqttManager {
         mqttUsername,
         mqttPassword,
         mqttQos,
+        mqttThreadSleepIntervalMs,
         MqttConstants.MQTT_KEEP_ALIVE_OPTION_DEFAULT,
         wanIpTimeout,
         wanIpTimeoutUnit);
@@ -393,6 +413,8 @@ public abstract class ConstrainedMqttManager {
    * @param mqttUsername the authentication username of the MQTT client connection
    * @param mqttPassword the authentication password of the MQTT client connection
    * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
    * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
    *     the MQTT client connection.
    * @param wanIpTimeout the timeout (in the specified {@code wanIpTimeoutUnit}s) to wait for a WAN
@@ -414,6 +436,7 @@ public abstract class ConstrainedMqttManager {
       String mqttUsername,
       String mqttPassword,
       int mqttQos,
+      long mqttThreadSleepIntervalMs,
       String mqttKeepAliveIntervalSecs,
       int wanIpTimeout,
       SCTimeUnit wanIpTimeoutUnit)
@@ -427,6 +450,7 @@ public abstract class ConstrainedMqttManager {
     this.mqttUsername = mqttUsername;
     this.mqttPassword = mqttPassword;
     this.mqttQos = mqttQos;
+    this.mqttThreadSleepIntervalMs = mqttThreadSleepIntervalMs;
     this.mqttKeepAliveIntervalSecs = mqttKeepAliveIntervalSecs;
     this.mqttSubscriptions = new ArrayList();
     this.mqttSubscribed = false;
