@@ -48,9 +48,14 @@ public class SCAppManagement {
 
   /**
    * Configures the Flexy to launch the application again in the event the application crashes or
-   * ends.
+   * ends. This method will return a boolean indicating whether the application auto restart
+   * functionality was enabled. This value can be used to determine application conditions, such as
+   * if the application should display an error and shutdown, or if the application should behave
+   * differently.
+   *
+   * @return true if the application auto restart functionality was enabled, false otherwise.
    */
-  public static void enableAppAutoRestart() {
+  public static boolean enableAppAutoRestart() {
     // Default command in case the jvmrun file is not found or is not readable.
     String jvmCommand = null;
 
@@ -63,6 +68,9 @@ public class SCAppManagement {
 
     Logger.LOG_DEBUG("Setting next JVM run command to: " + jvmCommand);
     RuntimeControl.configureNextRunCommand(jvmCommand);
+
+    // Return true if next run command was set to non-null value
+    return (jvmCommand != null);
   }
 
   /**
