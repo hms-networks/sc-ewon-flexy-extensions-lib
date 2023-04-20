@@ -1,5 +1,12 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.8
+### Features
+- Updated SCAppManagement.enableAppAutoRestart() to return a boolean indicating if the auto-restart functionality was successfully enabled.
+- Added SCCountdownLatch.getCount() method to return the current count of the latch without blocking.
+### Bug Fixes
+- N/A
+
 ## Version 1.13.7
 ### Features
 - Added support for managing the MQTT keep alive interval in ConstrainedMqttManager.java.
