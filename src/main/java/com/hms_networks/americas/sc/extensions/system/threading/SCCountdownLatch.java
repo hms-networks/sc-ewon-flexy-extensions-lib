@@ -60,4 +60,13 @@ public class SCCountdownLatch {
       this.notifyAll();
     }
   }
+
+  /**
+   * Gets the current count of the latch. This method is non-blocking.
+   *
+   * @return the current count
+   */
+  public synchronized int getCount() {
+    return count;
+  }
 }
