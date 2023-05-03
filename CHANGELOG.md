@@ -1,5 +1,12 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.9-pre1
+### Features
+- N/A
+### Bug Fixes
+- Updated code formatting of files in JSON package to comply with Google Java Format v1.17.
+- Update HistoricalDataManager.java to detect EBD header using first non-zero length line encountered instead of static first line.
+
 ## Version 1.13.8
 ### Features
 - Updated SCAppManagement.enableAppAutoRestart() to return a boolean indicating if the auto-restart functionality was successfully enabled.
