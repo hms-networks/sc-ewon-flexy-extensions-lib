@@ -212,6 +212,7 @@ public class JSONArray {
       throw new JSONException("JSONArray[" + index + "] is not a number.");
     }
   }
+
   // #endif
 
   // #if CLDC!="1.0"
@@ -228,6 +229,7 @@ public class JSONArray {
     // Object o = get(index);
     return (int) getDouble(index);
   }
+
   // #endif
 
   /**
@@ -273,6 +275,7 @@ public class JSONArray {
     // Object o = get(index);
     return (long) getDouble(index);
   }
+
   // #endif
 
   /**
@@ -377,6 +380,7 @@ public class JSONArray {
   public double optDouble(int index) {
     return optDouble(index, Double.NaN);
   }
+
   // #endif
 
   // #if CLDC!="1.0"
@@ -396,6 +400,7 @@ public class JSONArray {
       return defaultValue;
     }
   }
+
   // #endif
 
   // #if CLDC!="1.0"
@@ -410,6 +415,7 @@ public class JSONArray {
   public int optInt(int index) {
     return optInt(index, 0);
   }
+
   // #endif
 
   // #if CLDC!="1.0"
@@ -429,6 +435,7 @@ public class JSONArray {
       return defaultValue;
     }
   }
+
   // #endif
 
   /**
@@ -467,6 +474,7 @@ public class JSONArray {
   public long optLong(int index) {
     return optLong(index, 0);
   }
+
   // #endif
 
   // #if CLDC!="1.0"
@@ -486,6 +494,7 @@ public class JSONArray {
       return defaultValue;
     }
   }
+
   // #endif
 
   /**
@@ -555,6 +564,7 @@ public class JSONArray {
     put(d);
     return this;
   }
+
   // #endif
 
   /**
@@ -651,6 +661,7 @@ public class JSONArray {
     put(index, new Double(value));
     return this;
   }
+
   // #endif
 
   /**

@@ -323,6 +323,7 @@ public class JSONObject {
     }
     return s;
   }
+
   // #endif
 
   /**
@@ -402,6 +403,7 @@ public class JSONObject {
     }
     throw new JSONException("JSONObject[" + quote(key) + "] is not a number.");
   }
+
   // #endif
 
   /**
@@ -657,6 +659,7 @@ public class JSONObject {
   public double optDouble(String key) {
     return optDouble(key, Double.NaN);
   }
+
   // #endif
 
   // #if CLDC!="1.0"
@@ -678,6 +681,7 @@ public class JSONObject {
       return defaultValue;
     }
   }
+
   // #endif
 
   /**
@@ -819,6 +823,7 @@ public class JSONObject {
     put(key, new Double(value));
     return this;
   }
+
   // #endif
 
   /**

@@ -1,4 +1,5 @@
 package com.hms_networks.americas.sc.extensions.json;
+
 /*
 Copyright (c) 2002 JSON.org
 
