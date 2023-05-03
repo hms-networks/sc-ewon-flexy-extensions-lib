@@ -322,7 +322,7 @@ public class HistoricalDataManager {
     final BufferedReader reader = new BufferedReader(new FileReader(filename));
 
     // Create line counter and variable to store current line
-    int lineCount = 0;
+    boolean headerEncountered = false;
     String line = reader.readLine();
 
     // Loop through lines in file until end and store data points
@@ -330,7 +330,7 @@ public class HistoricalDataManager {
     while (line != null) {
 
       // Only parse lines 1 and greater, skip header
-      if (lineCount > 0) {
+      if (headerEncountered) {
         // Parse line
         DataPoint lineDataPoint = parseHistoricalFileLine(line);
 
@@ -348,10 +348,12 @@ public class HistoricalDataManager {
         } catch (InterruptedException e) {
           e.printStackTrace();
         }
+      } else {
+        // Check for line with greater than 0 non-whitespace length
+        if (line.trim().length() > 0) {
+          headerEncountered = true;
+        }
       }
-
-      // Increment line count
-      lineCount++;
 
       // Read next line before looping again
       line = reader.readLine();
