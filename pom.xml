@@ -43,6 +43,7 @@
     <maven.compiler.source>${project.java.version}</maven.compiler.source>
     <!-- Maven Compiler Target Version -->
     <maven.compiler.target>${project.java.version}</maven.compiler.target>
+ <project.shutdown.url>http://${ewon.address}/rcgi.bin/jvmCmd?cmd=stop</project.shutdown.url>
   </properties>
 
   <!-- CUSTOM MAVEN REPOSITORIES FOR PROJECT -->
@@ -191,7 +192,84 @@
         <configuration>
           <skip>true</skip>
         </configuration>
+      </plugin> 
+
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>wagon-maven-plugin</artifactId>
+        <version>2.0.2</version>
+        <executions>
+          <execution>
+            <id>ftp-install-jar</id>
+            <phase>install</phase>
+            <goals>
+              <goal>upload-single</goal>
+            </goals>
+            <configuration>
+              <fromFile>
+                ${project.build.directory}${file.separator}${project.artifactId}-${project.version}-full.jar
+              </fromFile>
+              <url>ftp://${ewon.username}:${ewon.password}@${ewon.address}/usr</url>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
+
+      <!-- Run Jar file on Ewon Flexy -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <version>3.0.0</version>
+        <executions>
+          <execution>
+            <id>deploy-shutdown-connector</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <get username="${ewon.username}" password="${ewon.password}"
+                  dest="shutdown-connector.log" verbose="true"
+                  src="${project.shutdown.url}"
+                  maxtime="2000"/>
+                <sleep seconds="2"/>
+              </target>
+              <failOnError>false</failOnError>
+            </configuration>
+          </execution>
+          <execution>
+            <id>deploy-stop-execution</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <get username="${ewon.username}" password="${ewon.password}"
+                  dest="stop.log" verbose="true"
+                  src="http://${ewon.address}/rcgi.bin/jvmCmd?cmd=stop"/>
+              </target>
+              <failOnError>true</failOnError>
+            </configuration>
+          </execution>
+          <execution>
+            <id>deploy-execute-jar</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <get username="${ewon.username}" password="${ewon.password}"
+                  dest="start.log" verbose="true" src="${project.build.exec.url}"/>
+              </target>
+              <failOnError>true</failOnError>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
 
       <!-- Update IDE configuration(s) (DO NOT EDIT SOURCE FILES) -->
       <plugin>
@@ -257,6 +335,14 @@
       </plugin>
     </plugins>
 
+    <extensions>
+      <!-- Extension for FTP connections in wagon-maven-plugin -->
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ftp</artifactId>
+      </extension>
+    </extensions> 
+    
     <pluginManagement>
       <plugins>
         <!-- Eclipse M2E settings. Note: this has no influence on the Maven build.-->

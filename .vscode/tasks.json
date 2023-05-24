@@ -24,6 +24,12 @@
             "type": "shell",
             "command": "mvn verify -f pom.xml",
             "group": "build"
-        }
+        },
+       {
+            "label": "DEPLOY (Run on Device, No Debug)",
+            "type": "shell",
+            "command": "mvn deploy -f pom.xml -P noDebug ",
+            "group": "build"
+        },
     ]
 }
