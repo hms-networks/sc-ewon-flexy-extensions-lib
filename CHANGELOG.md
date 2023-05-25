@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.13.10
+### Features
+- N/A
+### Bug Fixes
+- Added support for tags with a value of nan, -inf, and inf in HistoricalDataManager.java.
+
 ## Version 1.13.9
 ### Features
 - N/A
