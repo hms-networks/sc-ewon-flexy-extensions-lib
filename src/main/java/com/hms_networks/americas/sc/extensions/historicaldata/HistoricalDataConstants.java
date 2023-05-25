@@ -55,4 +55,13 @@ class HistoricalDataConstants {
 
   /** Maximum amount of time that EBD call should wait in milliseconds before timing out. */
   static final long MAX_EBD_WAIT_MS = 15000;
+
+  /** Tag value representing the negative infinity Float/Double value. */
+  static final String TAG_VALUE_NEGATIVE_INFINITY = "-inf";
+
+  /** Tag value representing the positive infinity Float/Double value. */
+  static final String TAG_VALUE_POSITIVE_INFINITY = "inf";
+
+  /** Tag value representing the NaN Float/Double value. */
+  static final String TAG_VALUE_NAN = "nan";
 }
