@@ -459,7 +459,17 @@ public class HistoricalDataManager {
               returnVal =
                   new DataPointBoolean(tagName, tagId, tagUnit, boolValue, tagTimeInt, dataQuality);
             } else if (tagType == TagType.FLOAT) {
-              float floatValue = Float.valueOf(tagValue).floatValue();
+              float floatValue;
+              if (tagValue.equalsIgnoreCase(HistoricalDataConstants.TAG_VALUE_NEGATIVE_INFINITY)) {
+                floatValue = Float.NEGATIVE_INFINITY;
+              } else if (tagValue.equalsIgnoreCase(
+                  HistoricalDataConstants.TAG_VALUE_POSITIVE_INFINITY)) {
+                floatValue = Float.POSITIVE_INFINITY;
+              } else if (tagValue.equalsIgnoreCase(HistoricalDataConstants.TAG_VALUE_NAN)) {
+                floatValue = Float.NaN;
+              } else {
+                floatValue = Float.valueOf(tagValue).floatValue();
+              }
               returnVal =
                   new DataPointFloat(tagName, tagId, tagUnit, floatValue, tagTimeInt, dataQuality);
             } else if (tagType == TagType.INTEGER) {
