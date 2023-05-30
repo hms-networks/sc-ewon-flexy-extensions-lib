@@ -1,5 +1,7 @@
 package com.hms_networks.americas.sc.extensions;
 
+import java.util.Date;
+
 /**
  * Main class for the project. This class does not perform any functions, as it is contained in a
  * library.
@@ -18,6 +20,11 @@ public class ExtensionsMain {
     // Get project information
     String projectName = ExtensionsMain.class.getPackage().getImplementationTitle();
     String projectVersion = ExtensionsMain.class.getPackage().getImplementationVersion();
+
+
+
+    Date systemTimeDateObj = new Date(System.currentTimeMillis());
+    System.out.println(systemTimeDateObj);
 
     // Display error message -- not a runnable Jar
     System.err.println(
