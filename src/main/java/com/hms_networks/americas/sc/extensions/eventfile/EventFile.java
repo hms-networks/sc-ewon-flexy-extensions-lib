@@ -7,6 +7,8 @@ import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,6 +23,21 @@ public class EventFile {
 
   /** Event File line token delimiter */
   private static final String EVENT_FILE_LINE_TOKEN_DELIMITER = ";";
+
+  /** Base EBD request format for Event File (log) with absolute starting time */
+  private static final String EBD_EVENT_LOG_ABSOLUTE_START_BASE = "$dtEV$ftT$st";
+
+  /** Simple Date Format string for EBD date-time */
+  private static final String FLEXY_EBD_EVENT_FILE_DATE_FORMAT = "ddMMyyyy_HHmmss";
+
+  /** Event File expected number of tokens after splitting by delimiter */
+  private static final int EVENT_LOG_LINE_EXPECTED_TOKEN_SIZE = 6;
+
+  /** Event File line event ID offset */
+  private static final int EVENT_LOG_EVENT_ID_OFFSET = 5;
+
+  /** String encoding for reading Event File */
+  private static final String EVENT_FILE_STRING_ENCODING = "UTF-8";
 
   /**
    * Read EventFile, check for File Circularized event
@@ -122,5 +139,49 @@ public class EventFile {
       currentToken = tokenizer.nextToken();
     }
     return currentToken.equals(target);
+  }
+
+  /**
+   * Get the Export Block Descriptor request for Event File lines after the timestamp argument.
+   *
+   * @param timestampMilliseconds - the start time for request
+   * @return request string
+   */
+  private static String getEbdEventFileSinceAbsoluteTimeRequest(long timestampMilliseconds) {
+    Date timeDateObj = new Date(timestampMilliseconds);
+    SimpleDateFormat sf = new SimpleDateFormat(FLEXY_EBD_EVENT_FILE_DATE_FORMAT);
+    return EBD_EVENT_LOG_ABSOLUTE_START_BASE + sf.format(timeDateObj);
+  }
+
+  /**
+   * Read Event File via EBD using absolute start time, check for event Id
+   *
+   * @param eventId - ID of the target event
+   * @param absoluteStartTimeMilliseconds - epoch time in milliseconds as start time
+   * @return boolean - true/false found event ID in logs
+   * @throws EbdTimeoutException - for timeout of EBD request
+   * @throws IOException - for exception with input stream
+   */
+  public static boolean didEventOccurSinceAbsolute(
+      String eventId, long absoluteStartTimeMilliseconds) throws IOException, EbdTimeoutException {
+    Exporter ebdExporter =
+        HistoricalDataManager.executeEbdCall(
+            getEbdEventFileSinceAbsoluteTimeRequest(absoluteStartTimeMilliseconds));
+    String exporterFile =
+        StringUtils.getStringFromInputStream(ebdExporter, EVENT_FILE_STRING_ENCODING);
+    ebdExporter.close();
+
+    boolean eventFound = false;
+    if (exporterFile.length() > 0) {
+      final List eventFileLines = StringUtils.split(exporterFile, EVENT_FILE_LINE_DELIMITER);
+      for (int x = 1; x < eventFileLines.size(); x++) {
+        String line = (String) eventFileLines.get(x);
+        if (checkEventFileLine(line, eventId)) {
+          eventFound = true;
+          break;
+        }
+      }
+    }
+    return eventFound;
   }
 }
