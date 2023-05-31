@@ -16,6 +16,12 @@ import java.util.List;
  * @since 1.6.0
  */
 public class EventFile {
+  /** Event File line delimiter */
+  private static final String EVENT_FILE_LINE_DELIMITER = "\n";
+
+  /** Event File line token delimiter */
+  private static final String EVENT_FILE_LINE_TOKEN_DELIMITER = ";";
+
   /**
    * Read EventFile, check for File Circularized event
    *
@@ -84,7 +90,7 @@ public class EventFile {
   private static boolean parseEventFileExportResponse(Exporter exporter, String eventId)
       throws IOException, JSONException {
     final String exporterFile = StringUtils.getStringFromInputStream(exporter, "UTF-8");
-    final List eventFileLines = StringUtils.split(exporterFile, "\n");
+    final List eventFileLines = StringUtils.split(exporterFile, EVENT_FILE_LINE_DELIMITER);
 
     exporter.close();
     for (int x = 1; x < eventFileLines.size(); x++) {
@@ -106,7 +112,8 @@ public class EventFile {
   private static boolean checkEventFileLine(String line, String target) {
     // Create tokenizer to process line
     final boolean returnDelimiters = false;
-    QuoteSafeStringTokenizer tokenizer = new QuoteSafeStringTokenizer(line, ";", returnDelimiters);
+    QuoteSafeStringTokenizer tokenizer =
+        new QuoteSafeStringTokenizer(line, EVENT_FILE_LINE_TOKEN_DELIMITER, returnDelimiters);
 
     // Loop through each token
     String currentToken = "";
