@@ -376,6 +376,8 @@ public class HistoricalDataQueueManager {
     // Run standard EBD export call (int, float, ...)
     boolean stringHistorical = false;
 
+    final long startOfEbdHistoricalReadMs = System.currentTimeMillis();
+
     ArrayList queueData =
         HistoricalDataManager.readHistoricalFifo(
             ebdStartTime,
@@ -407,6 +409,12 @@ public class HistoricalDataQueueManager {
       // Parse string EBD export call and combine with standard EBD call results
       ArrayList queueStringData = HistoricalDataManager.parseHistoricalFile(ebdStringFileName);
       queueData.addAll(queueStringData);
+    }
+
+    // Check for Circularized Event
+    if (CircularizedFileCheck.didFileCircularizedEventOccurSinceAbsolute(
+        startOfEbdHistoricalReadMs)) {
+      throw new CircularizedFileException("A circularized event was found in the event logs.");
     }
 
     // Store end time +1 ms (to prevent duplicate data)
