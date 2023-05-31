@@ -310,7 +310,7 @@ public class HistoricalDataManager {
    * @return data points parsed
    * @throws IOException if unable to access or read file
    * @throws JSONException if unable to parse int to string enumeration file
-   * @throws EbdTimeout if unable to complete EDB call 
+   * @throws EbdTimeoutException if unable to complete EDB call 
    * @throws CircularizedFileException if there is found to be a Circularized File Error
    */
   public static ArrayList parseHistoricalFile(String filename)
