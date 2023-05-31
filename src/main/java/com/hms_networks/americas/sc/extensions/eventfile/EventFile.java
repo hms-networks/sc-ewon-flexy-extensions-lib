@@ -41,7 +41,8 @@ public class EventFile {
 
   /**
    * Read EventFile, check for File Circularized event
-   *
+   * 
+   * @deprecated use {@link CircularizedFileCheck}
    * @return boolean - did a File Circularized event occur in the recent past
    * @throws EbdTimeoutException for timeout in EBD read
    * @throws IOException for errors in parsing response
