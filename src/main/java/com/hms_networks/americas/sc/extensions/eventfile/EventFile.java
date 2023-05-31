@@ -1,6 +1,7 @@
 package com.hms_networks.americas.sc.extensions.eventfile;
 
 import com.ewon.ewonitf.Exporter;
+import com.hms_networks.americas.sc.extensions.historicaldata.CircularizedFileCheck;
 import com.hms_networks.americas.sc.extensions.historicaldata.EbdTimeoutException;
 import com.hms_networks.americas.sc.extensions.historicaldata.HistoricalDataManager;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
@@ -42,6 +43,7 @@ public class EventFile {
   /**
    * Read EventFile, check for File Circularized event
    *
+   * @deprecated use {@link CircularizedFileCheck}
    * @return boolean - did a File Circularized event occur in the recent past
    * @throws EbdTimeoutException for timeout in EBD read
    * @throws IOException for errors in parsing response
