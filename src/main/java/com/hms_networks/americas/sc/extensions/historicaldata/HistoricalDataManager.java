@@ -9,7 +9,6 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointInteger;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointIntegerMappedString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
-import com.hms_networks.americas.sc.extensions.eventfile.EventFile;
 import com.hms_networks.americas.sc.extensions.fileutils.FileConstants;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
@@ -155,10 +154,6 @@ public class HistoricalDataManager {
 
     exporter.close();
 
-    // Check for Circularized Event
-    if (EventFile.didFileCircularizedEventOccur()) {
-      throw new CircularizedFileException("A circularized event was found in the event logs.");
-    }
     return dataPoints;
   }
 
@@ -315,6 +310,8 @@ public class HistoricalDataManager {
    * @return data points parsed
    * @throws IOException if unable to access or read file
    * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeout if unable to complete EDB call 
+   * @throws CircularizedFileException if there is found to be a Circularized File Error
    */
   public static ArrayList parseHistoricalFile(String filename)
       throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
@@ -357,11 +354,6 @@ public class HistoricalDataManager {
 
       // Read next line before looping again
       line = reader.readLine();
-    }
-
-    // Check for Circularized Event
-    if (EventFile.didFileCircularizedEventOccur()) {
-      throw new CircularizedFileException("A circularized event was found in the event logs.");
     }
 
     reader.close();
