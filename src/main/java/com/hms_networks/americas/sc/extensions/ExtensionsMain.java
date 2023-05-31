@@ -21,8 +21,6 @@ public class ExtensionsMain {
     String projectName = ExtensionsMain.class.getPackage().getImplementationTitle();
     String projectVersion = ExtensionsMain.class.getPackage().getImplementationVersion();
 
-
-
     Date systemTimeDateObj = new Date(System.currentTimeMillis());
     System.out.println(systemTimeDateObj);
 

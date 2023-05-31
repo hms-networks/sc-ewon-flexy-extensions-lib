@@ -1,7 +1,5 @@
 package com.hms_networks.americas.sc.extensions.realtimedata;
 
-import java.util.ArrayList;
-
 import com.ewon.ewonitf.TagControl;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointBoolean;
@@ -11,6 +9,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
+import java.util.ArrayList;
 
 /**
  * This class will hold a list of data points for each tag. One instance of the class is made per

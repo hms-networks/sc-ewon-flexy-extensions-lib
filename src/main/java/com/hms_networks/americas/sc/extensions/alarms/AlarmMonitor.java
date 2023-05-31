@@ -4,7 +4,6 @@ import com.ewon.ewonitf.EvtTagAlarmListener;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
-
 import java.util.Date;
 
 /**
