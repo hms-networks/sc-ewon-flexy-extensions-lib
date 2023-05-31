@@ -9,7 +9,6 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointInteger;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointIntegerMappedString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
-import com.hms_networks.americas.sc.extensions.eventfile.EventFile;
 import com.hms_networks.americas.sc.extensions.fileutils.FileConstants;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
@@ -136,11 +135,9 @@ public class HistoricalDataManager {
    * @return dataPoints
    * @throws IOException for parsing Exceptions
    * @throws JSONException for JSON parsing Exceptions
-   * @throws EbdTimeoutException timeout for reading event file
-   * @throws CircularizedFileException when event log indicates circularized event
    */
   private static ArrayList parseEBDHistoricalLogExportResponse(Exporter exporter)
-      throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
+      throws IOException, JSONException {
 
     final String exporterFile = StringUtils.getStringFromInputStream(exporter, "UTF-8");
     final List eventFileLines = StringUtils.split(exporterFile, "\n");
@@ -155,10 +152,6 @@ public class HistoricalDataManager {
 
     exporter.close();
 
-    // Check for Circularized Event
-    if (EventFile.didFileCircularizedEventOccur()) {
-      throw new CircularizedFileException("A circularized event was found in the event logs.");
-    }
     return dataPoints;
   }
 
@@ -316,8 +309,7 @@ public class HistoricalDataManager {
    * @throws IOException if unable to access or read file
    * @throws JSONException if unable to parse int to string enumeration file
    */
-  public static ArrayList parseHistoricalFile(String filename)
-      throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
+  public static ArrayList parseHistoricalFile(String filename) throws IOException, JSONException {
     final int sleepBetweenLinesMs = 5;
     final BufferedReader reader = new BufferedReader(new FileReader(filename));
 
@@ -357,11 +349,6 @@ public class HistoricalDataManager {
 
       // Read next line before looping again
       line = reader.readLine();
-    }
-
-    // Check for Circularized Event
-    if (EventFile.didFileCircularizedEventOccur()) {
-      throw new CircularizedFileException("A circularized event was found in the event logs.");
     }
 
     reader.close();
