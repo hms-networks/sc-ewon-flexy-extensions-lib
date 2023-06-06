@@ -17,9 +17,6 @@ import java.io.IOException;
  */
 public class SCAppManagement {
 
-  /** File path for jvmrun file */
-  private static final String JVM_RUN_PATH = "/usr/jvmrun";
-
   /** Seconds to pause thread when waiting for WAN IP */
   private static final int WAN_WAIT_PERIOD_SECONDS = 20;
 
@@ -41,7 +38,7 @@ public class SCAppManagement {
    * @throws IOException if the jvmrun file is not found or is unreadable.
    */
   public static String getJvmCommand() throws IOException {
-    String jvmCommand = FileAccessManager.readFileToString(JVM_RUN_PATH);
+    String jvmCommand = FileAccessManager.readFileToString(SCAppConstants.JVM_RUN_PATH);
     Logger.LOG_DEBUG("Read contents of jvmrun file as: " + jvmCommand);
     return jvmCommand;
   }
