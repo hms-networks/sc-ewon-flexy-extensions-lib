@@ -4,7 +4,7 @@
 ### Features
 - N/A
 ### Bug Fixes
-- Corrected check for circularized file error, to only check for error since the last EBD request. 
+- Corrected check for circularized file error, to only check for error since the last EBD request.
 
 ## Version 1.13.10
 ### Features
