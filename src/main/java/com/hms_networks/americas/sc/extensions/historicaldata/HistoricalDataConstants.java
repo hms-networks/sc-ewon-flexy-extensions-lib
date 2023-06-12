@@ -1,5 +1,7 @@
 package com.hms_networks.americas.sc.extensions.historicaldata;
 
+import com.hms_networks.americas.sc.extensions.taginfo.TagType;
+
 /**
  * Class for storing constants used in the queueing package.
  *
@@ -64,4 +66,89 @@ class HistoricalDataConstants {
 
   /** Tag value representing the NaN Float/Double value. */
   public static final String TAG_VALUE_NAN = "nan";
+
+  /**
+   * The name of the diagnostic tag that is populated with the number of seconds that the queue is
+   * running behind.
+   */
+  public static final String QUEUE_DIAGNOSTIC_TAG_RUNNING_BEHIND_SECONDS_NAME =
+      "ConnectorQueueBehindSeconds";
+
+  /**
+   * The description of the diagnostic tag that is populated with the number of seconds that the
+   * queue is running behind.
+   */
+  public static final String QUEUE_DIAGNOSTIC_TAG_RUNNING_BEHIND_SECONDS_DESC =
+      "Diagnostic tag containing the amount of time, in seconds, that the connector data queue is"
+          + " running behind.";
+
+  /**
+   * The type of the diagnostic tag (DWord) that is populated with the number of seconds that the
+   * queue is running behind.
+   */
+  public static final int QUEUE_DIAGNOSTIC_TAG_RUNNING_BEHIND_SECONDS_TYPE =
+      TagType.DWORD.getTypeInt();
+
+  /**
+   * The default threshold for the number of seconds that the queue is running behind before the
+   * diagnostic tag value is displayed. This value is used when one is not explicitly provided.
+   *
+   * <p>The running behind time display threshold helps to prevent users from being alarmed by a
+   * running behind time which is within acceptable limits.
+   */
+  public static final int DEFAULT_QUEUE_DIAGNOSTIC_TAG_RUNNING_BEHIND_SECONDS_DISPLAY_THRESHOLD =
+      180;
+
+  /**
+   * The name of the diagnostic tag that is monitored for a request to forcibly reset the queue time
+   * tracker.
+   */
+  public static final String QUEUE_DIAGNOSTIC_TAG_FORCE_RESET_NAME = "ConnectorQueueForceReset";
+
+  /**
+   * The description of the diagnostic tag that is monitored for a request to forcibly reset the
+   * queue time tracker.
+   */
+  public static final String QUEUE_DIAGNOSTIC_TAG_FORCE_RESET_DESC =
+      "Diagnostic tag which can be used to request the connector to reset the queue time tracker.";
+
+  /**
+   * The type of the diagnostic tag (boolean) that is monitored for a request to forcibly reset the
+   * queue time tracker.
+   */
+  public static final int QUEUE_DIAGNOSTIC_TAG_FORCE_RESET_TYPE = TagType.BOOLEAN.getTypeInt();
+
+  /**
+   * The value used to represent true for the diagnostic tag that is monitored for a request to
+   * forcibly reset the queue time tracker.
+   */
+  public static final int QUEUE_DIAGNOSTIC_TAG_FORCE_RESET_TRUE_VALUE = 1;
+
+  /**
+   * The value used to represent false for the diagnostic tag that is monitored for a request to
+   * forcibly reset the queue time tracker.
+   */
+  public static final int QUEUE_DIAGNOSTIC_TAG_FORCE_RESET_FALSE_VALUE = 0;
+
+  /**
+   * The name of the diagnostic tag that is populated with the number of times that the queue has
+   * been polled for data.
+   */
+  public static final String QUEUE_DIAGNOSTIC_TAG_POLL_COUNT_NAME = "ConnectorQueuePollCount";
+
+  /**
+   * The description of the diagnostic tag that is populated with the number of times that the queue
+   * has been polled for data.
+   */
+  public static final String QUEUE_DIAGNOSTIC_TAG_POLL_COUNT_DESC =
+      "Diagnostic tag containing the number of times the queue has been polled for data.";
+
+  /**
+   * The type of the diagnostic tag (DWord) that is populated with the number of times that the
+   * queue has been polled for data.
+   */
+  public static final int QUEUE_DIAGNOSTIC_TAG_POLL_COUNT_TYPE = TagType.DWORD.getTypeInt();
+
+  /** The IO server used for queue diagnostic tag(s). */
+  public static final String QUEUE_DIAGNOSTIC_TAG_IO_SERVER = "MEM";
 }
