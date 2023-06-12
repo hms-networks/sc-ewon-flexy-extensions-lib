@@ -46,6 +46,24 @@ public class HistoricalDataQueueManager {
   /** Boolean flag indicating if time has been initialized. */
   private static boolean hasInitTime = false;
 
+  /**
+   * Boolean flag indicating whether the historical data queue diagnostic tags should be enabled.
+   */
+  private static boolean enableDiagnosticTags = false;
+
+  /**
+   * The threshold (in seconds) for the running behind time tag value to be displayed. If the
+   * running behind time is less than this value, the diagnostic tag value will be 0.
+   *
+   * <p>The running behind time display threshold helps to prevent users from being alarmed by a
+   * running behind time which is within acceptable limits.
+   */
+  private static long queueRunningBehindTimeTagDisplayThresholdSeconds =
+      HistoricalDataConstants.DEFAULT_QUEUE_DIAGNOSTIC_TAG_RUNNING_BEHIND_SECONDS_DISPLAY_THRESHOLD;
+
+  /** The count of poll requests that have been made to the historical data queue. */
+  private static long queuePollCount = 0;
+
   /** File path for time marker file 1. */
   private static final String timeMarkerFile1Name =
       HistoricalDataConstants.QUEUE_FILE_FOLDER
@@ -143,6 +161,46 @@ public class HistoricalDataQueueManager {
   }
 
   /**
+   * Sets the flag indicating if the historical data queue diagnostic tags should be enabled.
+   *
+   * <p>This method does not set the threshold for the running behind time tag value to be
+   * displayed. To set the threshold, use {@link #setEnableDiagnosticTags(boolean, long)}, which
+   * sets the threshold in addition to the desired historical data queue diagnostic tags enable
+   * value.
+   *
+   * <p>If a threshold is not set, the default threshold will be used, which is defined in {@link
+   * HistoricalDataConstants#DEFAULT_QUEUE_DIAGNOSTIC_TAG_RUNNING_BEHIND_SECONDS_DISPLAY_THRESHOLD}.
+   *
+   * @param enableDiagnosticTags true if historical data queue diagnostic tags should be enabled,
+   *     false if not
+   */
+  public static void setEnableDiagnosticTags(boolean enableDiagnosticTags) {
+    HistoricalDataQueueManager.enableDiagnosticTags = enableDiagnosticTags;
+  }
+
+  /**
+   * Sets the flag indicating if the historical data queue diagnostic tags should be enabled, and
+   * the threshold (in seconds) for the running behind time tag value to be displayed. If the
+   * running behind time is less than this value, the diagnostic tag value will be 0.
+   *
+   * <p>The running behind time display threshold helps to prevent users from being alarmed by a
+   * running behind time which is within acceptable limits.
+   *
+   * @param enableDiagnosticTags true if historical data queue diagnostic tags should be enabled,
+   *     false if not
+   * @param queueRunningBehindTimeTagDisplayThresholdSeconds the threshold (in seconds) for the
+   *     running behind time tag value to be displayed. If the running behind time is less than this
+   *     value, the diagnostic tag value will be 0. This helps to prevent users from being alarmed
+   *     by a running behind time which is within acceptable limits.
+   */
+  public static void setEnableDiagnosticTags(
+      boolean enableDiagnosticTags, long queueRunningBehindTimeTagDisplayThresholdSeconds) {
+    HistoricalDataQueueManager.enableDiagnosticTags = enableDiagnosticTags;
+    HistoricalDataQueueManager.queueRunningBehindTimeTagDisplayThresholdSeconds =
+        queueRunningBehindTimeTagDisplayThresholdSeconds;
+  }
+
+  /**
    * Gets a boolean representing if both of the time tracker file exists.
    *
    * @return true if both time tracker file exists
@@ -204,6 +262,8 @@ public class HistoricalDataQueueManager {
    * @throws JSONException if unable to parse int to string enumeration file
    * @throws CircularizedFileException if circularized file exception was found
    * @throws EbdTimeoutException for EBD timeouts
+   * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
+   * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
    */
   public static synchronized ArrayList getFifoNextSpanDataAllGroups(boolean startNewTimeTracker)
       throws IOException,
@@ -211,7 +271,9 @@ public class HistoricalDataQueueManager {
           CorruptedTimeTrackerException,
           JSONException,
           CircularizedFileException,
-          EbdTimeoutException {
+          EbdTimeoutException,
+          DiagnosticTagConfigurationException,
+          DiagnosticTagUpdateException {
     final boolean includeTagGroupA = true;
     final boolean includeTagGroupB = true;
     final boolean includeTagGroupC = true;
@@ -341,6 +403,8 @@ public class HistoricalDataQueueManager {
    * @throws JSONException if unable to parse int to string enumeration file
    * @throws EbdTimeoutException when EBD call times out
    * @throws CircularizedFileException if circularized file exception was found
+   * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
+   * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
    */
   public static synchronized ArrayList getFifoNextSpanData(
       boolean startNewTimeTracker,
@@ -353,14 +417,37 @@ public class HistoricalDataQueueManager {
           CorruptedTimeTrackerException,
           JSONException,
           EbdTimeoutException,
-          CircularizedFileException {
+          CircularizedFileException,
+          DiagnosticTagConfigurationException,
+          DiagnosticTagUpdateException {
 
     if (!hasInitTime) {
       initTimeTrackerFiles();
     }
 
+    // Configure diagnostic tag manager if it should be enabled and is not already configured
+    if (enableDiagnosticTags && !HistoricalDataQueueDiagnosticTagManager.isConfigured()) {
+      try {
+        HistoricalDataQueueDiagnosticTagManager.configureQueueDiagnosticTags();
+      } catch (Exception e) {
+        throw new DiagnosticTagConfigurationException(
+            "Unable to configure historical data queue diagnostic tags!", e);
+      }
+    }
+
+    // If diagnostic tags are enabled, reset if requested (and not already requested)
+    boolean startNewTimeTrackerFinal = startNewTimeTracker;
+    if (enableDiagnosticTags
+        && HistoricalDataQueueDiagnosticTagManager.isQueueDiagnosticTagForceResetRequested()) {
+      startNewTimeTrackerFinal = true;
+      queuePollCount = 0;
+    }
+
+    // Increment poll count
+    queuePollCount++;
+
     // Get start time from file, or start new time tracker if startNewTimeTracker is true.
-    long startTimeTrackerMsLong = getTrackingStartTime(startNewTimeTracker);
+    long startTimeTrackerMsLong = getTrackingStartTime(startNewTimeTrackerFinal);
 
     /*
      * Calculate end time from start time + time span. Use current time if calculated
@@ -418,7 +505,30 @@ public class HistoricalDataQueueManager {
     }
 
     // Store end time +1 ms (to prevent duplicate data)
-    updateTrackingStartTime(endTimeTrackerMsLong + 1);
+    long nextStartTimeTrackerMsLong = endTimeTrackerMsLong + 1;
+    updateTrackingStartTime(nextStartTimeTrackerMsLong);
+
+    // Update diagnostic tags (if they are enabled)
+    if (enableDiagnosticTags) {
+      // Get running behind time (and set to 0 if threshold not met)
+      long newRunningBehindTimeMsValue = System.currentTimeMillis() - nextStartTimeTrackerMsLong;
+      if (newRunningBehindTimeMsValue
+          < SCTimeUnit.SECONDS.toMillis(queueRunningBehindTimeTagDisplayThresholdSeconds)) {
+        newRunningBehindTimeMsValue = 0;
+      }
+
+      // Always set reset queue diagnostic tag to false, reset is one-time
+      boolean newForceResetValue = false;
+
+      // Update diagnostic tags
+      try {
+        HistoricalDataQueueDiagnosticTagManager.updateDiagnosticTags(
+            newRunningBehindTimeMsValue, newForceResetValue, queuePollCount);
+      } catch (Exception e) {
+        throw new DiagnosticTagUpdateException(
+            "Unable to update historical data queue diagnostic tags!", e);
+      }
+    }
 
     // Return data
     return queueData;
