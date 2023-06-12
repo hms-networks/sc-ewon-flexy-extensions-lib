@@ -136,7 +136,7 @@ public class HistoricalDataQueueManager {
   /**
    * Sets the flag indicating if string history data should be included in queue data.
    *
-   * @param stringHistoryEnabled true if string history should be include, false if not
+   * @param stringHistoryEnabled true if string history should be included, false if not
    */
   public static void setStringHistoryEnabled(boolean stringHistoryEnabled) {
     HistoricalDataQueueManager.stringHistoryEnabled = stringHistoryEnabled;
