@@ -1,5 +1,13 @@
 # Ewon Flexy Extensions Library Changelog
 
+# Version 1.14.1-pre1
+### Features
+- Added historical data queue diagnostic tag support to HistoricalDataQueueManager.java
+  - Disabled by default. May be enabled using the `setEnableDiagnosticTags(boolean)` or `setEnableDiagnosticTags(boolean, long)` methods.
+  - Diagnostic tags are updated automatically after each historical data queue operation.
+### Bug Fixes
+- N/A
+
 # Version 1.14.0
 ### Features
 - Added SCAppRebootWatchdog.java to monitor the Ewon Flexy for reboot loops caused by malfunctioning

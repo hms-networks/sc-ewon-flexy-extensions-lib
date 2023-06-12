@@ -10,7 +10,7 @@ import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
  * HistoricalDataQueueManager}.
  *
  * @author HMS Networks, MU Americas Solution Center
- * @since 1.14.1
+ * @since 1.14.1-pre1
  */
 public class HistoricalDataQueueDiagnosticTagManager {
 

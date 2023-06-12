@@ -4,7 +4,7 @@ package com.hms_networks.americas.sc.extensions.historicaldata;
  * Class for Diagnostic Tag Update Exception.
  *
  * @author HMS Networks, MU Americas Solution Center
- * @since 1.14.1
+ * @since 1.14.1-pre1
  */
 public class DiagnosticTagUpdateException extends Exception {
 
