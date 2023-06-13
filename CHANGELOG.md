@@ -1,6 +1,6 @@
 # Ewon Flexy Extensions Library Changelog
 
-# Version 1.14.0
+## Version 1.14.0
 ### Features
 - Added SCAppRebootWatchdog.java to monitor the Ewon Flexy for reboot loops caused by malfunctioning
   Java applications. In the event of a reboot loop, the watchdog will disable the jvmrun file.
