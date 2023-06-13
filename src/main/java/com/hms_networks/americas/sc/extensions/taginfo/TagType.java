@@ -45,7 +45,7 @@ public class TagType {
   public static final TagType INTEGER_MAPPED_STRING = new TagType(INTEGER_MAPPED_STRING_INT);
 
   /** Instance tag type integer. */
-  private final int typeID;
+  private final int typeInt;
 
   /**
    * Private (internal) constructor for creating an instance of {@link TagType} with a tag type
@@ -53,10 +53,19 @@ public class TagType {
    *
    * <p>Note: Tag type integers shall be unique.
    *
-   * @param typeID integer to represent tag type.
+   * @param typeInt integer to represent tag type.
    */
-  private TagType(int typeID) {
-    this.typeID = typeID;
+  private TagType(int typeInt) {
+    this.typeInt = typeInt;
+  }
+
+  /**
+   * Returns the integer value of the tag type.
+   *
+   * @return tag type integer
+   */
+  public int getTypeInt() {
+    return typeInt;
   }
 
   /**
