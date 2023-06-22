@@ -71,7 +71,7 @@ public class HistoricalDataManager {
    * @param stringHistorical export string historical logs if true
    * @return EBD string
    */
-  private static String prepareHistoricalFifoReadEBDString(
+  static String prepareHistoricalFifoReadEBDString(
       String startTime,
       String endTime,
       boolean includeTagGroupA,
@@ -374,7 +374,7 @@ public class HistoricalDataManager {
    * @throws IOException if unable to access tag information
    * @throws JSONException if unable to parse int to string enumeration file
    */
-  private static DataPoint parseHistoricalFileLine(String line) throws IOException, JSONException {
+  static DataPoint parseHistoricalFileLine(String line) throws IOException, JSONException {
     /*
      * Example Line:
      * "TagId";"TimeInt";"TimeStr";"IsInitValue";"Value";"IQuality"
