@@ -1,5 +1,6 @@
 package com.hms_networks.americas.sc.extensions.historicaldata;
 
+import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
@@ -82,6 +83,12 @@ public class HistoricalDataQueueManager {
   private static long maxQueueGetsBehindMs = DISABLED_MAX_HIST_FIFO_GET_BEHIND_MS;
 
   /**
+   * {@code true}/{@code false} whether the number of dataPoints from the most recent historical
+   * read was zero
+   */
+  private static boolean lastReadDataPointsEmpty = false;
+
+  /**
    * Get the current configured FIFO queue time span in milliseconds.
    *
    * @return FIFO queue time span in ms
@@ -147,7 +154,7 @@ public class HistoricalDataQueueManager {
    * @param time <code>long</code> time value to format
    * @return formatted time string for EBD calls
    */
-  private static String convertToEBDTimeFormat(long time) {
+  static String convertToEBDTimeFormat(long time) {
     return new SimpleDateFormat(HistoricalDataConstants.EBD_TIME_FORMAT).format(new Date(time));
   }
 
@@ -264,6 +271,7 @@ public class HistoricalDataQueueManager {
    * @throws EbdTimeoutException for EBD timeouts
    * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
    * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
+   * @throws Exception for errors related to getting fields of {@link DataPoint} objects
    */
   public static synchronized ArrayList getFifoNextSpanDataAllGroups(boolean startNewTimeTracker)
       throws IOException,
@@ -273,7 +281,8 @@ public class HistoricalDataQueueManager {
           CircularizedFileException,
           EbdTimeoutException,
           DiagnosticTagConfigurationException,
-          DiagnosticTagUpdateException {
+          DiagnosticTagUpdateException,
+          Exception {
     final boolean includeTagGroupA = true;
     final boolean includeTagGroupB = true;
     final boolean includeTagGroupC = true;
@@ -405,6 +414,7 @@ public class HistoricalDataQueueManager {
    * @throws CircularizedFileException if circularized file exception was found
    * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
    * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
+   * @throws Exception for errors related to getting fields of {@link DataPoint} objects
    */
   public static synchronized ArrayList getFifoNextSpanData(
       boolean startNewTimeTracker,
@@ -419,7 +429,8 @@ public class HistoricalDataQueueManager {
           EbdTimeoutException,
           CircularizedFileException,
           DiagnosticTagConfigurationException,
-          DiagnosticTagUpdateException {
+          DiagnosticTagUpdateException,
+          Exception {
 
     if (!hasInitTime) {
       initTimeTrackerFiles();
@@ -456,52 +467,82 @@ public class HistoricalDataQueueManager {
     long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
     long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
 
-    // Calculate EBD start and end time
-    final String ebdStartTime = convertToEBDTimeFormat(startTimeTrackerMsLong);
-    final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
+    ArrayList queueData;
 
-    // Run standard EBD export call (int, float, ...)
-    boolean stringHistorical = false;
+    // Check to see if rapid catch up should be enabled
+    if (RapidCatchUp.shouldEnterRapidCatchUpMode(lastReadDataPointsEmpty, endTimeTrackerMsLong)) {
 
-    final long startOfEbdHistoricalReadMs = System.currentTimeMillis();
+      boolean stringHistorical = false;
+      RapidCatchUpTracker catchUpResult =
+          RapidCatchUp.rapidCatchUpRequest(
+              startTimeTrackerMsLong,
+              includeTagGroupA,
+              includeTagGroupB,
+              includeTagGroupC,
+              includeTagGroupD,
+              stringHistorical);
 
-    ArrayList queueData =
-        HistoricalDataManager.readHistoricalFifo(
+      if (catchUpResult.isHistoricalTrackingCaughtUp()) {
+        // If historical tracking is caught up, set lastReadDataPointsEmpty to false
+        lastReadDataPointsEmpty = false;
+      }
+
+      // Regardless of caught up status, update end time
+      endTimeTrackerMsLong = catchUpResult.getTrackingEndTimeMilliseconds();
+
+      queueData = new ArrayList();
+    } else {
+
+      // Calculate EBD start and end time
+      final String ebdStartTime = convertToEBDTimeFormat(startTimeTrackerMsLong);
+      final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
+
+      // Run standard EBD export call (int, float, ...)
+      boolean stringHistorical = false;
+
+      final long startOfEbdHistoricalReadMs = System.currentTimeMillis();
+
+      queueData =
+          HistoricalDataManager.readHistoricalFifo(
+              ebdStartTime,
+              ebdEndTime,
+              includeTagGroupA,
+              includeTagGroupB,
+              includeTagGroupC,
+              includeTagGroupD,
+              stringHistorical);
+
+      // Run string EBD export call if enabled
+      if (stringHistoryEnabled) {
+        final String ebdStringFileName =
+            HistoricalDataConstants.QUEUE_FILE_FOLDER
+                + "/"
+                + HistoricalDataConstants.QUEUE_EBD_STRING_FILE_NAME
+                + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
+        stringHistorical = true;
+        HistoricalDataManager.exportHistoricalToFile(
             ebdStartTime,
             ebdEndTime,
+            ebdStringFileName,
             includeTagGroupA,
             includeTagGroupB,
             includeTagGroupC,
             includeTagGroupD,
             stringHistorical);
 
-    // Run string EBD export call if enabled
-    if (stringHistoryEnabled) {
-      final String ebdStringFileName =
-          HistoricalDataConstants.QUEUE_FILE_FOLDER
-              + "/"
-              + HistoricalDataConstants.QUEUE_EBD_STRING_FILE_NAME
-              + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
-      stringHistorical = true;
-      HistoricalDataManager.exportHistoricalToFile(
-          ebdStartTime,
-          ebdEndTime,
-          ebdStringFileName,
-          includeTagGroupA,
-          includeTagGroupB,
-          includeTagGroupC,
-          includeTagGroupD,
-          stringHistorical);
+        // Parse string EBD export call and combine with standard EBD call results
+        ArrayList queueStringData = HistoricalDataManager.parseHistoricalFile(ebdStringFileName);
+        queueData.addAll(queueStringData);
+      }
 
-      // Parse string EBD export call and combine with standard EBD call results
-      ArrayList queueStringData = HistoricalDataManager.parseHistoricalFile(ebdStringFileName);
-      queueData.addAll(queueStringData);
-    }
+      // Check for Circularized Event
+      if (CircularizedFileCheck.didFileCircularizedEventOccurSinceAbsolute(
+          startOfEbdHistoricalReadMs)) {
+        throw new CircularizedFileException("A circularized event was found in the event logs.");
+      }
 
-    // Check for Circularized Event
-    if (CircularizedFileCheck.didFileCircularizedEventOccurSinceAbsolute(
-        startOfEbdHistoricalReadMs)) {
-      throw new CircularizedFileException("A circularized event was found in the event logs.");
+      // Set the lastReadDataPointsEmpty if size is zero or less
+      lastReadDataPointsEmpty = queueData.size() <= 0;
     }
 
     // Store end time +1 ms (to prevent duplicate data)
