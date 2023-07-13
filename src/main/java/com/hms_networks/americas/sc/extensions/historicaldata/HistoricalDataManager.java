@@ -29,6 +29,81 @@ import java.util.List;
 public class HistoricalDataManager {
 
   /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns
+   * Datapoints.
+   *
+   * @param startTime start time of export
+   * @param endTime end time of export
+   * @param includeTagGroupA include tag group A
+   * @param includeTagGroupB include tag group B
+   * @param includeTagGroupC include tag group C
+   * @param includeTagGroupD include tag group D
+   * @param stringHistorical export string historical logs if true
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
+   * @throws CircularizedFileException if circularized file event is found
+   */
+  public static ArrayList readHistoricalFifo(
+      String startTime,
+      String endTime,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      boolean stringHistorical)
+      throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
+
+    // create EBD string
+    final String ebdStr =
+        prepareHistoricalFifoReadEBDString(
+            startTime,
+            endTime,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            stringHistorical);
+
+    // Execute EBD call and parse results
+    final Exporter exporter = executeEbdCall(ebdStr);
+    return parseEBDHistoricalLogExportResponse(exporter);
+  }
+
+  /**
+   * Executes EBD call, waits for data return.
+   *
+   * @param ebdStr EBD string
+   * @return EBD Exporter - caller must close exporter
+   * @throws EbdTimeoutException when there is no response before timeout period
+   * @throws IOException when there is an Exporter Exception
+   */
+  public static Exporter executeEbdCall(String ebdStr) throws IOException, EbdTimeoutException {
+    final long start = System.currentTimeMillis();
+    final Exporter exporter = new Exporter(ebdStr);
+    int available = exporter.available();
+    // check on data availability
+    while (available == 0) {
+      // sleep
+      try {
+        Thread.sleep(HistoricalDataConstants.DEFAULT_EBD_THREAD_SLEEP_MS);
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      }
+      // check for timeout
+      if (System.currentTimeMillis() - start > HistoricalDataConstants.MAX_EBD_WAIT_MS) {
+        exporter.close();
+        throw new EbdTimeoutException("Timeout waiting for Export Block Descriptor.");
+      }
+
+      // check for data available
+      available = exporter.available();
+    }
+    return exporter;
+  }
+
+  /**
    * Prepare Read Historical Log Export Block Descriptor (EBD) string.
    *
    * @param startTime start time of export
@@ -122,81 +197,6 @@ public class HistoricalDataManager {
     exporter.close();
 
     return dataPoints;
-  }
-
-  /**
-   * Executes EBD call, waits for data return.
-   *
-   * @param ebdStr EBD string
-   * @return EBD Exporter - caller must close exporter
-   * @throws EbdTimeoutException when there is no response before timeout period
-   * @throws IOException when there is an Exporter Exception
-   */
-  public static Exporter executeEbdCall(String ebdStr) throws IOException, EbdTimeoutException {
-    final long start = System.currentTimeMillis();
-    final Exporter exporter = new Exporter(ebdStr);
-    int available = exporter.available();
-    // check on data availability
-    while (available == 0) {
-      // sleep
-      try {
-        Thread.sleep(HistoricalDataConstants.DEFAULT_EBD_THREAD_SLEEP_MS);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
-      // check for timeout
-      if (System.currentTimeMillis() - start > HistoricalDataConstants.MAX_EBD_WAIT_MS) {
-        exporter.close();
-        throw new EbdTimeoutException("Timeout waiting for Export Block Descriptor.");
-      }
-
-      // check for data available
-      available = exporter.available();
-    }
-    return exporter;
-  }
-
-  /**
-   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns
-   * Datapoints.
-   *
-   * @param startTime start time of export
-   * @param endTime end time of export
-   * @param includeTagGroupA include tag group A
-   * @param includeTagGroupB include tag group B
-   * @param includeTagGroupC include tag group C
-   * @param includeTagGroupD include tag group D
-   * @param stringHistorical export string historical logs if true
-   * @return data points from response
-   * @throws IOException if export block descriptor fails
-   * @throws JSONException if unable to parse int to string enumeration file
-   * @throws EbdTimeoutException for EBD timeout
-   * @throws CircularizedFileException if circularized file event is found
-   */
-  public static ArrayList readHistoricalFifo(
-      String startTime,
-      String endTime,
-      boolean includeTagGroupA,
-      boolean includeTagGroupB,
-      boolean includeTagGroupC,
-      boolean includeTagGroupD,
-      boolean stringHistorical)
-      throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
-
-    // create EBD string
-    final String ebdStr =
-        prepareHistoricalFifoReadEBDString(
-            startTime,
-            endTime,
-            includeTagGroupA,
-            includeTagGroupB,
-            includeTagGroupC,
-            includeTagGroupD,
-            stringHistorical);
-
-    // Execute EBD call and parse results
-    final Exporter exporter = executeEbdCall(ebdStr);
-    return parseEBDHistoricalLogExportResponse(exporter);
   }
 
   /**
