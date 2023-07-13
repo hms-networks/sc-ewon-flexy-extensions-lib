@@ -512,28 +512,22 @@ public class HistoricalDataQueueManager {
               includeTagGroupD,
               stringHistorical);
 
-      // Run string EBD export call if enabled
-      if (stringHistoryEnabled) {
-        final String ebdStringFileName =
-            HistoricalDataConstants.QUEUE_FILE_FOLDER
-                + "/"
-                + HistoricalDataConstants.QUEUE_EBD_STRING_FILE_NAME
-                + HistoricalDataConstants.QUEUE_FILE_EXTENSION;
-        stringHistorical = true;
-        HistoricalDataManager.exportHistoricalToFile(
-            ebdStartTime,
-            ebdEndTime,
-            ebdStringFileName,
-            includeTagGroupA,
-            includeTagGroupB,
-            includeTagGroupC,
-            includeTagGroupD,
-            stringHistorical);
+    // Run string EBD export call if enabled
+    if (stringHistoryEnabled) {
+      stringHistorical = true;
+      ArrayList queueStringData =
+          HistoricalDataManager.readHistoricalFifo(
+              ebdStartTime,
+              ebdEndTime,
+              includeTagGroupA,
+              includeTagGroupB,
+              includeTagGroupC,
+              includeTagGroupD,
+              stringHistorical);
 
-        // Parse string EBD export call and combine with standard EBD call results
-        ArrayList queueStringData = HistoricalDataManager.parseHistoricalFile(ebdStringFileName);
-        queueData.addAll(queueStringData);
-      }
+      // Combine with standard EBD call results
+      queueData.addAll(queueStringData);
+    }
 
       // Check for Circularized Event
       if (CircularizedFileCheck.didFileCircularizedEventOccurSinceAbsolute(
