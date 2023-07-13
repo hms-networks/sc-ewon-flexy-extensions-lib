@@ -9,7 +9,6 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointInteger;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointIntegerMappedString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
-import com.hms_networks.americas.sc.extensions.fileutils.FileConstants;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
@@ -17,8 +16,6 @@ import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoEnumeratedIntToString;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,34 +27,6 @@ import java.util.List;
  * @since 1.0.0
  */
 public class HistoricalDataManager {
-
-  /**
-   * Exports the historical log for tags in tag groups A, B, C and D between <code>startTime</code>
-   * and <code>endTime</code> to <code>destinationFileName</code>.
-   *
-   * @param startTime start time of export
-   * @param endTime end time of export
-   * @param destinationFileName path of destination file
-   * @param stringHistorical export string historical logs if true
-   * @throws IOException if export block descriptor fails
-   */
-  public static void exportAllHistoricalToFile(
-      String startTime, String endTime, String destinationFileName, boolean stringHistorical)
-      throws IOException {
-    final boolean includeTagGroupA = true;
-    final boolean includeTagGroupB = true;
-    final boolean includeTagGroupC = true;
-    final boolean includeTagGroupD = true;
-    exportHistoricalToFile(
-        startTime,
-        endTime,
-        destinationFileName,
-        includeTagGroupA,
-        includeTagGroupB,
-        includeTagGroupC,
-        includeTagGroupD,
-        stringHistorical);
-  }
 
   /**
    * Prepare Read Historical Log Export Block Descriptor (EBD) string.
@@ -228,132 +197,6 @@ public class HistoricalDataManager {
     // Execute EBD call and parse results
     final Exporter exporter = executeEbdCall(ebdStr);
     return parseEBDHistoricalLogExportResponse(exporter);
-  }
-
-  /**
-   * Exports the historical log for tags in specified tag groups between <code>startTime</code> and
-   * <code>endTime</code> to <code>destinationFileName</code>.
-   *
-   * @param startTime start time of export
-   * @param endTime end time of export
-   * @param destinationFileName path of destination file
-   * @param includeTagGroupA include tag group A
-   * @param includeTagGroupB include tag group B
-   * @param includeTagGroupC include tag group C
-   * @param includeTagGroupD include tag group D
-   * @param stringHistorical export string historical logs if true
-   * @throws IOException if export block descriptor fails
-   */
-  public static void exportHistoricalToFile(
-      String startTime,
-      String endTime,
-      String destinationFileName,
-      boolean includeTagGroupA,
-      boolean includeTagGroupB,
-      boolean includeTagGroupC,
-      boolean includeTagGroupD,
-      boolean stringHistorical)
-      throws IOException {
-    // Check for valid group selection
-    if (!includeTagGroupA && !includeTagGroupB && !includeTagGroupC && !includeTagGroupD) {
-      throw new IllegalArgumentException(
-          "Cannot generate historical logs with no tag groups selected.");
-    }
-
-    // Build string of tag groups for filter type
-    String tagGroupFilterStr = "";
-    if (includeTagGroupA) {
-      tagGroupFilterStr += "A";
-    }
-    if (includeTagGroupB) {
-      tagGroupFilterStr += "B";
-    }
-    if (includeTagGroupC) {
-      tagGroupFilterStr += "C";
-    }
-    if (includeTagGroupD) {
-      tagGroupFilterStr += "D";
-    }
-
-    // Get EBD data type
-    String ebdDataType;
-    if (stringHistorical) {
-      ebdDataType = "HS";
-    } else {
-      ebdDataType = "HL";
-    }
-
-    /*
-     * Build EBD string with parameters
-     * dt[ebdDataType]: data type, value specified in string ebdDataType
-     * ftT: file type, text
-     * startTime: start time for data
-     * endTime: end time for data
-     * flABCD: filter type, specified tag groups
-     */
-    final String ebdStr =
-        "$dt" + ebdDataType + "$ftT$st" + startTime + "$et" + endTime + "$fl" + tagGroupFilterStr;
-
-    // Perform EBD call
-    Exporter exporter = new Exporter(ebdStr);
-    exporter.ExportTo(FileConstants.FILE_URL_PREFIX + destinationFileName);
-    exporter.close();
-  }
-
-  /**
-   * Parse the specified historical file line by line and return an array list of data points
-   * parsed.
-   *
-   * @param filename historical file to parse
-   * @return data points parsed
-   * @throws IOException if unable to access or read file
-   * @throws JSONException if unable to parse int to string enumeration file
-   */
-  public static ArrayList parseHistoricalFile(String filename) throws IOException, JSONException {
-    final int sleepBetweenLinesMs = 5;
-    final BufferedReader reader = new BufferedReader(new FileReader(filename));
-
-    // Create header tracker and variable to store current line
-    boolean headerPreviouslyEncountered = false;
-    String line = reader.readLine();
-
-    // Loop through lines in file until end and store data points
-    ArrayList dataPoints = new ArrayList();
-    while (line != null) {
-
-      // Only parse lines after the header was encountered
-      if (headerPreviouslyEncountered) {
-        // Parse line
-        DataPoint lineDataPoint = parseHistoricalFileLine(line);
-
-        if (lineDataPoint != null) {
-          dataPoints.add(lineDataPoint);
-        }
-
-        /*
-         * Reading historical log EBD file can take a large amount of time.
-         * Sleeping the thread allows the Flexy time to perform other tasks
-         * and service its watchdog timers.
-         */
-        try {
-          Thread.sleep(sleepBetweenLinesMs);
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-      } else {
-        // Check for header (first line with greater than 0 non-whitespace length)
-        if (line.trim().length() > 0) {
-          headerPreviouslyEncountered = true;
-        }
-      }
-
-      // Read next line before looping again
-      line = reader.readLine();
-    }
-
-    reader.close();
-
-    return dataPoints;
   }
 
   /**
