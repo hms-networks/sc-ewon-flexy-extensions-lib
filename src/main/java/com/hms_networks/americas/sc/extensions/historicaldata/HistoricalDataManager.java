@@ -43,7 +43,6 @@ public class HistoricalDataManager {
    * @throws IOException if export block descriptor fails
    * @throws JSONException if unable to parse int to string enumeration file
    * @throws EbdTimeoutException for EBD timeout
-   * @throws CircularizedFileException if circularized file event is found
    */
   public static ArrayList readHistoricalFifo(
       String startTime,
@@ -53,7 +52,7 @@ public class HistoricalDataManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD,
       boolean stringHistorical)
-      throws IOException, JSONException, EbdTimeoutException, CircularizedFileException {
+      throws IOException, JSONException, EbdTimeoutException {
 
     // create EBD string
     final String ebdStr =
