@@ -172,7 +172,7 @@ public class HistoricalDataManager {
 
   /**
    * Parses Export Block Descriptor Historical Log response into dataPoints. Note: this function
-   * only handles Historical List responses.
+   * only handles Historical Log responses.
    *
    * @param exporter EBD Exporter
    * @return dataPoints
