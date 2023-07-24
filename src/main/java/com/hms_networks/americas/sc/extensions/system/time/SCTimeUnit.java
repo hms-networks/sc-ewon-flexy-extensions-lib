@@ -47,6 +47,27 @@ public class SCTimeUnit {
   private static final long MILLISECONDS_PER_DAY = 86400000L;
 
   /**
+   * The number of milliseconds in one week.
+   *
+   * @since 1.0.0
+   */
+  private static final long MILLISECONDS_PER_WEEK = 604800000L;
+
+  /**
+   * The number of milliseconds in one month.
+   *
+   * @since 1.0.0
+   */
+  private static final long MILLISECONDS_PER_MONTH = 2629800000L;
+
+  /**
+   * The number of milliseconds in one year.
+   *
+   * @since 1.0.0
+   */
+  private static final long MILLISECONDS_PER_YEAR = 31557600000L;
+
+  /**
    * The number of milliseconds which correspond to the time unit.
    *
    * @since 1.0.0
@@ -122,6 +143,48 @@ public class SCTimeUnit {
    * @since 1.0.1
    */
   public static final SCTimeUnit DAY = DAYS;
+
+  /**
+   * Time unit object representing one week.
+   *
+   * @since 1.0.0
+   */
+  public static final SCTimeUnit WEEKS = new SCTimeUnit(MILLISECONDS_PER_WEEK);
+
+  /**
+   * Time unit object alias representing one week.
+   *
+   * @since 1.0.1
+   */
+  public static final SCTimeUnit WEEK = WEEKS;
+
+  /**
+   * Time unit object representing one month.
+   *
+   * @since 1.0.0
+   */
+  public static final SCTimeUnit MONTHS = new SCTimeUnit(MILLISECONDS_PER_MONTH);
+
+  /**
+   * Time unit object alias representing one month.
+   *
+   * @since 1.0.1
+   */
+  public static final SCTimeUnit MONTH = MONTHS;
+
+  /**
+   * Time unit object representing one year.
+   *
+   * @since 1.0.0
+   */
+  public static final SCTimeUnit YEARS = new SCTimeUnit(MILLISECONDS_PER_YEAR);
+
+  /**
+   * Time unit object alias representing one year.
+   *
+   * @since 1.0.1
+   */
+  public static final SCTimeUnit YEAR = YEARS;
 
   /**
    * Constructor (private) for creating a time unit with the specified number of milliseconds.
@@ -296,5 +359,71 @@ public class SCTimeUnit {
    */
   public long toDays() {
     return millisecondsInUnit / MILLISECONDS_PER_DAY;
+  }
+
+  /**
+   * Converts the specified time to weeks.
+   *
+   * @param time specified time in milliseconds
+   * @return specified time to weeks
+   * @since 1.0.0
+   */
+  public long toWeeks(long time) {
+    long timeInMillis = time * millisecondsInUnit;
+    return timeInMillis / MILLISECONDS_PER_WEEK;
+  }
+
+  /**
+   * Converts the one (1) of the time unit to weeks.
+   *
+   * @return one (1) of the time unit converted to weeks
+   * @since 1.0.1
+   */
+  public long toWeeks() {
+    return millisecondsInUnit / MILLISECONDS_PER_WEEK;
+  }
+
+  /**
+   * Converts the specified time to months.
+   *
+   * @param time specified time in milliseconds
+   * @return specified time to months
+   * @since 1.0.0
+   */
+  public long toMonths(long time) {
+    long timeInMillis = time * millisecondsInUnit;
+    return timeInMillis / MILLISECONDS_PER_MONTH;
+  }
+
+  /**
+   * Converts the one (1) of the time unit to months.
+   *
+   * @return one (1) of the time unit converted to months
+   * @since 1.0.1
+   */
+  public long toMonths() {
+    return millisecondsInUnit / MILLISECONDS_PER_MONTH;
+  }
+
+  /**
+   * Converts the specified time to years.
+   *
+   * @param time specified time in milliseconds
+   * @return specified time to years
+   * @since 1.0.0
+   */
+  public long toYears(long time) {
+    long timeInMillis = time * millisecondsInUnit;
+    return timeInMillis / MILLISECONDS_PER_YEAR;
+  }
+
+  /**
+   * Converts the one (1) of the time unit to years.
+   *
+   * @return one (1) of the time unit converted to years
+   * @since 1.0.1
+   */
+  public long toYears() {
+    return millisecondsInUnit / MILLISECONDS_PER_YEAR;
   }
 }
