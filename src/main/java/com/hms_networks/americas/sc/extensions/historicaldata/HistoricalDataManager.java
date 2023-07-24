@@ -12,13 +12,18 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.string.QuoteSafeStringTokenizer;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeSpan;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoEnumeratedIntToString;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class to manage retrieving tag information and historical logs using export block descriptors.
@@ -29,8 +34,8 @@ import java.util.List;
 public class HistoricalDataManager {
 
   /**
-   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns
-   * Datapoints.
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a list of
+   * data points.
    *
    * @param startTime start time of export
    * @param endTime end time of export
@@ -68,6 +73,52 @@ public class HistoricalDataManager {
     // Execute EBD call and parse results
     final Exporter exporter = executeEbdCall(ebdStr);
     return parseEBDHistoricalLogExportResponse(exporter);
+  }
+
+  /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a map of
+   * rounded timestamps to lists of data points. <br>
+   * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * @param startTime start time of export
+   * @param endTime end time of export
+   * @param includeTagGroupA include tag group A
+   * @param includeTagGroupB include tag group B
+   * @param includeTagGroupC include tag group C
+   * @param includeTagGroupD include tag group D
+   * @param stringHistorical export string historical logs if true
+   * @param timeSpan time span to round data point time stamps to
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
+   * @throws IllegalArgumentException if time unit is null, unknown, or not supported
+   */
+  public static Map readHistoricalFifo(
+      String startTime,
+      String endTime,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      boolean stringHistorical,
+      SCTimeSpan timeSpan)
+      throws IOException, JSONException, EbdTimeoutException {
+
+    // create EBD string
+    final String ebdStr =
+        prepareHistoricalFifoReadEBDString(
+            startTime,
+            endTime,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            stringHistorical);
+
+    // Execute EBD call and parse results
+    final Exporter exporter = executeEbdCall(ebdStr);
+    return parseEBDHistoricalLogExportResponse(exporter, timeSpan);
   }
 
   /**
@@ -171,11 +222,11 @@ public class HistoricalDataManager {
   }
 
   /**
-   * Parses Export Block Descriptor Historical Log response into dataPoints. Note: this function
-   * only handles Historical Log responses.
+   * Parses Export Block Descriptor Historical Log response into a list of data points. Note: this
+   * function only handles Historical Log responses.
    *
    * @param exporter EBD Exporter
-   * @return dataPoints
+   * @return a list of data points from the response
    * @throws IOException for parsing Exceptions
    * @throws JSONException for JSON parsing Exceptions
    */
@@ -190,6 +241,53 @@ public class HistoricalDataManager {
       DataPoint lineDataPoint = parseHistoricalFileLine(line.trim());
       if (lineDataPoint != null) {
         dataPoints.add(lineDataPoint);
+      }
+    }
+
+    exporter.close();
+
+    return dataPoints;
+  }
+
+  /**
+   * Parses Export Block Descriptor Historical Log response into a map of rounded timestamps to
+   * lists of data points. Note: this function only handles Historical Log responses. <br>
+   * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * @param exporter EBD Exporter
+   * @param timeSpan time span to round data point time stamps to
+   * @return a map of data points and time stamps from the response
+   * @throws IOException for parsing Exceptions
+   * @throws JSONException for JSON parsing Exceptions
+   * @throws IllegalArgumentException if time unit is null, unknown, or not supported
+   */
+  private static Map parseEBDHistoricalLogExportResponse(Exporter exporter, SCTimeSpan timeSpan)
+      throws IOException, JSONException, IllegalArgumentException {
+
+    final String exporterFile = StringUtils.getStringFromInputStream(exporter, "UTF-8");
+    final List eventFileLines = StringUtils.split(exporterFile, "\n");
+    Map dataPoints = new HashMap();
+    for (int x = 1; x < eventFileLines.size(); x++) {
+      String line = (String) eventFileLines.get(x);
+      DataPoint lineDataPoint = parseHistoricalFileLine(line.trim());
+
+      // Round data point time stamp to nearest time unit
+      float dataPointTimeStampMilliseconds =
+          SCTimeUnit.SECONDS.toMillis(Long.parseLong(lineDataPoint.getTimeStamp()));
+      long dataPointTimeStampMillisecondsRounded =
+          Math.round(dataPointTimeStampMilliseconds / (float) timeSpan.getTimeSpanMillis());
+
+      // Add data point to map
+      Date dataPointTimeStampRounded = new Date(dataPointTimeStampMillisecondsRounded);
+      if (dataPoints.containsKey(dataPointTimeStampRounded)) {
+        // If data point list already exists, add new data point to list
+        List dataPointList = (List) dataPoints.get(dataPointTimeStampRounded);
+        dataPointList.add(lineDataPoint);
+      } else {
+        // If data point list does not exist, create new list and add data point to list
+        List dataPointList = new ArrayList();
+        dataPointList.add(lineDataPoint);
+        dataPoints.put(dataPointTimeStampRounded, dataPointList);
       }
     }
 

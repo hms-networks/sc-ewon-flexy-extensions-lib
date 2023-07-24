@@ -3,12 +3,16 @@ package com.hms_networks.americas.sc.extensions.historicaldata;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeSpan;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Class to manage queueing historical tag data and retrieving it in chunks based on a configurable
@@ -256,10 +260,11 @@ public class HistoricalDataQueueManager {
   }
 
   /**
-   * Get the historical log data for all tag groups within the next FIFO queue time span. The
-   * operations performed in this method consume a significant amount of memory and it is
-   * recommended that the Ewon Flexy Java heap size be increased to 25M (25 MB) or greater. Failure
-   * to do so may result in slow performance or unexpected behavior.
+   * Get the historical log data for all tag groups, as a list of data points, within the next FIFO
+   * queue time span. The operations performed in this method consume a significant amount of memory
+   * and it is recommended that the Ewon Flexy Java heap size be increased to 25M (25 MB) or
+   * greater. Failure to do so may result in slow performance or unexpected behavior.<br>
+   * (Parameterized list type: List&lt;DataPoint&gt;)
    *
    * @param startNewTimeTracker if new time tracker should be generated, not read from storage
    * @return historical log data
@@ -293,6 +298,51 @@ public class HistoricalDataQueueManager {
         includeTagGroupB,
         includeTagGroupC,
         includeTagGroupD);
+  }
+
+  /**
+   * Get the historical log data for all tag groups, as a map of rounded timestamps to lists of data
+   * points, within the next FIFO queue time span. The operations performed in this method consume a
+   * significant amount of memory and it is recommended that the Ewon Flexy Java heap size be
+   * increased to 25M (25 MB) or greater. Failure to do so may result in slow performance or
+   * unexpected behavior.<br>
+   * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * @param startNewTimeTracker if new time tracker should be generated, not read from storage
+   * @param timeSpan time span to round data point time stamps to
+   * @return historical log data
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException if the current time tracking file is corrupted
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws CircularizedFileException if circularized file exception was found
+   * @throws EbdTimeoutException for EBD timeouts
+   * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
+   * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
+   * @throws Exception for errors related to getting fields of {@link DataPoint} objects
+   */
+  public static synchronized Map getFifoNextSpanDataAllGroups(
+      boolean startNewTimeTracker, SCTimeSpan timeSpan)
+      throws IOException,
+          TimeTrackerUnrecoverableException,
+          CorruptedTimeTrackerException,
+          JSONException,
+          CircularizedFileException,
+          EbdTimeoutException,
+          DiagnosticTagConfigurationException,
+          DiagnosticTagUpdateException,
+          Exception {
+    final boolean includeTagGroupA = true;
+    final boolean includeTagGroupB = true;
+    final boolean includeTagGroupC = true;
+    final boolean includeTagGroupD = true;
+    return getFifoNextSpanData(
+        startNewTimeTracker,
+        includeTagGroupA,
+        includeTagGroupB,
+        includeTagGroupC,
+        includeTagGroupD,
+        timeSpan);
   }
 
   /**
@@ -395,10 +445,11 @@ public class HistoricalDataQueueManager {
   }
 
   /**
-   * Get the historical log data for the specified tag groups within the next FIFO queue time span.
-   * The operations performed in this method consume a significant amount of memory and it is
-   * recommended that the Ewon Flexy Java heap size be increased to 20M or greater. Failure to do so
-   * may result in slow performance or unexpected behavior.
+   * Get the historical log data, as a list of data points, for the specified tag groups within the
+   * next FIFO queue time span. The operations performed in this method consume a significant amount
+   * of memory and it is recommended that the Ewon Flexy Java heap size be increased to 20M or
+   * greater. Failure to do so may result in slow performance or unexpected behavior. <br>
+   * (Parameterized list type: List&lt;DataPoint&gt;)
    *
    * @param startNewTimeTracker if new time tracker should be generated, not read from storage
    * @param includeTagGroupA if tag group A data should be included
@@ -422,6 +473,114 @@ public class HistoricalDataQueueManager {
       boolean includeTagGroupB,
       boolean includeTagGroupC,
       boolean includeTagGroupD)
+      throws IOException,
+          TimeTrackerUnrecoverableException,
+          CorruptedTimeTrackerException,
+          JSONException,
+          EbdTimeoutException,
+          CircularizedFileException,
+          DiagnosticTagConfigurationException,
+          DiagnosticTagUpdateException,
+          Exception {
+    SCTimeSpan timeSpanNoRoundingEnabled = null;
+    return (ArrayList)
+        getFifoNextSpanDataRaw(
+            startNewTimeTracker,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            timeSpanNoRoundingEnabled);
+  }
+
+  /**
+   * Get the historical log data, as a map of rounded timestamps to lists of data points, for the
+   * specified tag groups within the next FIFO queue time span. The operations performed in this
+   * method consume a significant amount of memory and it is recommended that the Ewon Flexy Java
+   * heap size be increased to 20M or greater. Failure to do so may result in slow performance or
+   * unexpected behavior. <br>
+   * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * @param startNewTimeTracker if new time tracker should be generated, not read from storage
+   * @param includeTagGroupA if tag group A data should be included
+   * @param includeTagGroupB if tag group B data should be included
+   * @param includeTagGroupC if tag group C data should be included
+   * @param includeTagGroupD if tag group D data should be included
+   * @param timeSpan time span to round data point time stamps to
+   * @return historical log data
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException when EBD call times out
+   * @throws CircularizedFileException if circularized file exception was found
+   * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
+   * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
+   * @throws Exception for errors related to getting fields of {@link DataPoint} objects
+   */
+  public static synchronized Map getFifoNextSpanData(
+      boolean startNewTimeTracker,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      SCTimeSpan timeSpan)
+      throws IOException,
+          TimeTrackerUnrecoverableException,
+          CorruptedTimeTrackerException,
+          JSONException,
+          EbdTimeoutException,
+          CircularizedFileException,
+          DiagnosticTagConfigurationException,
+          DiagnosticTagUpdateException,
+          Exception {
+    return (Map)
+        getFifoNextSpanDataRaw(
+            startNewTimeTracker,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            timeSpan);
+  }
+
+  /**
+   * Get the historical log data for the specified tag groups within the next FIFO queue time span.
+   * The operations performed in this method consume a significant amount of memory and it is
+   * recommended that the Ewon Flexy Java heap size be increased to 20M or greater. Failure to do so
+   * may result in slow performance or unexpected behavior. <br>
+   * If rounding is performed (a time unit is specified), the returned data will be rounded to the
+   * specified time unit, and returned as a map of rounded timestamps to lists of data points. <br>
+   * If rounding is not performed (no time unit specified), the returned data will be returned as a
+   * list of data points. <br>
+   * (Parameterized list type: List&lt;DataPoint&gt;) (Parameterized map type: Map&lt;Date,
+   * List&lt;DataPoint&gt;&gt;)
+   *
+   * @param startNewTimeTracker if new time tracker should be generated, not read from storage
+   * @param includeTagGroupA if tag group A data should be included
+   * @param includeTagGroupB if tag group B data should be included
+   * @param includeTagGroupC if tag group C data should be included
+   * @param includeTagGroupD if tag group D data should be included
+   * @param timeSpan time span to round data point time stamps to. If null, no rounding will be
+   *     performed.
+   * @return historical log data
+   * @throws IOException if unable to read or write files
+   * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
+   * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException when EBD call times out
+   * @throws CircularizedFileException if circularized file exception was found
+   * @throws DiagnosticTagConfigurationException if unable to configure diagnostic tags
+   * @throws DiagnosticTagUpdateException if unable to update diagnostic tags
+   * @throws Exception for errors related to getting fields of {@link DataPoint} objects
+   */
+  private static synchronized Object getFifoNextSpanDataRaw(
+      boolean startNewTimeTracker,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      SCTimeSpan timeSpan)
       throws IOException,
           TimeTrackerUnrecoverableException,
           CorruptedTimeTrackerException,
@@ -467,7 +626,8 @@ public class HistoricalDataQueueManager {
     long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
     long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
 
-    ArrayList queueData;
+    ArrayList queueDataList = null;
+    Map queueDataMap = null;
 
     // Check to see if rapid catch up should be enabled
     if (RapidCatchUp.shouldEnterRapidCatchUpMode(lastReadDataPointsEmpty, endTimeTrackerMsLong)) {
@@ -490,7 +650,12 @@ public class HistoricalDataQueueManager {
       // Regardless of caught up status, update end time
       endTimeTrackerMsLong = catchUpResult.getTrackingEndTimeMilliseconds();
 
-      queueData = new ArrayList();
+      // Initialize empty queueDataList or queueDataMap
+      if (timeSpan != null) {
+        queueDataMap = new HashMap();
+      } else {
+        queueDataList = new ArrayList();
+      }
     } else {
 
       // Calculate EBD start and end time
@@ -502,32 +667,80 @@ public class HistoricalDataQueueManager {
 
       final long startOfEbdHistoricalReadMs = System.currentTimeMillis();
 
-      queueData =
-          HistoricalDataManager.readHistoricalFifo(
-              ebdStartTime,
-              ebdEndTime,
-              includeTagGroupA,
-              includeTagGroupB,
-              includeTagGroupC,
-              includeTagGroupD,
-              stringHistorical);
+      // Read historical data into queueDataList or queueDataMap
+      if (timeSpan != null) {
+        queueDataMap =
+            HistoricalDataManager.readHistoricalFifo(
+                ebdStartTime,
+                ebdEndTime,
+                includeTagGroupA,
+                includeTagGroupB,
+                includeTagGroupC,
+                includeTagGroupD,
+                stringHistorical,
+                timeSpan);
+      } else {
+        queueDataList =
+            HistoricalDataManager.readHistoricalFifo(
+                ebdStartTime,
+                ebdEndTime,
+                includeTagGroupA,
+                includeTagGroupB,
+                includeTagGroupC,
+                includeTagGroupD,
+                stringHistorical);
+      }
 
-    // Run string EBD export call if enabled
-    if (stringHistoryEnabled) {
-      stringHistorical = true;
-      ArrayList queueStringData =
-          HistoricalDataManager.readHistoricalFifo(
-              ebdStartTime,
-              ebdEndTime,
-              includeTagGroupA,
-              includeTagGroupB,
-              includeTagGroupC,
-              includeTagGroupD,
-              stringHistorical);
+      // Run string EBD export call if enabled
+      if (stringHistoryEnabled) {
+        stringHistorical = true;
 
-      // Combine with standard EBD call results
-      queueData.addAll(queueStringData);
-    }
+        if (queueDataMap != null) {
+          Map queueStringDataMap =
+              HistoricalDataManager.readHistoricalFifo(
+                  ebdStartTime,
+                  ebdEndTime,
+                  includeTagGroupA,
+                  includeTagGroupB,
+                  includeTagGroupC,
+                  includeTagGroupD,
+                  stringHistorical,
+                  timeSpan);
+
+          // Combine with standard EBD call results
+          Iterator queueStringDataMapIterator = queueStringDataMap.entrySet().iterator();
+          while (queueStringDataMapIterator.hasNext()) {
+            Map.Entry queueStringDataMapEntry = (Map.Entry) queueStringDataMapIterator.next();
+            Date queueStringDataMapKey = (Date) queueStringDataMapEntry.getKey();
+            ArrayList queueStringDataMapValue = (ArrayList) queueStringDataMapEntry.getValue();
+
+            // Check if queue data map contains the key
+            if (queueDataMap.containsKey(queueStringDataMapKey)) {
+              // Get the data points list at the key
+              ArrayList dataPointsListAtKey = (ArrayList) queueDataMap.get(queueStringDataMapKey);
+
+              // Add the data points list at the key
+              dataPointsListAtKey.addAll(queueStringDataMapValue);
+            } else {
+              // Add the data points list at the key
+              queueDataMap.put(queueStringDataMapKey, queueStringDataMapValue);
+            }
+          }
+        } else {
+          ArrayList queueStringDataList =
+              HistoricalDataManager.readHistoricalFifo(
+                  ebdStartTime,
+                  ebdEndTime,
+                  includeTagGroupA,
+                  includeTagGroupB,
+                  includeTagGroupC,
+                  includeTagGroupD,
+                  stringHistorical);
+
+          // Combine with standard EBD call results
+          queueDataList.addAll(queueStringDataList);
+        }
+      }
 
       // Check for Circularized Event
       if (CircularizedFileCheck.didFileCircularizedEventOccurSinceAbsolute(
@@ -536,7 +749,11 @@ public class HistoricalDataQueueManager {
       }
 
       // Set the lastReadDataPointsEmpty if size is zero or less
-      lastReadDataPointsEmpty = queueData.size() <= 0;
+      if (queueDataMap != null) {
+        lastReadDataPointsEmpty = queueDataMap.isEmpty();
+      } else {
+        lastReadDataPointsEmpty = queueDataList.isEmpty();
+      }
     }
 
     // Store end time +1 ms (to prevent duplicate data)
@@ -565,8 +782,8 @@ public class HistoricalDataQueueManager {
       }
     }
 
-    // Return data
-    return queueData;
+    // Return data as raw object (public method stub will convert to expected type)
+    return queueDataMap != null ? (Object) queueDataMap : (Object) queueDataList;
   }
 
   /**
