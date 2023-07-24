@@ -11,6 +11,7 @@ package com.hms_networks.americas.sc.extensions.system.time;
  * @version 1.0.1
  */
 public class SCTimeUnit {
+
   /**
    * The number of milliseconds in one millisecond.
    *
