@@ -1,5 +1,12 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.14.3-pre2
+### Features
+- Added data aggregation feature to historical queue.
+- Added date conversion to ISO-8601 formatted string utility method in SCTimeUtils.java.
+### Bug Fixes
+- N/A
+
 ## Version 1.14.2
 ### Features
 - Added rapid catch up feature: this allows historical tracking to advance quickly for periods where the Flexy is offline.
