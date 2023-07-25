@@ -6,9 +6,9 @@ THE PROJECT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. HMS DOES NOT WARRA
 ## [Table of Contents](#table-of-contents)
 
 1. [Description](#description)
-   1. [Required Firmware Version](#required-firmware-version)
-   2. [Libraries and Dependencies](#libraries-and-dependencies)
-      1. [Solution Center Repository](#solution-center-repository)
+    1. [Required Firmware Version](#required-firmware-version)
+    2. [Libraries and Dependencies](#libraries-and-dependencies)
+        1. [Solution Center Repository](#solution-center-repository)
 2. [Development Environment](#development-environment)
 3. [Contributing](#contributing)
 
@@ -16,11 +16,13 @@ THE PROJECT IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. HMS DOES NOT WARRA
 
 ## [Description](#table-of-contents)
 
-A library of extensions to the functionality of the Ewon Flexy Java environment (Ewon ETK), created by the HMS Networks, MU Americas Solution Center.
+A library of extensions to the functionality of the Ewon Flexy Java environment (Ewon ETK), created
+by the HMS Networks, MU Americas Solution Center.
 
 ### [Required Firmware Version](#table-of-contents)
 
-This project requires a minimum Ewon firmware version of 14.6 or higher. Older firmware versions may be incompatible and are not supported.
+This project requires a minimum Ewon firmware version of 14.6 or higher. Older firmware versions may
+be incompatible and are not supported.
 
 ### [Libraries and Dependencies](#table-of-contents)
 
@@ -37,7 +39,8 @@ This project requires a minimum Ewon firmware version of 14.6 or higher. Older f
       ...
    </dependencies>
    ```
-   _Note: The scope must be set to 'provided' for the Ewon ETK dependency. This indicates that the library is provided by the system and does not need to be included in the packaged JAR file._
+   _Note: The scope must be set to 'provided' for the Ewon ETK dependency. This indicates that the
+   library is provided by the system and does not need to be included in the packaged JAR file._
 2. JUnit
    ```xml
    <dependencies>
@@ -51,10 +54,13 @@ This project requires a minimum Ewon firmware version of 14.6 or higher. Older f
       ...
    </dependencies>
    ```
-   _Note: The scope must be set to 'test' for the JUnit dependency. This indicates that the library is required for code testing and does not need to be included in the packaged JAR file._
+   _Note: The scope must be set to 'test' for the JUnit dependency. This indicates that the library
+   is required for code testing and does not need to be included in the packaged JAR file._
 
-
-As required, you can include additional libraries or dependencies using the Maven build system. To add a new library or dependency, add a new `<dependency></dependency>` block in the `<dependencies></dependencies>` section of your `pom.xml`. For example, to use this library, you would add the following to your pom.xml:
+As required, you can include additional libraries or dependencies using the Maven build system. To
+add a new library or dependency, add a new `<dependency></dependency>` block in
+the `<dependencies></dependencies>` section of your `pom.xml`. For example, to use this library, you
+would add the following to your pom.xml:
 
 ```xml
 <dependencies>
@@ -62,7 +68,7 @@ As required, you can include additional libraries or dependencies using the Mave
    <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>extensions</artifactId>
-      <version>1.14.2</version>
+      <version>1.15.0-pre1</version>
    </dependency>
    ...
 </dependencies>
@@ -72,7 +78,10 @@ As required, you can include additional libraries or dependencies using the Mave
 
 This project and the Ewon ETK are available via the Solution Center Maven repository.
 
-If the Solution Center Maven repository is not already included in your project, you can include it by adding the following `<repository></repository>` block in the `<repositories></repositories>` section of your `pom.xml` as follows:
+If the Solution Center Maven repository is not already included in your project, you can include it
+by adding the following `<repository></repository>` block in the `<repositories></repositories>`
+section of your `pom.xml` as follows:
+
 ```xml
 <repositories>
    ...
@@ -88,10 +97,16 @@ If the Solution Center Maven repository is not already included in your project,
 
 ## [Development Environment](#table-of-contents)
 
-This project is based on the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project), and uses the Maven build system for compilation, testing, and packaging.
+This project is based on
+the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project),
+and uses the Maven build system for compilation, testing, and packaging.
 
-Maven lifecycle information and other details about the development environment provided by the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project) can be found in its README.md at [https://github.com/hms-networks/sc-java-maven-starter-project/blob/main/README.md](https://github.com/hms-networks/sc-java-maven-starter-project/blob/main/README.md).
+Maven lifecycle information and other details about the development environment provided by
+the [Solution Center Maven Starter Project](https://github.com/hms-networks/sc-java-maven-starter-project)
+can be found in its README.md
+at [https://github.com/hms-networks/sc-java-maven-starter-project/blob/main/README.md](https://github.com/hms-networks/sc-java-maven-starter-project/blob/main/README.md).
 
 ## [Contributing](#table-of-contents)
 
-Detailed information about contributing to this project can be found in [CONTRIBUTING.md](CONTRIBUTING.md).
+Detailed information about contributing to this project can be found
+in [CONTRIBUTING.md](CONTRIBUTING.md).

@@ -655,7 +655,7 @@ public class JSONObject {
    * @param key A key string (cannot be null).
    * @param value A Collection value (cannot be null).
    * @return this.
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public JSONObject putNonNull(String key, Vector value) {
     if (key != null) {
@@ -926,7 +926,7 @@ public class JSONObject {
    * @param key A key string (cannot be null).
    * @param value An int which is the value.
    * @return this.
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public JSONObject putNonNull(String key, int value) {
     if (key != null) {
@@ -966,7 +966,7 @@ public class JSONObject {
    * @param key A key string (cannot be null).
    * @param value A long which is the value.
    * @return this.
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public JSONObject putNonNull(String key, long value) {
     if (key != null) {

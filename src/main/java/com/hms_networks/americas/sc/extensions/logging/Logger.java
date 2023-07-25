@@ -190,7 +190,7 @@ public class Logger {
    *
    * @param level the log level to use
    * @param e exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_EXCEPTION(int level, Exception e) {
     StringWriter exceptionStringWriter = new StringWriter();
@@ -316,7 +316,7 @@ public class Logger {
    *
    * @param logString string to log
    * @param logException exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_DEBUG(String logString, Exception logException) {
     LOG(LOG_LEVEL_DEBUG, logString);
@@ -328,7 +328,7 @@ public class Logger {
    *
    * @param logString string to log
    * @param logException exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_DEBUG_EXCEPTION(String logString, Exception logException) {
     LOG(LOG_LEVEL_DEBUG, logString);
@@ -348,7 +348,7 @@ public class Logger {
    * Log a string and exception with the info log level
    *
    * @param logString string to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_INFO(String logString, Exception logException) {
     LOG(LOG_LEVEL_INFO, logString);
@@ -360,7 +360,7 @@ public class Logger {
    *
    * @param logString string to log
    * @param logException exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_INFO_EXCEPTION(String logString, Exception logException) {
     LOG(LOG_LEVEL_INFO, logString);
@@ -380,7 +380,7 @@ public class Logger {
    * Log a string and exception with the warning log level
    *
    * @param logString string to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_WARN(String logString, Exception logException) {
     LOG(LOG_LEVEL_WARN, logString);
@@ -392,7 +392,7 @@ public class Logger {
    *
    * @param logString string to log
    * @param logException exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_WARN_EXCEPTION(String logString, Exception logException) {
     LOG(LOG_LEVEL_WARN, logString);
@@ -412,7 +412,7 @@ public class Logger {
    * Log a string and exception with the serious log level
    *
    * @param logString string to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_SERIOUS(String logString, Exception logException) {
     LOG(LOG_LEVEL_SERIOUS, logString);
@@ -424,7 +424,7 @@ public class Logger {
    *
    * @param logString string to log
    * @param logException exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_SERIOUS_EXCEPTION(String logString, Exception logException) {
     LOG(LOG_LEVEL_SERIOUS, logString);
@@ -444,7 +444,7 @@ public class Logger {
    * Log a string and exception with the critical log level
    *
    * @param logString string to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_CRITICAL(String logString, Exception logException) {
     LOG(LOG_LEVEL_CRITICAL, logString);
@@ -456,7 +456,7 @@ public class Logger {
    *
    * @param logString string to log
    * @param logException exception to log
-   * @since 1.15.0
+   * @since 1.15.0-pre1
    */
   public static void LOG_CRITICAL_EXCEPTION(String logString, Exception logException) {
     LOG(LOG_LEVEL_CRITICAL, logString);
