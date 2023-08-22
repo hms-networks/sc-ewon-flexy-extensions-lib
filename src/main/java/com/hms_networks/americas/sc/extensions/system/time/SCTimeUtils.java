@@ -5,6 +5,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.localization.LocalizationManager;
 import com.hms_networks.americas.sc.extensions.localization.LocalizationManager.DateTimeKey;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.SimpleTimeZone;
 import java.util.TimeZone;
@@ -189,6 +190,26 @@ public class SCTimeUtils {
   }
 
   /**
+   * Returns an ISO 8601 formatted string representing the timestamp equivalent of the specified
+   * {@link Date} in the applicable time zone (UTC or local, depending on the value returned by
+   * {@link #getTagDataExportedInUtc()}).
+   *
+   * @param date date to get timestamp for
+   * @return ISO 8601 formatted string representing the timestamp equivalent of the specified {@link
+   *     Date} in the applicable time zone
+   * @throws Exception if unable to get UTC export value
+   */
+  public static String getIso8601FormattedTimestampForDate(Date date) throws Exception {
+    String formattedTimestamp;
+    if (getTagDataExportedInUtc()) {
+      formattedTimestamp = getIso8601UtcTimeFormat().format(date);
+    } else {
+      formattedTimestamp = getIso8601LocalTimeFormat().format(date);
+    }
+    return formattedTimestamp;
+  }
+
+  /**
    * Returns an ISO 8601 formatted string representing the timestamp of the specified data point in
    * the applicable time zone (UTC or local, depending on the value returned by {@link
    * #getTagDataExportedInUtc()}).
@@ -200,13 +221,7 @@ public class SCTimeUtils {
    */
   public static String getIso8601FormattedTimestampForDataPoint(DataPoint dataPoint)
       throws Exception {
-    String formattedTimestamp;
-    if (getTagDataExportedInUtc()) {
-      formattedTimestamp = getIso8601UtcTimeFormat().format(dataPoint.getTimeStampAsDate());
-    } else {
-      formattedTimestamp = getIso8601LocalTimeFormat().format(dataPoint.getTimeStampAsDate());
-    }
-    return formattedTimestamp;
+    return getIso8601FormattedTimestampForDate(dataPoint.getTimeStampAsDate());
   }
 
   /**
