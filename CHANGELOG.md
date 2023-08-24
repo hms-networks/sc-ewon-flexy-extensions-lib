@@ -1,5 +1,11 @@
 # Ewon Flexy Extensions Library Changelog
 
+## Version 1.14.3-pre3
+### Features
+- Added the ability to change MQTT client options
+### Bug Fixes
+- N/A
+
 ## Version 1.14.2
 ### Features
 - Added rapid catch up feature: this allows historical tracking to advance quickly for periods where the Flexy is offline.
