@@ -137,6 +137,12 @@ public abstract class ConstrainedMqttManager {
    */
   private boolean mqttSubscribed;
 
+  /** Maximum number of messages retained by client. */
+  private int maxInFlight;
+
+  /** Default value for MQTT option maxInFlight. */
+  private static final int DEFAULT_MAX_IN_FLIGHT  = 20;
+
   /**
    * Constructor for a new {@link ConstrainedMqttManager} instance which does not wait for a WAN IP
    * address to be available. The keep alive interval is set to the default value of {@link
@@ -233,7 +239,7 @@ public abstract class ConstrainedMqttManager {
         mqttThreadSleepIntervalMs,
         mqttKeepAliveIntervalSecs,
         WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
-        null);
+        null, DEFAULT_MAX_IN_FLIGHT);
   }
 
   /**
@@ -338,7 +344,65 @@ public abstract class ConstrainedMqttManager {
         mqttThreadSleepIntervalMs,
         mqttKeepAliveIntervalSecs,
         waitForWanIp ? WAIT_FOR_WAN_IP_TIMEOUT_INDEFINITE : WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
-        null);
+        null, DEFAULT_MAX_IN_FLIGHT
+        );
+  }
+
+  /**
+   * Constructor for a new {@link ConstrainedMqttManager} instance which waits for a WAN IP address
+   * to be available if the specified {@code waitForWanIp} boolean is {@code true}. Provides maxInflight parameter.
+   *
+   * @param mqttId the ID of the MQTT client
+   * @param mqttHost the host (URL) of the MQTT client connection
+   * @param utf8Enable the boolean indicating if UTF-8 encoding should be used for MQTT messages
+   * @param mqttPort the port number of the MQTT client connection
+   * @param mqttCaFilePath the CA file path of the MQTT client connection
+   * @param mqttTlsVersion the TLS version of the MQTT client connection
+   * @param mqttUsername the authentication username of the MQTT client connection
+   * @param mqttPassword the authentication password of the MQTT client connection
+   * @param mqttQos the QoS (quality of service) level of the MQTT client connection
+   * @param mqttThreadSleepIntervalMs time interval (in ms) for sleeping between intervals of the
+   *     MQTT thread.
+   * @param mqttKeepAliveIntervalSecs the time interval (in secs) for sending keep alive messages on
+   *     the MQTT client connection.
+   * @param waitForWanIp the boolean indicating if the {@link MqttManager} instance should wait for
+   *     a WAN IP address to be available.
+   * @param maxInFlight the maximum number of messages to retain
+   * @throws IllegalStateException if a WAN IP address is not available.
+   * @throws Exception if unable to start the {@link MqttManager} instance using the provided
+   *     parameters.
+   * @since 1.0.1
+   */
+  public ConstrainedMqttManager(
+      String mqttId,
+      String mqttHost,
+      boolean utf8Enable,
+      String mqttPort,
+      String mqttCaFilePath,
+      String mqttTlsVersion,
+      String mqttUsername,
+      String mqttPassword,
+      int mqttQos,
+      long mqttThreadSleepIntervalMs,
+      String mqttKeepAliveIntervalSecs,
+      boolean waitForWanIp,
+      int maxInFlight)
+      throws Exception {
+    this(
+        mqttId,
+        mqttHost,
+        utf8Enable,
+        mqttPort,
+        mqttCaFilePath,
+        mqttTlsVersion,
+        mqttUsername,
+        mqttPassword,
+        mqttQos,
+        mqttThreadSleepIntervalMs,
+        mqttKeepAliveIntervalSecs,
+        waitForWanIp ? WAIT_FOR_WAN_IP_TIMEOUT_INDEFINITE : WAIT_FOR_WAN_IP_TIMEOUT_DISABLED,
+        null, maxInFlight
+        );
   }
 
   /**
@@ -395,10 +459,11 @@ public abstract class ConstrainedMqttManager {
         mqttThreadSleepIntervalMs,
         MqttConstants.MQTT_KEEP_ALIVE_OPTION_DEFAULT,
         wanIpTimeout,
-        wanIpTimeoutUnit);
+        wanIpTimeoutUnit,
+        DEFAULT_MAX_IN_FLIGHT);
   }
 
-  /**
+/**
    * Constructor for a new {@link ConstrainedMqttManager} instance which waits for a WAN IP address
    * to be available until the specified {@code wanIpTimeout} is reached. If the {@code
    * wanIpTimeout} (in the specified {@code wanIpTimeoutUnit}s) is reached before a WAN IP address
@@ -439,7 +504,8 @@ public abstract class ConstrainedMqttManager {
       long mqttThreadSleepIntervalMs,
       String mqttKeepAliveIntervalSecs,
       int wanIpTimeout,
-      SCTimeUnit wanIpTimeoutUnit)
+      SCTimeUnit wanIpTimeoutUnit,
+      int maxInFlight)
       throws Exception {
     this.mqttId = mqttId;
     this.mqttHost = mqttHost;
@@ -454,6 +520,7 @@ public abstract class ConstrainedMqttManager {
     this.mqttKeepAliveIntervalSecs = mqttKeepAliveIntervalSecs;
     this.mqttSubscriptions = new ArrayList();
     this.mqttSubscribed = false;
+    this.maxInFlight =  maxInFlight;
 
     // Wait for WAN IP (if enabled)
     if (wanIpTimeout == WAIT_FOR_WAN_IP_TIMEOUT_INDEFINITE) {
@@ -467,6 +534,7 @@ public abstract class ConstrainedMqttManager {
       throw new IllegalStateException("Device does not have WAN IP");
     }
   }
+
 
   /**
    * Builds a new, wrapped {@link MqttManager} instance using the current MQTT parameters.
@@ -734,6 +802,7 @@ public abstract class ConstrainedMqttManager {
     mqttManager.setAuthPassword(mqttPassword);
     mqttManager.setMqttThreadSleepIntervalMs(mqttThreadSleepIntervalMs);
     mqttManager.setKeepAliveSecs(mqttKeepAliveIntervalSecs);
+    mqttManager.setMaxInFlight(maxInFlight);
     mqttManager.startMqttThread();
     mqttManager.connect();
   }
