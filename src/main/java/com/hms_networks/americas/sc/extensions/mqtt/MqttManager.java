@@ -413,4 +413,61 @@ public abstract class MqttManager extends MqttClient {
       onError(mqttException);
     }
   }
+
+  /**
+   * Configures the Clean Session MQTT client option. Indicates if the client session information
+   * (subscription, etc.) on the broker should be stored between a disconnect/reconnect. <code>true
+   * </code> indicates session is cleaned when disconnecting.
+   *
+   * @param doClean <code>true</code>/<code>false</code> should the session be cleaned
+   * @throws EWException if unable to configure option
+   */
+  public void setCleanSession(boolean doClean) throws EWException {
+    String optionString = doClean == true ? "1" : "0";
+    setOption(MqttConstants.MQTT_CLEAN_SESSION_OPTION_KEY, optionString);
+  }
+
+  /**
+   * Configures the MQTT Last Will and Testament (LWT) client options. QoS argument is checked and
+   * will throw {@link IllegalArgumentException} for values out of range. Topic and payload arguments are not
+   * checked.
+   *
+   * @param payload LWT payload
+   * @param topic LWT topic
+   * @param qos LWT QoS setting, should be one of the following 0,1,2
+   * @param retain <code>true</code>/<code>false</code> last will message should be processed as a
+   *     retained message.
+   * @throws EWException if unable to configure a option
+   * @throws IllegalArgumentException if qos argument is not in prescribed range
+   */
+  public void setLastWillOptions(String payload, String topic, int qos, boolean retain)
+      throws EWException {
+    if (qos < 0 || qos > 2) {
+      throw new IllegalArgumentException("QoS argument" + qos + " is out of range: (0-2)");
+    }
+    String retainStr = retain == true ? "1" : "0";
+    String qosStr = String.valueOf(qos);
+
+    setOption(MqttConstants.MQTT_WILL_PAYLOAD_OPTION_KEY, payload);
+    setOption(MqttConstants.MQTT_WILL_TOPIC_OPTION_KEY, topic);
+    setOption(MqttConstants.MQTT_WILL_QOS_OPTION_KEY, qosStr);
+    setOption(MqttConstants.MQTT_WILL_RETAIN_OPTION_KEY, retainStr);
+  }
+
+  /**
+   * Configures the Max In Flight MQTT client option. This option limits the number of messages
+   * retained on the client side. Default is 20.
+   *
+   * @param messageLimit Maximum number of messages retained, should be in range 0-50.
+   * @throws EWException if unable to configure option
+   * @throws IllegalArgumentException if argument is not in prescribed range
+   */
+  public void setMaxInFlight(int messageLimit) throws EWException {
+    if (messageLimit < 0 || messageLimit > 50) {
+      throw new IllegalArgumentException(
+          "Max In Flight option " + messageLimit + " is out of range: (0-50)");
+    }
+    String maxInFlightStr = String.valueOf(messageLimit);
+    setOption(MqttConstants.MQTT_MAX_IN_FLIGHT_OPTION_KEY, maxInFlightStr);
+  }
 }

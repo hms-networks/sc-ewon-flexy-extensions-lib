@@ -53,4 +53,22 @@ public class MqttConstants {
 
   /** Key for MQTT password option */
   public static String MQTT_PASSWORD_OPTION_KEY = "PASSWORD";
+
+  /** Key for MQTT clean session option */
+  public static String MQTT_CLEAN_SESSION_OPTION_KEY = "CLEANSESSION";
+
+  /** Key for MQTT max in flight option */
+  public static String MQTT_MAX_IN_FLIGHT_OPTION_KEY = "MAXINFLIGHT";
+
+  /** Key for MQTT last will payload option */
+  public static String MQTT_WILL_PAYLOAD_OPTION_KEY = "WILLPAYLOAD";
+
+  /** Key for MQTT last will topic option */
+  public static String MQTT_WILL_TOPIC_OPTION_KEY = "WILLTOPIC";
+
+  /** Key for MQTT last will QoS option */
+  public static String MQTT_WILL_QOS_OPTION_KEY = "WILLQOS";
+
+  /** Key for MQTT last will retain option */
+  public static String MQTT_WILL_RETAIN_OPTION_KEY = "WILLRETAIN";
 }
