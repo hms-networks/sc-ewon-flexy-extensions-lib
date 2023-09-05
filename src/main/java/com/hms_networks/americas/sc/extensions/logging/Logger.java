@@ -312,12 +312,66 @@ public class Logger {
   }
 
   /**
+   * Log a string and exception with the debug log level.
+   *
+   * @param logString string to log
+   * @param logException exception to log
+   * @since 1.15.0
+   */
+  public static void LOG_DEBUG(String logString, Exception logException) {
+    LOG(LOG_LEVEL_DEBUG, logString);
+    LOG_EXCEPTION(LOG_LEVEL_DEBUG, logException);
+  }
+
+  /**
+   * Log a string and exception with the debug log level if {@code elevateExceptionLogLevel} is
+   * {@code true}, otherwise log the exception with the trace log level.
+   *
+   * @param logString string to log
+   * @param logException exception to log
+   * @param elevateExceptionLogLevel elevates the log level used for the specified exception to
+   *     debug
+   * @since 1.15.0
+   */
+  public static void LOG_DEBUG(
+      String logString, Exception logException, boolean elevateExceptionLogLevel) {
+    LOG(LOG_LEVEL_DEBUG, logString);
+    LOG_EXCEPTION(elevateExceptionLogLevel ? LOG_LEVEL_DEBUG : LOG_LEVEL_TRACE, logException);
+  }
+
+  /**
    * Log a string with the info log level
    *
    * @param logString string to log
    */
   public static void LOG_INFO(String logString) {
     LOG(LOG_LEVEL_INFO, logString);
+  }
+
+  /**
+   * Log a string and exception with the info log level.
+   *
+   * @param logString string to log
+   * @since 1.15.0
+   */
+  public static void LOG_INFO(String logString, Exception logException) {
+    LOG(LOG_LEVEL_INFO, logString);
+    LOG_EXCEPTION(LOG_LEVEL_INFO, logException);
+  }
+
+  /**
+   * Log a string and exception with the info log level if {@code elevateExceptionLogLevel} is
+   * {@code true}, otherwise log the exception with the trace log level.
+   *
+   * @param logString string to log
+   * @param logException exception to log
+   * @param elevateExceptionLogLevel elevates the log level used for the specified exception to info
+   * @since 1.15.0
+   */
+  public static void LOG_INFO(
+      String logString, Exception logException, boolean elevateExceptionLogLevel) {
+    LOG(LOG_LEVEL_INFO, logString);
+    LOG_EXCEPTION(elevateExceptionLogLevel ? LOG_LEVEL_INFO : LOG_LEVEL_TRACE, logException);
   }
 
   /**
@@ -330,6 +384,32 @@ public class Logger {
   }
 
   /**
+   * Log a string and exception with the warning log level.
+   *
+   * @param logString string to log
+   * @since 1.15.0
+   */
+  public static void LOG_WARN(String logString, Exception logException) {
+    LOG(LOG_LEVEL_WARN, logString);
+    LOG_EXCEPTION(LOG_LEVEL_WARN, logException);
+  }
+
+  /**
+   * Log a string and exception with the warning log level if {@code elevateExceptionLogLevel} is
+   * {@code true}, otherwise log the exception with the trace log level.
+   *
+   * @param logString string to log
+   * @param logException exception to log
+   * @param elevateExceptionLogLevel elevates the log level used for the specified exception to warn
+   * @since 1.15.0
+   */
+  public static void LOG_WARN(
+      String logString, Exception logException, boolean elevateExceptionLogLevel) {
+    LOG(LOG_LEVEL_WARN, logString);
+    LOG_EXCEPTION(elevateExceptionLogLevel ? LOG_LEVEL_WARN : LOG_LEVEL_TRACE, logException);
+  }
+
+  /**
    * Log a string with the serious log level
    *
    * @param logString string to log
@@ -339,12 +419,66 @@ public class Logger {
   }
 
   /**
+   * Log a string and exception with the serious log level.
+   *
+   * @param logString string to log
+   * @since 1.15.0
+   */
+  public static void LOG_SERIOUS(String logString, Exception logException) {
+    LOG(LOG_LEVEL_SERIOUS, logString);
+    LOG_EXCEPTION(LOG_LEVEL_SERIOUS, logException);
+  }
+
+  /**
+   * Log a string and exception with the serious log level if {@code elevateExceptionLogLevel} is
+   * {@code true}, otherwise log the exception with the trace log level.
+   *
+   * @param logString string to log
+   * @param logException exception to log
+   * @param elevateExceptionLogLevel elevates the log level used for the specified exception to
+   *     serious
+   * @since 1.15.0
+   */
+  public static void LOG_SERIOUS(
+      String logString, Exception logException, boolean elevateExceptionLogLevel) {
+    LOG(LOG_LEVEL_SERIOUS, logString);
+    LOG_EXCEPTION(elevateExceptionLogLevel ? LOG_LEVEL_SERIOUS : LOG_LEVEL_TRACE, logException);
+  }
+
+  /**
    * Log a string with the critical log level
    *
    * @param logString string to log
    */
   public static void LOG_CRITICAL(String logString) {
     LOG(LOG_LEVEL_CRITICAL, logString);
+  }
+
+  /**
+   * Log a string and exception with the critical log level.
+   *
+   * @param logString string to log
+   * @since 1.15.0
+   */
+  public static void LOG_CRITICAL(String logString, Exception logException) {
+    LOG(LOG_LEVEL_CRITICAL, logString);
+    LOG_EXCEPTION(LOG_LEVEL_CRITICAL, logException);
+  }
+
+  /**
+   * Log a string and exception with the critical log level if {@code elevateExceptionLogLevel} is
+   * {@code true}, otherwise log the exception with the trace log level.
+   *
+   * @param logString string to log
+   * @param logException exception to log
+   * @param elevateExceptionLogLevel elevates the log level used for the specified exception to
+   *     critical
+   * @since 1.15.0
+   */
+  public static void LOG_CRITICAL(
+      String logString, Exception logException, boolean elevateExceptionLogLevel) {
+    LOG(LOG_LEVEL_CRITICAL, logString);
+    LOG_EXCEPTION(elevateExceptionLogLevel ? LOG_LEVEL_CRITICAL : LOG_LEVEL_TRACE, logException);
   }
 
   /** Output all queued logs at critical level */
