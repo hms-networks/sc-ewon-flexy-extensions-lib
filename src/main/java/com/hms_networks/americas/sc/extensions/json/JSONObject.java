@@ -24,6 +24,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import com.hms_networks.americas.sc.extensions.logging.Logger;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Enumeration;
@@ -647,6 +648,20 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Put a non-null key/value pair in the JSONObject, where the value will be a non-null JSONArray
+   * that is produced from a Collection.
+   *
+   * @param key A key string (cannot be null).
+   * @param value A Collection value (cannot be null).
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, Vector value) {
+    putNonNull(key, new com.hms_networks.americas.sc.extensions.json.JSONArray(value));
+    return this;
+  }
+
   // #if CLDC!="1.0"
 
   /**
@@ -809,6 +824,30 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Put a non-null key/boolean pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, boolean)} in
+   * favor of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, boolean)} method be used
+   * when any possibility of a null key exists, since it is entirely up to the calling method to
+   * ensure that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value A boolean which is the value.
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, boolean value) {
+    // #if CLDC!="1.0"
+    putNonNull(key, value ? Boolean.TRUE : Boolean.FALSE);
+    // #else
+    // #         put(key, value ? TRUE : FALSE);
+    // #endif
+    return this;
+  }
+
   // #if CLDC!="1.0"
 
   /**
@@ -821,6 +860,26 @@ public class JSONObject {
    */
   public JSONObject put(String key, double value) throws JSONException {
     put(key, new Double(value));
+    return this;
+  }
+
+  /**
+   * Put a non-null key/double pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, double)} in
+   * favor of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, double)} method be used
+   * when any possibility of a null key or non-finite value exists, since it is entirely up to the
+   * calling method to ensure that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value A double which is the value (cannot be NaN or infinite).
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, double value) {
+    putNonNull(key, new Double(value));
     return this;
   }
 
@@ -840,6 +899,26 @@ public class JSONObject {
   }
 
   /**
+   * Put a non-null key/int pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, int)} in favor
+   * of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, int)} method be used when
+   * any possibility of a null key exists, since it is entirely up to the calling method to ensure
+   * that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value An int which is the value.
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, int value) {
+    putNonNull(key, new Integer(value));
+    return this;
+  }
+
+  /**
    * Put a key/long pair in the JSONObject.
    *
    * @param key A key string.
@@ -849,6 +928,26 @@ public class JSONObject {
    */
   public JSONObject put(String key, long value) throws JSONException {
     put(key, new Long(value));
+    return this;
+  }
+
+  /**
+   * Put a non-null key/long pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, long)} in favor
+   * of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, long)} method be used when
+   * any possibility of a null key exists, since it is entirely up to the calling method to ensure
+   * that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value A long which is the value.
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, long value) {
+    putNonNull(key, new Long(value));
     return this;
   }
 
@@ -904,6 +1003,45 @@ public class JSONObject {
       put(key, value);
     }
     return this;
+  }
+
+  /**
+   * Put a non-null key/value pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, Object)} and
+   * {@link #putOpt(String, Object)} in favor of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, Object)} method be used
+   * when any possibility of a null key exists, since it is entirely up to the calling method to
+   * ensure that the key is not null and the value is not invalid (if applicable).
+   *
+   * <p>This method is very similar to the {@link #putOpt(String, Object)} method in that the key
+   * and value must be non-null, but does not require the {@link JSONException} to be caught.
+   *
+   * @param key A key string.
+   * @param value An object which is the value. It should be of one of these types: Boolean, Double,
+   *     Integer, JSONArray, JSONObject, Long, String, or the JSONObject.NULL object.
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, Object value) {
+    try {
+      return put(key, value);
+    } catch (Exception e) {
+      // Log at critical level so that configured log level doesn't matter
+      if (key == null) {
+        Logger.LOG_CRITICAL(
+            "Failed to put non-null key/value pair in JSONObject because the specified key was "
+                + "null.");
+      } else if (value == null) {
+        Logger.LOG_CRITICAL(
+            "Failed to put non-null key/value pair in JSONObject because the specified value was "
+                + "null.");
+      } else {
+        Logger.LOG_CRITICAL("Failed to put non-null key/value pair in JSONObject.");
+      }
+      throw new IllegalStateException(e);
+    }
   }
 
   /**
