@@ -78,6 +78,7 @@ import java.util.Vector;
  * @author JSON.org
  * @version 2
  * @since 1.0.0
+ * @noinspection removal
  */
 public class JSONObject {
 
@@ -647,6 +648,27 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Put a non-null key/value pair in the JSONObject, where the value will be a non-null JSONArray
+   * which is produced from a Collection.
+   *
+   * @param key A key string (cannot be null).
+   * @param value A Collection value (cannot be null).
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, Vector value) {
+    if (key != null) {
+      try {
+        put(key, value);
+      } catch (Exception e) {
+        // Throw as unchecked exception
+        throw new IllegalStateException(e);
+      }
+    }
+    return this;
+  }
+
   // #if CLDC!="1.0"
 
   /**
@@ -809,6 +831,32 @@ public class JSONObject {
     return this;
   }
 
+  /**
+   * Put a non-null key/boolean pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, boolean)} in
+   * favor of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, boolean)} method be used
+   * when any possibility of a null key exists, since it is entirely up to the calling method to
+   * ensure that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value A boolean which is the value.
+   * @return this.
+   */
+  public JSONObject putNonNull(String key, boolean value) {
+    if (key != null) {
+      try {
+        put(key, value);
+      } catch (Exception e) {
+        // Throw as unchecked exception
+        throw new IllegalStateException(e);
+      }
+    }
+    return this;
+  }
+
   // #if CLDC!="1.0"
 
   /**
@@ -821,6 +869,32 @@ public class JSONObject {
    */
   public JSONObject put(String key, double value) throws JSONException {
     put(key, new Double(value));
+    return this;
+  }
+
+  /**
+   * Put a non-null key/double pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, double)} in
+   * favor of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, double)} method be used
+   * when any possibility of a null key or non-finite value exists, since it is entirely up to the
+   * calling method to ensure that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value A double which is the value (cannot be NaN or infinite).
+   * @return this.
+   */
+  public JSONObject putNonNull(String key, double value) {
+    if (key != null) {
+      try {
+        put(key, value);
+      } catch (Exception e) {
+        // Throw as unchecked exception
+        throw new IllegalStateException(e);
+      }
+    }
     return this;
   }
 
@@ -840,6 +914,33 @@ public class JSONObject {
   }
 
   /**
+   * Put a non-null key/int pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, int)} in favor
+   * of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, int)} method be used when
+   * any possibility of a null key exists, since it is entirely up to the calling method to ensure
+   * that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value An int which is the value.
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, int value) {
+    if (key != null) {
+      try {
+        put(key, value);
+      } catch (Exception e) {
+        // Throw as unchecked exception
+        throw new IllegalStateException(e);
+      }
+    }
+    return this;
+  }
+
+  /**
    * Put a key/long pair in the JSONObject.
    *
    * @param key A key string.
@@ -849,6 +950,33 @@ public class JSONObject {
    */
   public JSONObject put(String key, long value) throws JSONException {
     put(key, new Long(value));
+    return this;
+  }
+
+  /**
+   * Put a non-null key/long pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, long)} in favor
+   * of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, long)} method be used when
+   * any possibility of a null key exists, since it is entirely up to the calling method to ensure
+   * that the key is not null and the value is not invalid (if applicable).
+   *
+   * @param key A key string (cannot be null).
+   * @param value A long which is the value.
+   * @return this.
+   * @since 1.15.0
+   */
+  public JSONObject putNonNull(String key, long value) {
+    if (key != null) {
+      try {
+        put(key, value);
+      } catch (Exception e) {
+        // Throw as unchecked exception
+        throw new IllegalStateException(e);
+      }
+    }
     return this;
   }
 
@@ -904,6 +1032,33 @@ public class JSONObject {
       put(key, value);
     }
     return this;
+  }
+
+  /**
+   * Put a non-null key/value pair in the JSONObject.
+   *
+   * <p>This method removes the {@link JSONException} thrown by {@link #put(String, Object)} and
+   * {@link #putOpt(String, Object)} in favor of a cleaner solution (where applicable).
+   *
+   * <p>It is strongly recommended that the standard {@link #put(String, Object)} method be used
+   * when any possibility of a null key exists, since it is entirely up to the calling method to
+   * ensure that the key is not null and the value is not invalid (if applicable).
+   *
+   * <p>This method is very similar to the {@link #putOpt(String, Object)} method in that the key
+   * and value must be non-null, but does not require the {@link JSONException} to be caught.
+   *
+   * @param key A key string.
+   * @param value An object which is the value. It should be of one of these types: Boolean, Double,
+   *     Integer, JSONArray, JSONObject, Long, String, or the JSONObject.NULL object.
+   * @return this.
+   */
+  public JSONObject putNonNull(String key, Object value) {
+    try {
+      return putOpt(key, value);
+    } catch (Exception e) {
+      // Throw as unchecked exception
+      throw new IllegalStateException(e);
+    }
   }
 
   /**
