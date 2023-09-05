@@ -186,16 +186,27 @@ public class Logger {
   }
 
   /**
+   * Log an exception (uses specified log level).
+   *
+   * @param level the log level to use
+   * @param e exception to log
+   * @since 1.15.0
+   */
+  private static void LOG_EXCEPTION(int level, Exception e) {
+    StringWriter exceptionStringWriter = new StringWriter();
+    e.printStackTrace(new PrintWriter(exceptionStringWriter));
+    String exceptionAsString = exceptionStringWriter.toString();
+    LOG(level, exceptionAsString);
+  }
+
+  /**
    * Log an exception (uses TRACE log level)
    *
    * @param e exception to log
    */
   public static void LOG_EXCEPTION(Exception e) {
     if (loggingLevel == LOG_LEVEL_TRACE) {
-      StringWriter exceptionStringWriter = new StringWriter();
-      e.printStackTrace(new PrintWriter(exceptionStringWriter));
-      String exceptionAsString = exceptionStringWriter.toString();
-      LOG(loggingLevel, exceptionAsString);
+      LOG_EXCEPTION(loggingLevel, e);
     }
   }
 
