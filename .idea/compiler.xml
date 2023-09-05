@@ -6,11 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="sc-ewon-flexy-extensions-lib" />
+        <module name="extensions" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="sc-ewon-flexy-extensions-lib" target="1.4" />
-    </bytecodeTargetLevel>
   </component>
 </project>
