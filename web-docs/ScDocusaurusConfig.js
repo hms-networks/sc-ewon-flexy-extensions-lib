@@ -1,10 +1,10 @@
 // CONFIGURATION ZONE - YOU CAN EDIT THESE LINES
 const ScDocusaurusConfig = {
   repoOwnerName: 'hms-networks',
-  repoName: 'sc-java-maven-starter-project',
-  title: 'Solution Center Java Starter Project',
-  description: 'Kick off Java development on the Ewon Flexy with the HMS Networks Solution Center Java Starter Project.',
-  meta: 'Homepage for the HMS Networks MU Americas Solution Center Java Starter Project.',
+  repoName: 'sc-ewon-flexy-extensions-lib',
+  title: 'Ewon Flexy Extensions Library',
+  description: 'A library of extensions to the functionality of the Ewon Flexy Java environment (Ewon ETK), created by the HMS Networks, MU Americas Solution Center.',
+  meta: 'Homepage for the HMS Networks MU Americas Solution Center Ewon Flexy Extensions Library.',
 };
 
 // EXPORT ZONE - DON'T TOUCH BELOW THIS LINE
