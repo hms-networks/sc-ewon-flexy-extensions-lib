@@ -1,0 +1,1 @@
+-heapsize 25M -classpath /usr/extensions-1.14.3-full.jar -emain com.hms_networks.americas.sc.extensions.ExtensionsMain
