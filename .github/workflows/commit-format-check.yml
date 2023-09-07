@@ -1,6 +1,6 @@
 # HMS Networks Solution Center
 # Commit Format Action for Maven-based Ewon ETK Projects
-# Version: 2.0
+# Version: 2.1
 #
 # This action is configured to automatically run when a pull
 # request is made to the `main` or `master` branch.
@@ -11,7 +11,6 @@ on:
   pull_request:
     branches:
       - main
-      - master
 
 jobs:
   check-commit-message:
