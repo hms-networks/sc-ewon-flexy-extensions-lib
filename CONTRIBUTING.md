@@ -58,7 +58,7 @@ We use GitHub issues to track feature and enhancement requests. If you'd like to
 - Make sure that you are using the latest Ewon firmware.
   - Check for updates at [https://www.ewon.biz/technical-support/pages/firmware](https://www.ewon.biz/technical-support/pages/firmware).
 - Read the [README.md](https://github.com/hms-networks/sc-ewon-flexy-extensions-lib/blob/main/README.md) carefully to find out if the functionality is already covered.
-- Perform a search for existing [Issues](https://github.com/{APPLICATION NAME}/issues) or [Discussions](https://github.com/hms-networks/sc-ewon-flexy-extensions-lib/discussions) to see if the feature or enhancement has already been suggested.
+- Perform a search for existing [Issues](https://github.com/hms-networks/sc-ewon-flexy-extensions-lib/issues) or [Discussions](https://github.com/hms-networks/sc-ewon-flexy-extensions-lib/discussions) to see if the feature or enhancement has already been suggested.
   - If the feature or enhancement has already been suggested, add a comment to the existing issue or discussion instead of opening a new one.
 - Make sure the feature or enhancement is with the scope and aims of the project. New features shall be useful to the majority of users, not a small subset.
   - If a feature or enhancement targets a minority of users, it is advised to consider writing an add-on or library.
