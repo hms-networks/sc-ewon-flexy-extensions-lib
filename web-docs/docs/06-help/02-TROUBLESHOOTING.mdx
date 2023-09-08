@@ -42,39 +42,7 @@ To resolve these errors, try the following:
 3. If the errors persist, try reverting to a previously known good commit, or resetting local
    changes.
 
-## 2. Build Warnings or Errors in ExampleMain or ExampleTest
-
-### Symptom
-
-<>When building the {ScDocusaurusConfig.title}, you may encounter build warnings or errors in the
-`ExampleMain.java` or `ExampleTest.java` files. These errors may prevent the build from
-completing successfully.</><br/>
-
-### Cause
-
-<>The `ExampleMain.java` and `ExampleTest.java` files are included in the {ScDocusaurusConfig.title}
-&nbsp;as an example. These files are not required for the {ScDocusaurusConfig.title} to function
-properly, and may be removed if desired.</><br/>
-
-### Solution
-
-If you do not wish to use the `ExampleMain.java` and `ExampleTest.java` files, you may remove them
-from the project.
-
-If you wish to use the `ExampleMain.java` and `ExampleTest.java` files, you may need to update the
-files to resolve the identified build warnings or errors. The following recommendations may be
-helpful when updating the files:
-
-- The `ExampleMain.java` file contains a `getExampleValue()` method that returns an `int` value.
-  This method may be updated to return a different value, or removed if desired.
-- The `ExampleTest.java` file contains a handful of methods which perform basic mathematics
-  operations on the return value from `getExampleValue()` in `ExampleMain.java`.
-  These methods may be updated to perform different operations, or removed if desired.
-    - Optionally, the `ExampleTest.java` file may be deleted if desired. Note: if the
-      `ExampleTest.java` file is deleted, it is recommended to also remove the `getExampleValue()`
-      method from `ExampleMain.java`.
-
-## 3. Javadoc Errors During Build After Updating the POM File
+## 2. Javadoc Errors During Build After Updating the POM File
 
 ### Symptom
 
