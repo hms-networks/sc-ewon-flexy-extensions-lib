@@ -4,3 +4,25 @@ title: Using Library
 sidebar_label: Using Library
 toc_max_heading_level: 2
 ---
+
+import ScDocusaurusConfig from "@site/ScDocusaurusConfig.js";
+import PomScMavenRepo from '@site/docs/_partial/_pom_sc_maven_repo.mdx';
+import PomLibrary from '@site/docs/_partial/_pom_library.mdx';
+
+## Add Solution Center Maven Repository
+
+<>The {ScDocusaurusConfig.title} is available as a Maven dependency from the HMS Networks, MU
+Americas Solution Center Maven repository.</><br/><br/>
+
+Before adding the dependency to your project, you must first add the Solution Center Maven
+repository to your `pom.xml` file, as follows:
+
+<PomScMavenRepo />
+
+## Add Library Dependency
+
+Once the Solution Center Maven repository has been added to your `pom.xml` file, you can add
+the library dependency to your project by adding the following `<dependency></dependency>`
+block in the `<dependencies></dependencies>` section of your `pom.xml` as follows:
+
+<PomLibrary />
