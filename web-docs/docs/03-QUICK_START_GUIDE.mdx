@@ -4,3 +4,22 @@ title: Quick Start Guide
 sidebar_label: Quick Start Guide
 toc_max_heading_level: 2
 ---
+
+import ScDocusaurusConfig from "@site/ScDocusaurusConfig.js";
+import PomScMavenRepo from '@site/docs/_partial/_pom_sc_maven_repo.mdx';
+import PomLibrary from '@site/docs/_partial/_pom_library.mdx';
+
+## 1. Add Solution Center Maven Repository
+
+Open your project's `pom.xml` file and add the Solution Center Maven repository to the
+`<repositories></repositories>` section of your `pom.xml` as follows:
+
+<PomScMavenRepo />
+
+## 2. Add Library Dependency
+
+Once the Solution Center Maven repository has been added to your `pom.xml` file, add the library
+dependency to your project by adding the following `<dependency></dependency>` block in the
+`<dependencies></dependencies>` section of your `pom.xml` as follows:
+
+<PomLibrary />
