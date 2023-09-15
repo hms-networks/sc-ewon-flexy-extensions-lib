@@ -48,6 +48,7 @@ public class SCHttpUtility {
    *
    * @param seconds the timeout in seconds
    * @throws Exception if unable to set timeouts
+   * @since 1.3.0
    */
   public static void setHttpTimeouts(String seconds) throws Exception {
     final String httpSendTimeoutName = "HTTPC_SDTO";
@@ -91,6 +92,7 @@ public class SCHttpUtility {
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
    * @return http response string
+   * @since 1.3.0
    */
   private static String httpRequest(
       String url, String header, String body, String method, String outputFile)
@@ -186,6 +188,7 @@ public class SCHttpUtility {
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
    * @return response string
+   * @since 1.3.0
    */
   public static String httpPost(String url, String header, String body)
       throws EWException,
@@ -213,6 +216,7 @@ public class SCHttpUtility {
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
    * @return response string
+   * @since 1.12.0
    */
   public static String httpPost(String url, String header, String body, String outputFile)
       throws EWException,
@@ -237,6 +241,7 @@ public class SCHttpUtility {
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
    * @return http response string
+   * @since 1.3.0
    */
   public static String httpGet(String url, String header, String body)
       throws EWException,
@@ -264,6 +269,7 @@ public class SCHttpUtility {
    * @throws SCHttpConnectionException if a connection error occurs during the request
    * @throws SCHttpUnknownException if an unknown error occurs during the request
    * @return http response string
+   * @since 1.12.0
    */
   public static String httpGet(String url, String header, String body, String outputFile)
       throws EWException,
