@@ -39,6 +39,9 @@ public class SCHttpUtility {
   /** Prefix appended to temporary files used to store HTTP responses. */
   private static final String TEMP_RESPONSE_FILE_NAME_PREFIX = "sc_http_response_";
 
+  /** Key for accessing the HTTP certificate path. */
+  private static final String SCB_CERT_PATH_KEY = "HttpCertDir";
+
   /** Counter used to uniquely identify temporary files used to store HTTP responses. */
   private static int tempResponseFileNameCounter = 0;
 
@@ -279,5 +282,33 @@ public class SCHttpUtility {
           SCHttpConnectionException,
           SCHttpUnknownException {
     return httpRequest(url, header, body, HTTPX_GET_STRING, outputFile);
+  }
+
+  /**
+   * Gets the directory that the Ewon uses to check for SSL Certificates
+   *
+   * @return path configured to use for HTTP certificates
+   * @throws EWException if unable to get the certificate path
+   * @since 1.14.3
+   */
+  public static String getHttpCertificatePath() throws EWException {
+    SysControlBlock SCB = new SysControlBlock(SysControlBlock.SYS);
+    return SCB.getItem(SCB_CERT_PATH_KEY);
+  }
+
+  /**
+   * Sets the directory that the Ewon uses to check for SSL Certificates
+   *
+   * @param httpCertPath path to use for HTTP certificates
+   * @throws EWException if unable to set the certificate path
+   * @since 1.14.3
+   */
+  public static void setHttpCertificatePath(String httpCertPath) throws EWException {
+    SysControlBlock SCB = new SysControlBlock(SysControlBlock.SYS);
+
+    if (!SCB.getItem(SCB_CERT_PATH_KEY).equals(httpCertPath)) {
+      SCB.setItem(SCB_CERT_PATH_KEY, httpCertPath);
+      SCB.saveBlock(true);
+    }
   }
 }
