@@ -17,71 +17,71 @@ import java.io.StringWriter;
  */
 public class Logger {
 
-  /** Constant for trace log level */
+  /** Constant for trace log level. */
   public static final int LOG_LEVEL_TRACE = 6;
 
-  /** Constant for debug log level */
+  /** Constant for debug log level. */
   public static final int LOG_LEVEL_DEBUG = 5;
 
-  /** Constant for info log level */
+  /** Constant for info log level. */
   public static final int LOG_LEVEL_INFO = 4;
 
-  /** Constant for warning log level */
+  /** Constant for warning log level. */
   public static final int LOG_LEVEL_WARN = 3;
 
-  /** Constant for serious log level */
+  /** Constant for serious log level. */
   public static final int LOG_LEVEL_SERIOUS = 2;
 
-  /** Constant for critical log level */
+  /** Constant for critical log level. */
   public static final int LOG_LEVEL_CRITICAL = 1;
 
-  /** Constant for no log level */
+  /** Constant for no log level. */
   public static final int LOG_LEVEL_NONE = 0;
 
-  /** Constant for the max size (in chars) of log file */
+  /** Constant for the max size (in chars) of log file. */
   private static final int MAX_CHARS_PER_FILE = 25000;
 
-  /** Constant for the max number of log files */
+  /** Constant for the max number of log files. */
   private static final int MAX_NUM_LOG_FILES = 10;
 
-  /** Constant for the max number of queued logs */
+  /** Constant for the max number of queued logs. */
   private static final int MAX_NUM_QUEUED_LOGS = 25;
 
-  /** Constant for the log file path */
+  /** Constant for the log file path. */
   private static final String LOG_FILE_PATH = "/usr/";
 
-  /** Constant for the log file name */
+  /** Constant for the log file name. */
   private static final String LOG_FILE_NAME = "log";
 
-  /** Constant for the log file extension */
+  /** Constant for the log file extension. */
   private static final String LOG_FILE_EXTENSION = ".txt";
 
-  /** Stored logging level. Default is DEBUG */
+  /** Stored logging level. Default is DEBUG. */
   private static int loggingLevel = LOG_LEVEL_DEBUG;
 
-  /** Current log file index */
+  /** Current log file index. */
   private static int currFileNumber = 1;
 
-  /** Number of chars written to current log file */
+  /** Number of chars written to current log file. */
   private static long numCharsWrittenToFile = 0;
 
-  /** Indicator if logging to realtime logs */
+  /** Indicator if logging to realtime logs. */
   private static boolean isLoggingToRealtime = true;
 
-  /** Indicator if logging to realtime logs */
+  /** Indicator if logging to realtime logs. */
   private static boolean isLoggingToSocket = false;
 
-  /** Indicator if logging to file */
+  /** Indicator if logging to file. */
   private static boolean isLoggingToFile = false;
 
-  /** Indicator if queuing logs */
+  /** Indicator if queuing logs. */
   private static boolean isQueueing = false;
 
-  /** Queue of unprinted logs */
+  /** Queue of unprinted logs. */
   private static LogQueue logQueue;
 
   /**
-   * Enable logging to Flexy's realtime logs
+   * Enable logging to Flexy's realtime logs.
    *
    * @since 1.1
    */
@@ -90,7 +90,7 @@ public class Logger {
   }
 
   /**
-   * Disable logging to Flexy's realtime logs
+   * Disable logging to Flexy's realtime logs.
    *
    * @since 1.1
    */
@@ -99,7 +99,7 @@ public class Logger {
   }
 
   /**
-   * Enable logging to socket connection
+   * Enable logging to socket connection.
    *
    * @since 1.1
    */
@@ -108,7 +108,7 @@ public class Logger {
   }
 
   /**
-   * Disable logging to socket connection
+   * Disable logging to socket connection.
    *
    * @since 1.1
    */
@@ -117,7 +117,7 @@ public class Logger {
   }
 
   /**
-   * Enable queuing unprinted log messages
+   * Enable queuing unprinted log messages.
    *
    * @since 1.2
    */
@@ -127,7 +127,7 @@ public class Logger {
   }
 
   /**
-   * Set the log level for this class
+   * Set the log level for this class.
    *
    * @param level desired log level
    * @return true if successful
@@ -200,7 +200,7 @@ public class Logger {
   }
 
   /**
-   * Log an exception (uses TRACE log level)
+   * Log an exception (uses TRACE log level).
    *
    * @param e exception to log
    */
@@ -211,7 +211,7 @@ public class Logger {
   }
 
   /**
-   * Log a string using the specified log level
+   * Log a string using the specified log level.
    *
    * @param level desired log level
    * @param logString string to log
@@ -303,7 +303,7 @@ public class Logger {
   }
 
   /**
-   * Log a string with the debug log level
+   * Log a string with the debug log level.
    *
    * @param logString string to log
    */
@@ -340,7 +340,7 @@ public class Logger {
   }
 
   /**
-   * Log a string with the info log level
+   * Log a string with the info log level.
    *
    * @param logString string to log
    */
@@ -375,7 +375,7 @@ public class Logger {
   }
 
   /**
-   * Log a string with the warning log level
+   * Log a string with the warning log level.
    *
    * @param logString string to log
    */
@@ -410,7 +410,7 @@ public class Logger {
   }
 
   /**
-   * Log a string with the serious log level
+   * Log a string with the serious log level.
    *
    * @param logString string to log
    */
@@ -446,7 +446,7 @@ public class Logger {
   }
 
   /**
-   * Log a string with the critical log level
+   * Log a string with the critical log level.
    *
    * @param logString string to log
    */
@@ -481,7 +481,7 @@ public class Logger {
     LOG_EXCEPTION(elevateExceptionLogLevel ? LOG_LEVEL_CRITICAL : LOG_LEVEL_TRACE, logException);
   }
 
-  /** Output all queued logs at critical level */
+  /** Output all queued logs at critical level. */
   public static void DUMP_LOG_QUEUE() {
     while (!logQueue.isEmpty()) {
       LOG(LOG_LEVEL_CRITICAL, logQueue.poll());
