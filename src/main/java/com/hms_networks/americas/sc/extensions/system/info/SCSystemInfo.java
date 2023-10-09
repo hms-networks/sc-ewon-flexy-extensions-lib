@@ -23,6 +23,9 @@ public class SCSystemInfo {
   /** Key for accessing the java version item in a system control block. */
   private static final String SCB_JAVA_VER_KEY = "JavaVersion";
 
+  /** Key for accessing the ewon serial number in a system control block. */
+  private static final String SCB_EWON_SERIAL_NUM_KEY = "SERNUM";
+
   /** Default major firmware version requirement */
   private static final int DEFAULT_MIN_MAJOR_FW_VER = 14;
 
@@ -116,6 +119,17 @@ public class SCSystemInfo {
   public static String getEwonName() throws EWException {
     SysControlBlock SCB = new SysControlBlock(SysControlBlock.SYS);
     return SCB.getItem(SCB_EWON_NAME_KEY);
+  }
+
+  /**
+   * Gets the serial number of the Ewon.
+   *
+   * @return The Ewon's serial number
+   * @throws EWException for Flexy specific Exception
+   */
+  public static String getEwonSerialNum() throws EWException {
+    SysControlBlock SCB = new SysControlBlock(SysControlBlock.INF);
+    return SCB.getItem(SCB_EWON_SERIAL_NUM_KEY);
   }
 
   /**
