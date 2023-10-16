@@ -21,6 +21,24 @@ public class SCHttpUtility {
   /** Ewon RequestHTTPX string to indicate a GET request. */
   public static final String HTTPX_GET_STRING = "GET";
 
+  /** Ewon RequestHTTPX string to indicate a GET request. */
+  public static final String HTTPX_PUT_STRING = "PUT";
+
+  /** Ewon RequestHTTPX string to indicate a GET request. */
+  public static final String HTTPX_PATCH_STRING = "PATCH";
+
+  /** Ewon RequestHTTPX string to indicate a GET request. */
+  public static final String HTTPX_DELETE_STRING = "DELETE";
+
+  /** Ewon RequestHTTPX string to indicate a GET request. */
+  public static final String HTTPX_OPTIONS_STRING = "OPTIONS";
+
+  /** Ewon RequestHTTPX string to indicate a GET request. */
+  public static final String HTTPX_HEAD_STRING = "HEAD";
+
+  /** Ewon RequestHTTPX string to indicate a GET request. */
+  public static final String HTTPX_PURGE_STRING = "PURGE";
+
   /** Ewon RequestHTTPX response code for no error. */
   public static final int HTTPX_CODE_NO_ERROR = 0;
 
