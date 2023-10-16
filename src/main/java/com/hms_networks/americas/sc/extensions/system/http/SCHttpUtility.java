@@ -21,6 +21,48 @@ public class SCHttpUtility {
   /** Ewon RequestHTTPX string to indicate a GET request. */
   public static final String HTTPX_GET_STRING = "GET";
 
+  /**
+   * Ewon RequestHTTPX string to indicate a PUT request.
+   *
+   * @since 1.15.2
+   */
+  public static final String HTTPX_PUT_STRING = "PUT";
+
+  /**
+   * Ewon RequestHTTPX string to indicate a PATCH request.
+   *
+   * @since 1.15.2
+   */
+  public static final String HTTPX_PATCH_STRING = "PATCH";
+
+  /**
+   * Ewon RequestHTTPX string to indicate a DELETE request.
+   *
+   * @since 1.15.2
+   */
+  public static final String HTTPX_DELETE_STRING = "DELETE";
+
+  /**
+   * Ewon RequestHTTPX string to indicate an OPTIONS request.
+   *
+   * @since 1.15.2
+   */
+  public static final String HTTPX_OPTIONS_STRING = "OPTIONS";
+
+  /**
+   * Ewon RequestHTTPX string to indicate a HEAD request.
+   *
+   * @since 1.15.2
+   */
+  public static final String HTTPX_HEAD_STRING = "HEAD";
+
+  /**
+   * Ewon RequestHTTPX string to indicate a PURGE request.
+   *
+   * @since 1.15.2
+   */
+  public static final String HTTPX_PURGE_STRING = "PURGE";
+
   /** Ewon RequestHTTPX response code for no error. */
   public static final int HTTPX_CODE_NO_ERROR = 0;
 
@@ -282,6 +324,323 @@ public class SCHttpUtility {
           SCHttpConnectionException,
           SCHttpUnknownException {
     return httpRequest(url, header, body, HTTPX_GET_STRING, outputFile);
+  }
+
+  /**
+   * Performs an HTTP PUT request to the specified URL using the specified request header and body.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpPut(String url, String header, String body)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_PUT_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP PUT request to the specified URL using the specified request header and body,
+   * then outputs the response to the specified file. If the specified file already exists, it will
+   * be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpPut(String url, String header, String body, String outputFile)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_PUT_STRING, outputFile);
+  }
+
+  /**
+   * Performs an HTTP PATCH request to the specified URL using the specified request header and
+   * body.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpPatch(String url, String header, String body)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_PATCH_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP PATCH request to the specified URL using the specified request header and
+   * body, then outputs the response to the specified file. If the specified file already exists, it
+   * will be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpPatch(String url, String header, String body, String outputFile)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_PATCH_STRING, outputFile);
+  }
+
+  /**
+   * Performs an HTTP DELETE request to the specified URL using the specified request header and
+   * body.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpDelete(String url, String header, String body)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_DELETE_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP DELETE request to the specified URL using the specified request header and
+   * body, then outputs the response to the specified file. If the specified file already exists, it
+   * will be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpDelete(String url, String header, String body, String outputFile)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_DELETE_STRING, outputFile);
+  }
+
+  /**
+   * Performs an HTTP OPTIONS request to the specified URL using the specified request header.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpOptions(String url, String header)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, "", HTTPX_OPTIONS_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP OPTIONS request to the specified URL using the specified request header, then
+   * outputs the response to the specified file. If the specified file already exists, it will be
+   * overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpOptions(String url, String header, String outputFile)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, "", HTTPX_OPTIONS_STRING, outputFile);
+  }
+
+  /**
+   * Performs an HTTP HEAD request to the specified URL using the specified request header and body.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpHead(String url, String header)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, "", HTTPX_HEAD_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP HEAD request to the specified URL using the specified request header and body,
+   * then outputs the response to the specified file. If the specified file already exists, it will
+   * be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpHead(String url, String header, String outputFile)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, "", HTTPX_HEAD_STRING, outputFile);
+  }
+
+  /**
+   * Performs an HTTP PURGE request to the specified URL using the specified request header and
+   * body.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpPurge(String url, String header, String body)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_PURGE_STRING, null);
+  }
+
+  /**
+   * Performs an HTTP PURGE request to the specified URL using the specified request header and
+   * body, then outputs the response to the specified file. If the specified file already exists, it
+   * will be overwritten.
+   *
+   * @param url URL to make request
+   * @param header request header
+   * @param body request body
+   * @param outputFile file to output response to
+   * @throws EWException if unable to make request
+   * @throws IOException if unable to read response file
+   * @throws SCHttpEwonException if an Ewon error occurs during the request
+   * @throws SCHttpAuthException if an authentication error occurs during the request
+   * @throws SCHttpConnectionException if a connection error occurs during the request
+   * @throws SCHttpUnknownException if an unknown error occurs during the request
+   * @return http response string
+   * @since 1.15.2
+   */
+  public static String httpPurge(String url, String header, String body, String outputFile)
+      throws EWException,
+          IOException,
+          SCHttpEwonException,
+          SCHttpAuthException,
+          SCHttpConnectionException,
+          SCHttpUnknownException {
+    return httpRequest(url, header, body, HTTPX_PURGE_STRING, outputFile);
   }
 
   /**
