@@ -139,7 +139,7 @@ public class SCHttpUtility {
    * @return http response string
    * @since 1.3.0
    */
-  private static String httpRequest(
+  public static String httpRequest(
       String url, String header, String body, String method, String outputFile)
       throws EWException,
           IOException,
