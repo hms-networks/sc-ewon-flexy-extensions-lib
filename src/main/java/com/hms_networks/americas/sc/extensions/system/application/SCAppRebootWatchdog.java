@@ -3,6 +3,7 @@ package com.hms_networks.americas.sc.extensions.system.application;
 import com.hms_networks.americas.sc.extensions.config.ConfigFileAccessManager;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.json.JSONObject;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import java.io.File;
 import java.io.IOException;
 
@@ -40,6 +41,9 @@ public class SCAppRebootWatchdog {
   /** Max number of reboots before watchdog disables the jvmrun file */
   private static final int MAX_REBOOT_COUNT = 10;
 
+  /** Default time the watchdog has to run before it can be serviced */
+  private static final int DEFAULT_WATCHDOG_MIN_SERVICE_TIME_SEC = 0;
+
   /** Contents of reboot watchdog data file */
   private static JSONObject rebootWatchdogObject;
 
@@ -49,13 +53,37 @@ public class SCAppRebootWatchdog {
   /** Status indicator if reboot watchdog is serviced */
   private static boolean isRebootWatchdogServiced = false;
 
+  /** The time the watchdog will accept servicing */
+  private static long watchdogReadyTimeMillis;
+
   /**
    * Enables the reboot watchdog.
+   *
+   * <p>The watchdog will be enabled with a default service time of 0 seconds. This means that when
+   * using the default service time, the watchdog can be serviced immediately after initialization.
+   * This ensures compatibility with existing applications that have implemented the reboot
+   * watchdog, but have not incorporated a sizeable delay between watchdog initialization and
+   * servicing.
+   *
+   * <p>For new applications, this method should not be used. Instead, the {@link
+   * #enableRebootWatchdog(int)} method should be used.
    *
    * @throws IOException If watchdog file cannot be read from filesystem.
    * @throws JSONException If watchdog file is not valid JSON or doesn't have the correct structure.
    */
   public static void enableRebootWatchdog() throws IOException, JSONException {
+    enableRebootWatchdog(DEFAULT_WATCHDOG_MIN_SERVICE_TIME_SEC);
+  }
+
+  /**
+   * Enables the reboot watchdog.
+   *
+   * @param serviceTimeSec The time the watchdog has to run before it can be serviced
+   * @throws IOException If watchdog file cannot be read from filesystem.
+   * @throws JSONException If watchdog file is not valid JSON or doesn't have the correct structure.
+   */
+  public static void enableRebootWatchdog(int serviceTimeSec) throws IOException, JSONException {
+    setWatchdogReadyTime(SCTimeUnit.SECONDS.toMillis(serviceTimeSec));
     initRebootWatchdogFile();
     isRebootWatchdogInit = true;
   }
@@ -66,13 +94,16 @@ public class SCAppRebootWatchdog {
    *
    * @throws IOException If watchdog file cannot be read from filesystem.
    * @throws JSONException If watchdog file is not valid JSON or doesn't have the correct structure.
+   * @return If the watchdog was successfully serviced.
    */
-  public static void serviceRebootWatchdog() throws IOException, JSONException {
+  public static boolean serviceRebootWatchdog() throws IOException, JSONException {
     // Only service the watchdog if its been initialized and not previously serviced
-    if (!isRebootWatchdogServiced && isRebootWatchdogInit) {
+    if (!isRebootWatchdogServiced && isRebootWatchdogInit && checkWatchdogWaitTimer()) {
       resetRebootWatchdogFile();
       isRebootWatchdogServiced = true;
     }
+
+    return isRebootWatchdogServiced;
   }
 
   /**
@@ -106,6 +137,15 @@ public class SCAppRebootWatchdog {
    */
   public static boolean isServiced() {
     return isRebootWatchdogServiced;
+  }
+
+  /**
+   * Returns the time the watchdog will accept servicing
+   *
+   * @return the time the watchdog will accept servicing
+   */
+  public static long getWatchdogReadyTimeMillis() {
+    return watchdogReadyTimeMillis;
   }
 
   /**
@@ -189,5 +229,24 @@ public class SCAppRebootWatchdog {
     defaultRebootWatchdogObject.put(REBOOT_COUNT_KEY, startingRebootCount);
 
     return defaultRebootWatchdogObject;
+  }
+
+  /**
+   * Sets the time the watchdog will accept servicing
+   *
+   * @param watchdogWaitTimeMillis the amount of time the watchdog should wait before accepting
+   *     servicing
+   */
+  private static void setWatchdogReadyTime(long watchdogWaitTimeMillis) {
+    watchdogReadyTimeMillis = System.currentTimeMillis() + watchdogWaitTimeMillis;
+  }
+
+  /**
+   * Checks if the watchdog has been running for a sufficient amount of time
+   *
+   * @return A boolean indicating if the watchdog has been running for a sufficient amount of time
+   */
+  private static boolean checkWatchdogWaitTimer() {
+    return System.currentTimeMillis() >= watchdogReadyTimeMillis;
   }
 }
