@@ -66,6 +66,19 @@ public class ConfigFileUpdater {
   }
 
   /**
+   * Checks if the configuration file needs to be updated.
+   *
+   * @param version version to check against
+   * @return true if the configuration file needs to be updated, false otherwise
+   * @since 1.15.5
+   */
+  public boolean needsUpdate(ConfigFileVersion version) {
+    final int versionsEqual = 0;
+
+    return version.compareTo(getConfigFileVersion()) > versionsEqual;
+  }
+
+  /**
    * Gets the configuration file.
    *
    * @return a {@link JSONObject} containing the configuration file
