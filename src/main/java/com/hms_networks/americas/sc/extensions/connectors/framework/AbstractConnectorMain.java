@@ -393,6 +393,7 @@ public abstract class AbstractConnectorMain {
    * Method for performing connector application initialization steps.
    *
    * @param args program arguments
+   * @return true if successful, false otherwise
    * @since 1.15.2
    */
   private boolean initialize(String[] args) {
@@ -611,6 +612,7 @@ public abstract class AbstractConnectorMain {
   /**
    * Method for performing connector application start up steps.
    *
+   * @return true if successful, false otherwise
    * @since 1.15.2
    */
   private boolean startUp() {

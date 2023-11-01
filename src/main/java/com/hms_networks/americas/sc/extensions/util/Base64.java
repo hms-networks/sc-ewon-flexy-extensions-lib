@@ -1030,6 +1030,9 @@ public class Base64 {
    * Returns one of the _SOMETHING_ALPHABET byte arrays depending on the options specified. It's
    * possible, though silly, to specify ORDERED <b>and</b> URLSAFE in which case one of them will be
    * picked, though there is no guarantee as to which one will be picked.
+   *
+   * @param options options for selecting which byte array to return
+   * @return a _SOMETHING_ALPHABET byte arrays
    */
   private static final byte[] getAlphabet(int options) {
     if ((options & URL_SAFE) == URL_SAFE) {
@@ -1045,6 +1048,9 @@ public class Base64 {
    * Returns one of the _SOMETHING_DECODABET byte arrays depending on the options specified. It's
    * possible, though silly, to specify ORDERED and URL_SAFE in which case one of them will be
    * picked, though there is no guarantee as to which one will be picked.
+   *
+   * @param options options for selecting which byte array to return
+   * @return a _SOMETHING_DECODABET byte arrays
    */
   private static final byte[] getDecodabet(int options) {
     if ((options & URL_SAFE) == URL_SAFE) {
@@ -1071,6 +1077,7 @@ public class Base64 {
    * @param b4 A reusable byte array to reduce array instantiation
    * @param threeBytes the array to convert
    * @param numSigBytes the number of significant bytes in your array
+   * @param options options for getAlphabet()
    * @return four byte array in Base64 notation.
    * @since 1.5.1
    */
@@ -1094,6 +1101,7 @@ public class Base64 {
    * @param numSigBytes the number of significant bytes in your array
    * @param destination the array to hold the conversion
    * @param destOffset the index where output will be put
+   * @param options options for getAlphabet call
    * @return the <var>destination</var> array
    * @since 1.3
    */
@@ -1650,6 +1658,7 @@ public class Base64 {
    * consider this method.
    *
    * @param source The Base64 encoded data
+   * @throws java.io.IOException If bogus characters exist in source data
    * @return decoded data
    * @since 2.3.1
    */

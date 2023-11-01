@@ -352,6 +352,7 @@ public class Logger {
    * Log a string and exception with the info log level.
    *
    * @param logString string to log
+   * @param logException exception to log
    * @since 1.15.0
    */
   public static void LOG_INFO(String logString, Exception logException) {
@@ -387,6 +388,7 @@ public class Logger {
    * Log a string and exception with the warning log level.
    *
    * @param logString string to log
+   * @param logException exception to log
    * @since 1.15.0
    */
   public static void LOG_WARN(String logString, Exception logException) {
@@ -422,6 +424,7 @@ public class Logger {
    * Log a string and exception with the serious log level.
    *
    * @param logString string to log
+   * @param logException exception to log
    * @since 1.15.0
    */
   public static void LOG_SERIOUS(String logString, Exception logException) {
@@ -458,6 +461,7 @@ public class Logger {
    * Log a string and exception with the critical log level.
    *
    * @param logString string to log
+   * @param logException exception to log
    * @since 1.15.0
    */
   public static void LOG_CRITICAL(String logString, Exception logException) {
