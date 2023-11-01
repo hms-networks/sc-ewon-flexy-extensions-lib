@@ -73,7 +73,7 @@ public abstract class ConfigFileUpdateStep implements Comparable {
    * Compare this {@link ConfigFileUpdateStep} version to another {@link ConfigFileUpdateStep}
    * version.
    *
-   * @param compConfigFileVersion the {@link ConfigFileUpdateStep} to compare to
+   * @param o the {@link ConfigFileUpdateStep} to compare to
    * @return a negative integer, zero, or a positive integer as the specified version is greater
    *     than, equal to, or less than this version.
    * @since 1.15.4

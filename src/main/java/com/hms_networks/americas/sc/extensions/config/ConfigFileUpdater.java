@@ -50,7 +50,7 @@ public class ConfigFileUpdater {
   static final String DEFAULT_VERSION_NOT_SPECIFIED = "0.0.0";
 
   /**
-   * Constructor for {@link ConfigUpdater}.
+   * Constructor for {@link ConfigFileUpdater}.
    *
    * @param config configuration file
    * @param applicationJsonKey application JSON key
