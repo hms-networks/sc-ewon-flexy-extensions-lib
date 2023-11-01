@@ -171,6 +171,7 @@
           <dependencySourceExcludes>
             <dependencySourceExclude>com.hms_networks.americas.sc.mvnlibs:ewon-etk:*</dependencySourceExclude>
           </dependencySourceExcludes>
+          <failOnWarnings>true</failOnWarnings>
         </configuration>
         <executions>
           <execution>
