@@ -77,6 +77,7 @@ public abstract class SCHttpRequestInfo {
   /**
    * Set the URL of the request object.
    *
+   * @param url the request URL
    * @since 1.15.2
    */
   public void setUrl(String url) {
@@ -96,6 +97,7 @@ public abstract class SCHttpRequestInfo {
   /**
    * Set the headers of the request object.
    *
+   * @param headers the request headers
    * @since 1.15.2
    */
   public void setHeaders(String headers) {
@@ -115,6 +117,7 @@ public abstract class SCHttpRequestInfo {
   /**
    * Set the body of the request object.
    *
+   * @param body the request body
    * @since 1.15.2
    */
   public void setBody(String body) {
@@ -153,6 +156,7 @@ public abstract class SCHttpRequestInfo {
   /**
    * Sets the boolean value of whether a request has been completed successfully.
    *
+   * @param isCompleted the boolean value of whether a request has been completed successfully
    * @since 1.15.2
    */
   public void setIsCompleted(boolean isCompleted) {

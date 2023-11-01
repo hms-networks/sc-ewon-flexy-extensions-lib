@@ -25,6 +25,7 @@ public class SCAppManagement {
    * established.
    *
    * @param waitSeconds number of seconds to pause the current thread
+   * @throws InterruptedException if the thread is interrupted while waiting
    */
   private static void waitForWanHelper(int waitSeconds) throws InterruptedException {
     long sleepTimeMillis = SCTimeUnit.SECONDS.toMillis(waitSeconds);
@@ -145,6 +146,7 @@ public class SCAppManagement {
    *
    * @param timeout the timeout value in the specified time unit
    * @param timeUnit the time unit of the timeout value
+   * @throws InterruptedException if the thread is interrupted while waiting
    * @return true if an initialized WAN IP is detected, false otherwise
    */
   public static boolean waitForWanIp(int timeout, SCTimeUnit timeUnit) throws InterruptedException {
@@ -181,6 +183,8 @@ public class SCAppManagement {
   /**
    * Pause current thread indefinitely if an initialized WAN IP has not been established. When a WAN
    * IP is detected, resume application.
+   *
+   * @throws InterruptedException if the thread is interrupted while waiting
    */
   public static void waitForWanIp() throws InterruptedException {
     // Ensure there is a valid WAN IP address
