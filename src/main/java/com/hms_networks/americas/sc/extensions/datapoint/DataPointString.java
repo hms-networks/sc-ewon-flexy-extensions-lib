@@ -108,4 +108,13 @@ public class DataPointString extends DataPoint {
   public String getValueString() {
     return value;
   }
+
+  /**
+   * Get the {@link Object} representation of the data point value.
+   *
+   * @return data point value as an {@link Object}
+   */
+  public Object getValueObject() {
+    return getValue();
+  }
 }

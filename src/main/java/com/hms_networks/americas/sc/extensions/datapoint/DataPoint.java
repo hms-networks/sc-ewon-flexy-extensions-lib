@@ -133,9 +133,16 @@ public abstract class DataPoint {
   public abstract DataType getType();
 
   /**
-   * Get the string representation of the data point value.
+   * Get the {@link String} representation of the data point value.
    *
    * @return data point value as a string
    */
   public abstract String getValueString();
+
+  /**
+   * Get the {@link Object} representation of the data point value.
+   *
+   * @return data point value as an {@link Object}
+   */
+  public abstract Object getValueObject();
 }
