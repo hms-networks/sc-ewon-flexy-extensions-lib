@@ -138,4 +138,11 @@ public abstract class DataPoint {
    * @return data point value as a string
    */
   public abstract String getValueString();
+
+  /**
+   * Get the {@link Object} representation of the data point value.
+   *
+   * @return data point value as an {@link Object}
+   */
+  public abstract Object getValueObject();
 }

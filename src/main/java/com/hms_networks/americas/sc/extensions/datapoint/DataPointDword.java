@@ -108,4 +108,13 @@ public class DataPointDword extends DataPoint {
   public String getValueString() {
     return Long.toString(value);
   }
+
+  /**
+   * Get the {@link Object} representation of the data point value.
+   *
+   * @return data point value as an {@link Object}
+   */
+  public Object getValueObject() {
+    return new Long(value);
+  }
 }

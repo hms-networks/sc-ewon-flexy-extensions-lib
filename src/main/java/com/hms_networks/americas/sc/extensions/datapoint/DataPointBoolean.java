@@ -108,4 +108,13 @@ public class DataPointBoolean extends DataPoint {
   public String getValueString() {
     return value ? "1" : "0";
   }
+
+  /**
+   * Get the {@link Object} representation of the data point value.
+   *
+   * @return data point value as an {@link Object}
+   */
+  public Object getValueObject() {
+    return Boolean.valueOf(value);
+  }
 }
