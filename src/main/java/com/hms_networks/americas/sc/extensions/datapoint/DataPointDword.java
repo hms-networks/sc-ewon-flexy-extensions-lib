@@ -101,9 +101,9 @@ public class DataPointDword extends DataPoint {
   }
 
   /**
-   * Get the string representation of the data point value.
+   * Get the {@link String} representation of the data point value.
    *
-   * @return data point value as a string
+   * @return data point value as a {@link String}
    */
   public String getValueString() {
     return Long.toString(value);
