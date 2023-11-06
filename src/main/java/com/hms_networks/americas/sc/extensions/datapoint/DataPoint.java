@@ -56,9 +56,9 @@ public abstract class DataPoint {
   }
 
   /**
-   * Get the string representation of the time stamp.
+   * Get the {@link String} representation of the time stamp.
    *
-   * @return the timestamp as a string.
+   * @return the timestamp as a {@link String}.
    */
   public String getTimeStamp() {
     return timestamp;
@@ -133,9 +133,9 @@ public abstract class DataPoint {
   public abstract DataType getType();
 
   /**
-   * Get the string representation of the data point value.
+   * Get the {@link String} representation of the data point value.
    *
-   * @return data point value as a string
+   * @return data point value as a {@link String}
    */
   public abstract String getValueString();
 
