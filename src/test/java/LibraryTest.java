@@ -1,6 +1,7 @@
 import com.hms_networks.americas.sc.extensions.taginfo.TagGroup;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
+import com.hms_networks.americas.sc.extensions.util.RawNumberValueUtilsTest;
 import java.util.Random;
 import junit.framework.TestCase;
 
@@ -81,6 +82,7 @@ public class LibraryTest extends TestCase {
    */
   public static void main(String[] args) {
     junit.textui.TestRunner.run(LibraryTest.class);
+    junit.textui.TestRunner.run(RawNumberValueUtilsTest.class);
   }
 
   /**
