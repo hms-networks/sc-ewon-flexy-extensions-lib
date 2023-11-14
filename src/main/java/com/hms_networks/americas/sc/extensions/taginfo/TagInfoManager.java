@@ -371,6 +371,17 @@ public class TagInfoManager {
         case indexUnit:
           String tagUnit = currentToken;
 
+          // Remove wrapping quotes if present
+          final char doubleQuoteChar = '"';
+          final int firstCharIndex = 0;
+          final int secondCharIndex = 1;
+          final int lastCharIndex = tagUnit.length() - 1;
+
+          if (tagUnit.charAt(firstCharIndex) == doubleQuoteChar
+              && tagUnit.charAt(lastCharIndex) == doubleQuoteChar) {
+            tagUnit = tagUnit.substring(secondCharIndex, lastCharIndex);
+          }
+
           // Unit is the last index, form TagInfo object
           createTagInfoObject(
               tagId,
