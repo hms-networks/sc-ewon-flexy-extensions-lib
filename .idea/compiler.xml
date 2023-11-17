@@ -6,7 +6,28 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="extensions" />
+        <module name="localization" />
+        <module name="connectors" />
+        <module name="datapoint" />
+        <module name="string" />
+        <module name="ebd" />
+        <module name="alarms" />
+        <module name="realtimedata" />
+        <module name="tagupdateservice" />
+        <module name="localdatafiles" />
+        <module name="eventfile" />
+        <module name="security" />
+        <module name="system" />
+        <module name="fileutils" />
+        <module name="util" />
+        <module name="historicaldata" />
+        <module name="mqtt" />
+        <module name="json" />
+        <module name="logging" />
+        <module name="api" />
+        <module name="config" />
+        <module name="taginfo" />
+        <module name="retry" />
       </profile>
     </annotationProcessing>
   </component>
