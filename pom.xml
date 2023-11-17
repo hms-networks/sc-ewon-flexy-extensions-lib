@@ -13,6 +13,40 @@
   <groupId>com.hms_networks.americas.sc</groupId>
   <!-- PROJECT ARTIFACT ID (ROOT PACKAGE NAME) -->
   <artifactId>extensions</artifactId>
+  <!-- PROJECT PACKAGING TYPE (ROOT OF MULTI-MODULE PROJECT) -->
+  <packaging>pom</packaging>
+
+  <!-- PROJECT ORGANIZATION -->
+  <organization>
+    <name>HMS Networks, Inc.</name>
+    <url>https://hms-networks.com</url>
+  </organization>
+
+  <!-- PROJECT MODULES -->
+  <modules>
+    <module>alarms</module>
+    <module>api</module>
+    <module>config</module>
+    <module>connectors</module>
+    <module>datapoint</module>
+    <module>ebd</module>
+    <module>eventfile</module>
+    <module>fileutils</module>
+    <module>historicaldata</module>
+    <module>json</module>
+    <module>localdatafiles</module>
+    <module>localization</module>
+    <module>logging</module>
+    <module>mqtt</module>
+    <module>realtimedata</module>
+    <module>retry</module>
+    <module>security</module>
+    <module>string</module>
+    <module>system</module>
+    <module>taginfo</module>
+    <module>tagupdateservice</module>
+    <module>util</module>
+  </modules>
 
   <!-- PROJECT PROPERTIES -->
   <properties>
@@ -56,97 +90,26 @@
       <plugin>
         <groupId>com.igormaznitsa</groupId>
         <artifactId>mvn-jlink-wrapper</artifactId>
-        <version>1.1.0</version>
-        <executions>
-          <execution>
-            <id>cache-jdk-for-build</id>
-            <phase>initialize</phase>
-            <goals>
-              <goal>cache-jdk</goal>
-            </goals>
-            <configuration>
-              <jdkPathProperty>build.jdk.path</jdkPathProperty>
-              <jdkCachePath>${project.build.directory}${file.separator}buildJdk</jdkCachePath>
-              <provider>ADOPT</provider>
-              <providerConfig>
-                <release>${project.build.jdk.version}</release>
-                <arch>x64</arch>
-                <impl>hotspot</impl>
-                <project>jdk</project>
-              </providerConfig>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
-      <!-- Configure Maven compiler to use downloaded JDK -->
+      <!-- Build compiled .jar output -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <artifactId>maven-jar-plugin</artifactId>
         <configuration>
-          <verbose>true</verbose>
-          <fork>true</fork>
-          <executable>${build.jdk.path}${file.separator}bin${file.separator}javac</executable>
-          <compilerVersion>${project.build.jdk.name}</compilerVersion>
-          <source>${project.java.version}</source>
-          <target>${project.java.version}</target>
+          <archive>
+            <manifest>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+            </manifest>
+          </archive>
         </configuration>
-      </plugin>
-
-      <!-- Build Jar file with required dependencies and project archive -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <version>3.3.0</version>
-        <executions>
-          <execution>
-            <id>assemble-executable-jar</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.artifactId}-${project.version}-full</finalName>
-              <appendAssemblyId>false</appendAssemblyId>
-              <archive>
-                <manifest>
-                  <mainClass>${project.main.class}</mainClass>
-                  <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                  <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-                </manifest>
-              </archive>
-              <descriptorRefs>
-                <descriptorRef>jar-with-dependencies</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>assemble-project-archives</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <finalName>${project.artifactId}-${project.version}-archive</finalName>
-              <tarLongFileMode>gnu</tarLongFileMode>
-              <appendAssemblyId>false</appendAssemblyId>
-              <descriptors>
-                <descriptor>${project.basedir}${file.separator}src${file.separator}assembly${file.separator}sc-project.xml</descriptor>
-              </descriptors>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
 
       <!-- Build sources .jar output -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
-        <version>3.2.0</version>
-        <configuration>
-          <finalName>${project.artifactId}-${project.version}</finalName>
-        </configuration>
         <executions>
           <execution>
             <id>attach-sources</id>
@@ -161,206 +124,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>3.3.0</version>
         <configuration>
           <javadocExecutable>${build.jdk.path}${file.separator}bin${file.separator}javadoc
           </javadocExecutable>
-          <finalName>${project.artifactId}-${project.version}</finalName>
           <show>private</show>
-          <includeDependencySources>true</includeDependencySources>
-          <dependencySourceExcludes>
-            <dependencySourceExclude>com.hms_networks.americas.sc.mvnlibs:ewon-etk:*</dependencySourceExclude>
-          </dependencySourceExcludes>
           <failOnWarnings>true</failOnWarnings>
         </configuration>
         <executions>
           <execution>
-            <phase>package</phase>
+            <id>attach-javadocs</id>
             <goals>
-              <goal>aggregate-jar</goal>
+              <goal>jar</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Upload Jar file on install -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>wagon-maven-plugin</artifactId>
-        <version>2.0.2</version>
-        <executions>
-          <execution>
-            <id>ftp-install-jar</id>
-            <phase>install</phase>
-            <goals>
-              <goal>upload-single</goal>
-            </goals>
-            <configuration>
-              <fromFile>
-                ${project.build.directory}${file.separator}${project.artifactId}-${project.version}-full.jar
-              </fromFile>
-              <url>ftp://${ewon.username}:${ewon.password}@${ewon.address}/usr</url>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Run Jar file on Ewon Flexy -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-antrun-plugin</artifactId>
-        <version>3.0.0</version>
-        <executions>
-          <execution>
-            <id>deploy-stop-execution</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <get username="${ewon.username}" password="${ewon.password}"
-                  dest="stop.log" verbose="true"
-                  src="http://${ewon.address}/rcgi.bin/jvmCmd?cmd=stop"/>
-              </target>
-              <failOnError>true</failOnError>
-            </configuration>
-          </execution>
-          <execution>
-            <id>deploy-execute-jar</id>
-            <phase>deploy</phase>
-            <goals>
-              <goal>run</goal>
-            </goals>
-            <configuration>
-              <target>
-                <get username="${ewon.username}" password="${ewon.password}"
-                  dest="start.log" verbose="true" src="${project.build.exec.url}"/>
-              </target>
-              <failOnError>true</failOnError>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Skip standard maven artifact deployment -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-deploy-plugin</artifactId>
-        <version>2.8.2</version>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-      </plugin>
-
-      <!-- Update IDE configuration(s) (DO NOT EDIT SOURCE FILES) -->
-      <plugin>
-        <groupId>com.google.code.maven-replacer-plugin</groupId>
-        <artifactId>replacer</artifactId>
-        <version>1.5.3</version>
-        <executions>
-          <execution>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>replace</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <basedir>${project.basedir}</basedir>
-          <includes>
-            <include>.settings${file.separator}CONNECT (Remote JVM on Device).launch</include>
-            <include>
-              .idea${file.separator}runConfigurations${file.separator}DEBUG__Run_on_Device__Remote_JVM_.xml
-            </include>
-            <include>starting-files${file.separator}jvmrun</include>
-          </includes>
-          <replacements>
-            <replacement>
-              <token>-classpath /usr/.*-full\.jar</token>
-              <value>-classpath /usr/${project.artifactId}-${project.version}-full.jar</value>
-            </replacement>
-            <replacement>
-              <token>key="port" value=".*"</token>
-              <value>key="port" value="${project.build.debug.port}"</value>
-            </replacement>
-            <replacement>
-              <token>key="hostname" value=".*"</token>
-              <value>key="hostname" value="${ewon.address}"</value>
-            </replacement>
-            <replacement>
-              <token>name="PORT" value=".*"</token>
-              <value>name="PORT" value="${project.build.debug.port}"</value>
-            </replacement>
-            <replacement>
-              <token>name="HOST" value=".*"</token>
-              <value>name="HOST" value="${ewon.address}"</value>
-            </replacement>
-          </replacements>
-        </configuration>
-      </plugin>
-
-      <!-- Create testing coverage report -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.7</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>generate-code-coverage-report</id>
-            <phase>test</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Mark flexy.properties as assume unchanged-->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
-        <executions>
-          <execution>
-            <id>git-assume-unchanged-flexy-properties</id>
-            <phase>initialize</phase>
-            <configuration>
-              <executable>git</executable>
-              <arguments>
-                <argument>update-index</argument>
-                <argument>--assume-unchanged</argument>
-                <argument>${project.basedir}/flexy.properties</argument>
-              </arguments>
-            </configuration>
-            <goals>
-              <goal>exec</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- Read properties from external file -->
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>properties-maven-plugin</artifactId>
-        <version>1.0.0</version>
-        <executions>
-          <execution>
-            <phase>initialize</phase>
-            <goals>
-              <goal>read-project-properties</goal>
-            </goals>
-            <configuration>
-              <files>
-                <file>${project.basedir}/flexy.properties</file>
-              </files>
-            </configuration>
           </execution>
         </executions>
       </plugin>
@@ -376,6 +151,128 @@
 
     <pluginManagement>
       <plugins>
+
+        <!-- Download JDK which can compile for Java 1.4 -->
+        <plugin>
+          <groupId>com.igormaznitsa</groupId>
+          <artifactId>mvn-jlink-wrapper</artifactId>
+          <version>1.1.0</version>
+          <executions>
+            <execution>
+              <id>cache-jdk-for-build</id>
+              <phase>initialize</phase>
+              <goals>
+                <goal>cache-jdk</goal>
+              </goals>
+              <configuration>
+                <jdkPathProperty>build.jdk.path</jdkPathProperty>
+                <jdkCachePath>${project.build.directory}${file.separator}buildJdk
+                </jdkCachePath>
+                <provider>ADOPT</provider>
+                <providerConfig>
+                  <release>${project.build.jdk.version}</release>
+                  <arch>x64</arch>
+                  <impl>hotspot</impl>
+                  <project>jdk</project>
+                </providerConfig>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Configure Maven compiler to use downloaded JDK -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+          <inherited>true</inherited>
+          <configuration>
+            <verbose>true</verbose>
+            <fork>true</fork>
+            <executable>${build.jdk.path}${file.separator}bin${file.separator}javac</executable>
+            <compilerVersion>${project.build.jdk.name}</compilerVersion>
+            <source>${project.java.version}</source>
+            <target>${project.java.version}</target>
+          </configuration>
+        </plugin>
+
+        <!-- Build compiled .jar output -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.3.0</version>
+          <configuration>
+            <archive>
+              <manifest>
+                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              </manifest>
+            </archive>
+          </configuration>
+        </plugin>
+
+        <!-- Build sources .jar output -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.0</version>
+          <executions>
+            <execution>
+              <id>attach-sources</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Build Javadocs .jar output -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>3.6.2</version>
+          <inherited>false</inherited>
+          <executions>
+            <execution>
+              <id>aggregate-javadocs</id>
+              <goals>
+                <goal>aggregate-jar</goal>
+              </goals>
+              <phase>package</phase>
+            </execution>
+            <execution>
+              <id>attach-javadocs</id>
+              <goals>
+                <goal>jar</goal>
+              </goals>
+              <configuration>
+                <skip>true</skip>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <!-- Create testing coverage report -->
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>0.8.7</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+            </execution>
+            <execution>
+              <id>generate-code-coverage-report</id>
+              <phase>test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+
         <!-- Eclipse M2E settings. Note: this has no influence on the Maven build.-->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
