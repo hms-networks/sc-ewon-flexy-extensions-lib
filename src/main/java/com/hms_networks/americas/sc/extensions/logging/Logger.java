@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Logger.java
@@ -79,6 +81,17 @@ public class Logger {
 
   /** Queue of unprinted logs. */
   private static LogQueue logQueue;
+
+  /**
+   * Set for tracking whether a specific log has been outputted. This is used to prevent spamming
+   * the log with the same message.
+   *
+   * <p>If the log has already been outputted, its key will be in the set, otherwise it will not be
+   * present.
+   *
+   * @since 1.15.9
+   */
+  private static final Set logOnceList = new HashSet(); // Set<String>
 
   /**
    * Enable logging to Flexy's realtime logs.
@@ -312,6 +325,24 @@ public class Logger {
   }
 
   /**
+   * Log a string with the debug log level at most once (tracked by specified log key).
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @param logString string to log
+   * @since 1.15.9
+   */
+  public static void LOG_DEBUG_ONCE(String logKey, String logString) {
+    if (!getLoggedOnce(logKey)) {
+      setLoggedOnce(logKey, true);
+      LOG(LOG_LEVEL_DEBUG, logString);
+    }
+  }
+
+  /**
    * Log a string and exception with the debug log level.
    *
    * @param logString string to log
@@ -346,6 +377,24 @@ public class Logger {
    */
   public static void LOG_INFO(String logString) {
     LOG(LOG_LEVEL_INFO, logString);
+  }
+
+  /**
+   * Log a string with the info log level at most once (tracked by specified log key).
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @param logString string to log
+   * @since 1.15.9
+   */
+  public static void LOG_INFO_ONCE(String logKey, String logString) {
+    if (!getLoggedOnce(logKey)) {
+      setLoggedOnce(logKey, true);
+      LOG(LOG_LEVEL_INFO, logString);
+    }
   }
 
   /**
@@ -385,6 +434,24 @@ public class Logger {
   }
 
   /**
+   * Log a string with the warning log level at most once (tracked by specified log key).
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @param logString string to log
+   * @since 1.15.9
+   */
+  public static void LOG_WARN_ONCE(String logKey, String logString) {
+    if (!getLoggedOnce(logKey)) {
+      setLoggedOnce(logKey, true);
+      LOG(LOG_LEVEL_WARN, logString);
+    }
+  }
+
+  /**
    * Log a string and exception with the warning log level.
    *
    * @param logString string to log
@@ -418,6 +485,24 @@ public class Logger {
    */
   public static void LOG_SERIOUS(String logString) {
     LOG(LOG_LEVEL_SERIOUS, logString);
+  }
+
+  /**
+   * Log a string with the serious log level at most once (tracked by specified log key).
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @param logString string to log
+   * @since 1.15.9
+   */
+  public static void LOG_SERIOUS_ONCE(String logKey, String logString) {
+    if (!getLoggedOnce(logKey)) {
+      setLoggedOnce(logKey, true);
+      LOG(LOG_LEVEL_SERIOUS, logString);
+    }
   }
 
   /**
@@ -458,6 +543,24 @@ public class Logger {
   }
 
   /**
+   * Log a string with the critical log level at most once (tracked by specified log key).
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @param logString string to log
+   * @since 1.15.9
+   */
+  public static void LOG_CRITICAL_ONCE(String logKey, String logString) {
+    if (!getLoggedOnce(logKey)) {
+      setLoggedOnce(logKey, true);
+      LOG(LOG_LEVEL_CRITICAL, logString);
+    }
+  }
+
+  /**
    * Log a string and exception with the critical log level.
    *
    * @param logString string to log
@@ -490,5 +593,41 @@ public class Logger {
     while (!logQueue.isEmpty()) {
       LOG(LOG_LEVEL_CRITICAL, logQueue.poll());
     }
+  }
+
+  /**
+   * Sets whether a specific log has been outputted. This is used to prevent spamming the log with
+   * the same message.
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @param logOutputted boolean representing whether the log has been output (true) or not (false)
+   * @since 1.15.9
+   */
+  public static void setLoggedOnce(String logKey, boolean logOutputted) {
+    if (logOutputted) {
+      logOnceList.add(logKey);
+    } else {
+      logOnceList.remove(logKey);
+    }
+  }
+
+  /**
+   * Gets a boolean indicating whether a specific log has been outputted. This is used to prevent
+   * spamming the log with the same message.
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @return {@code true} if the log has been outputted, {@code false} otherwise
+   * @since 1.15.9
+   */
+  public static boolean getLoggedOnce(String logKey) {
+    return logOnceList.contains(logKey);
   }
 }
