@@ -25,6 +25,16 @@ import java.io.File;
 public abstract class AbstractConnectorConfig extends ConfigFile {
 
   /**
+   * The uniqueness prefix appended to the key of a missing field to ensure that the log event is
+   * uniquely keyed in the log once system.
+   *
+   * <p>ACCLMF = Abstract Connector Config Log Missing Field
+   *
+   * @since 1.15.9
+   */
+  private static final String LOG_ONCE_UNIQUENESS_PREFIX_ACCLMF = "ACCLMF_";
+
+  /**
    * The path to the configuration file.
    *
    * @since 1.15.2
@@ -538,12 +548,33 @@ public abstract class AbstractConnectorConfig extends ConfigFile {
    * @since 1.15.2
    */
   protected void logMissingField(String missingKey, String defaultValue) {
-    Logger.LOG_WARN(
+    final boolean suppressAdditional = false;
+    logMissingField(missingKey, defaultValue, suppressAdditional);
+  }
+
+  /**
+   * Logs a missing field in the configuration file along with the default value that will be used.
+   * If the specified {@code suppressAdditional} boolean is {@code true}, the event will only be
+   * logged once (tracked by the key).
+   *
+   * @param missingKey the JSON key of the field that was missing/could not be found
+   * @param defaultValue the default value that will be used
+   * @param logOnce whether to log only once and suppress additional log events for the same key
+   * @since 1.15.9
+   */
+  protected void logMissingField(String missingKey, String defaultValue, boolean logOnce) {
+    String logMessage =
         "The "
             + missingKey
             + " option was not found in the configuration file. Using default value of "
             + defaultValue
-            + ".");
+            + ".";
+    if (logOnce) {
+      final String logOnceKey = LOG_ONCE_UNIQUENESS_PREFIX_ACCLMF + missingKey;
+      Logger.LOG_WARN_ONCE(logOnceKey, logMessage);
+    } else {
+      Logger.LOG_WARN(logMessage);
+    }
   }
 
   /**
@@ -553,7 +584,26 @@ public abstract class AbstractConnectorConfig extends ConfigFile {
    * @since 1.15.2
    */
   protected void logMissingField(String missingKey) {
-    Logger.LOG_WARN("The " + missingKey + " option was not found in the configuration file.");
+    final boolean suppressAdditional = false;
+    logMissingField(missingKey, suppressAdditional);
+  }
+
+  /**
+   * Logs a missing field in the configuration file. If the specified {@code suppressAdditional}
+   * boolean is {@code true}, the event will only be logged once (tracked by the key).
+   *
+   * @param missingKey the JSON key of the field that was missing/could not be found
+   * @param logOnce whether to log only once and suppress additional log events for the same key
+   * @since 1.15.9
+   */
+  protected void logMissingField(String missingKey, boolean logOnce) {
+    String logMessage = "The " + missingKey + " option was not found in the configuration file.";
+    if (logOnce) {
+      final String logOnceKey = LOG_ONCE_UNIQUENESS_PREFIX_ACCLMF + missingKey;
+      Logger.LOG_WARN_ONCE(logOnceKey, logMessage);
+    } else {
+      Logger.LOG_WARN(logMessage);
+    }
   }
 
   /**
