@@ -160,14 +160,16 @@ public class ConfigFileUpdater {
     for (int i = 0; i < steps.size(); i++) {
       ConfigFileUpdateStep step = (ConfigFileUpdateStep) steps.get(i);
 
-      if (success && step.isCompatibleWithVersion(getConfigFileVersion())) {
-        success = success && step.updateConfig(config);
+      if (step.isCompatibleWithVersion(getConfigFileVersion())) {
+        success = step.updateConfig(config);
         if (success) {
           success = setConfigFileVersion(step.getStepVersion());
+        } else {
+          // The step is compatible with the current version, but failed to update the config
+          break;
         }
       } else {
         success = false;
-        break;
       }
     }
 
