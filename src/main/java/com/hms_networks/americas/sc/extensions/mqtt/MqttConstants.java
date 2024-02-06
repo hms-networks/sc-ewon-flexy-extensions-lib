@@ -53,4 +53,13 @@ public class MqttConstants {
 
   /** Key for MQTT password option */
   public static String MQTT_PASSWORD_OPTION_KEY = "PASSWORD";
+
+  /** Key for MQTT will topic option */
+  public static String MQTT_WILL_TOPIC_OPTION_KEY = "WILLTOPIC";
+
+  /** Key for MQTT will payload option */
+  public static String MQTT_WILL_PAYLOAD_OPTION_KEY = "WILLPAYLOAD";
+
+  /** Key for MQTT will retain option */
+  public static String MQTT_WILL_RETAIN_OPTION_KEY = "WILLRETAIN";
 }

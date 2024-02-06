@@ -291,6 +291,52 @@ public abstract class MqttManager extends MqttClient {
   }
 
   /**
+   * Sets the MQTT will topic
+   *
+   * @param willTopic will topic
+   * @throws EWException if unable to configure MQTT client will topic
+   */
+  public void setWillTopic(String willTopic) throws EWException {
+    setOption(MqttConstants.MQTT_WILL_TOPIC_OPTION_KEY, willTopic);
+  }
+
+  /**
+   * Sets the MQTT will payload
+   *
+   * @param willPayload will payload
+   * @throws EWException if unable to configure MQTT client will payload
+   */
+  public void setWillPayload(String willPayload) throws EWException {
+    setOption(MqttConstants.MQTT_WILL_PAYLOAD_OPTION_KEY, willPayload);
+  }
+
+  /**
+   * Sets the MQTT will retain option
+   *
+   * @param willRetain will retain value
+   * @throws EWException if unable to configure MQTT client will retain
+   */
+  public void setWillRetain(boolean willRetain) throws EWException {
+    String willRetainString = willRetain ? "1" : "0";
+    setOption(MqttConstants.MQTT_WILL_RETAIN_OPTION_KEY, willRetainString);
+  }
+
+  /**
+   * Configures the MQTT client to use the specified will topic, will payload, and will retain
+   * settings.
+   *
+   * @param willTopic will topic
+   * @param willPayload will payload
+   * @param willRetain will retain value
+   * @throws EWException if unable to apply will settings
+   */
+  public void setWill(String willTopic, String willPayload, boolean willRetain) throws EWException {
+    setWillTopic(willTopic);
+    setWillPayload(willPayload);
+    setWillRetain(willRetain);
+  }
+
+  /**
    * Configures the certificate file paths of the MQTT client to the specified CA certificate,
    * device certificate, and device key file paths.
    *
