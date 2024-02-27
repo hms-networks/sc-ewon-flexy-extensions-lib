@@ -107,6 +107,19 @@ public abstract class AbstractConnectorMain {
   private boolean isDataPollingDisabled = false;
 
   /**
+   * The boolean flag indicating whether the connector should data polling is blocked. This flag is
+   * used to determine whether the connector should block polling for data during each iteration of
+   * the main loop.
+   *
+   * <p>Unlike {@link #isDataPollingDisabled}, which indicates whether data polling has been
+   * disabled, this flag indicates whether data polling has been blocked due to a temporary
+   * condition or error.
+   *
+   * @since 1.15.12
+   */
+  private boolean isDataPollingBlocked = false;
+
+  /**
    * The boolean flag indicating whether the connector automatic restart is enabled. This flag is
    * used to determine whether the connector automatic restart functionality was enabled during
    * initialization/start up.
@@ -246,6 +259,22 @@ public abstract class AbstractConnectorMain {
    */
   public void setConnectorCycleTime(SCTimeSpan connectorCycleTime) {
     this.connectorCycleTime = connectorCycleTime;
+  }
+
+  /**
+   * Sets the boolean flag indicating whether the connector should block data polling during each
+   * iteration of the main loop.
+   *
+   * <p>This flag is different from {@link #isDataPollingDisabled}, which indicates whether data
+   * polling has been disabled. This flag indicates whether data polling has been blocked due to a
+   * temporary condition or error.
+   *
+   * @param isDataPollingBlocked the boolean flag indicating whether the connector should block data
+   *     polling during each iteration of the main loop
+   * @since 1.15.12
+   */
+  public void setDataPollingBlocked(boolean isDataPollingBlocked) {
+    this.isDataPollingBlocked = isDataPollingBlocked;
   }
 
   /**
@@ -896,6 +925,8 @@ public abstract class AbstractConnectorMain {
         // Invoke connector data polling (if not disabled)
         if (isDataPollingDisabled) {
           Logger.LOG_DEBUG("Data polling is disabled and has been skipped.");
+        } else if (isDataPollingBlocked) {
+          Logger.LOG_DEBUG("Data polling is blocked and has been skipped.");
         } else {
           pollData();
         }
