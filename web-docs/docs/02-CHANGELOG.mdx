@@ -50,7 +50,8 @@ toc_max_heading_level: 2
 
 ## Version 1.15.3
 ### Features
-- Added service timer to the application reboot watchdog to ensure application is in a stable state before allowing the watchdog to be serviced.
+- Added service timer to the application reboot watchdog to ensure application is in a stable state
+  before allowing the watchdog to be serviced.
 
 ## Version 1.15.2
 ### Features
@@ -84,14 +85,16 @@ toc_max_heading_level: 2
 
 ## Version 1.14.2
 ### Features
-- Added rapid catch up feature: this allows historical tracking to advance quickly for periods where the Flexy is offline.
+- Added rapid catch up feature: this allows historical tracking to advance quickly for periods where
+  the Flexy is offline.
 ### Bug Fixes
 - N/A
 
 ## Version 1.14.1
 ### Features
 - Added historical data queue diagnostic tag support to HistoricalDataQueueManager.java.
-  - Disabled by default. May be enabled using the `setEnableDiagnosticTags(boolean)` or `setEnableDiagnosticTags(boolean, long)` methods.
+  - Disabled by default. May be enabled using the `setEnableDiagnosticTags(boolean)`
+    or `setEnableDiagnosticTags(boolean, long)` methods.
   - Diagnostic tags are updated automatically after each historical data queue operation.
 ### Bug Fixes
 - N/A
@@ -120,12 +123,15 @@ toc_max_heading_level: 2
 - N/A
 ### Bug Fixes
 - Updated code formatting of files in JSON package to comply with Google Java Format v1.17.
-- Update HistoricalDataManager.java to detect EBD header using first non-zero length line encountered instead of static first line.
+- Update HistoricalDataManager.java to detect EBD header using first non-zero length line
+  encountered instead of static first line.
 
 ## Version 1.13.8
 ### Features
-- Updated SCAppManagement.enableAppAutoRestart() to return a boolean indicating if the auto-restart functionality was successfully enabled.
-- Added SCCountdownLatch.getCount() method to return the current count of the latch without blocking.
+- Updated SCAppManagement.enableAppAutoRestart() to return a boolean indicating if the auto-restart
+  functionality was successfully enabled.
+- Added SCCountdownLatch.getCount() method to return the current count of the latch without
+  blocking.
 ### Bug Fixes
 - N/A
 
@@ -139,7 +145,8 @@ toc_max_heading_level: 2
 ### Features
 - N/A
 ### Bug Fixes
-- Fixed an issue in ApplicationControlApiListener.java where constants were not properly scoped for access by subclasses.
+- Fixed an issue in ApplicationControlApiListener.java where constants were not properly scoped for
+  access by subclasses.
 
 ## Version 1.13.5
 ### Features
@@ -157,7 +164,8 @@ toc_max_heading_level: 2
 - Removed unsupported Java 7 references to the 'java.nio' package.
 - Removed try number increment in AutomaticRetryCode.getCurrentTryNumber().
 ### Other
-- Reduced default MQTT keep alive internal to from 60 to 10 seconds to detect connection issues faster.
+- Reduced default MQTT keep alive internal to from 60 to 10 seconds to detect connection issues
+  faster.
 
 ## Version 1.13.3
 ### Features
@@ -186,9 +194,12 @@ toc_max_heading_level: 2
 
 ## Version 1.13.0
 ### Features
-- Added HashUtilities.java class to allow for easy hashing (MD5 and SHA-1) of strings, files, and byte arrays.
-- Added SecurityProviderUtilites.java class to provide a simple API for adding and removing security providers in the JVM.
-- Added SCWonkaSecurityProvider.java class to allow access to the Wonka JVM MD5 and SHA-1 MessageDigest algorithms.
+- Added HashUtilities.java class to allow for easy hashing (MD5 and SHA-1) of strings, files, and
+  byte arrays.
+- Added SecurityProviderUtilites.java class to provide a simple API for adding and removing security
+  providers in the JVM.
+- Added SCWonkaSecurityProvider.java class to allow access to the Wonka JVM MD5 and SHA-1
+  MessageDigest algorithms.
   - SecurityProviderUtilities.java can be used to add SCWonkaSecurityProvider.java to the JVM.
 ### Bug Fixes
 - N/A
