@@ -170,12 +170,14 @@ public class SCAppRebootWatchdog {
           ConfigFileAccessManager.getJsonObjectFromFile(REBOOT_WATCHDOG_FILE_PATH);
       rebootCount = rebootWatchdogObject.getInt(REBOOT_COUNT_KEY);
       rebootCount += 1;
-      rebootWatchdogObject.put(REBOOT_COUNT_KEY, rebootCount);
-    }
 
-    // Device reboot loop has been detected
-    if (rebootCount > MAX_REBOOT_COUNT) {
-      disableJvmRunFile();
+      // Device reboot loop has been detected
+      if (rebootCount > MAX_REBOOT_COUNT) {
+        disableJvmRunFile();
+        rebootCount = 0;
+      }
+
+      rebootWatchdogObject.put(REBOOT_COUNT_KEY, rebootCount);
     }
 
     ConfigFileAccessManager.writeJsonObjectToFile(
