@@ -4,9 +4,8 @@ import java.util.Random;
 import junit.framework.TestCase;
 
 /**
- * Library test class for the {@link
- * RawNumberValueUtils} class in the Ewon Flexy
- * Extensions Library.
+ * Library test class for the {@link RawNumberValueUtils} class in the Ewon Flexy Extensions
+ * Library.
  *
  * @author HMS Networks, MU Americas Solution Center
  * @since 1.15.7
