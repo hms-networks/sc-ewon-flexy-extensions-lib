@@ -117,4 +117,8 @@ public class DataPointBoolean extends DataPoint {
   public Object getValueObject() {
     return Boolean.valueOf(value);
   }
+
+  public DataPoint clone(String tagName) throws CloneNotSupportedException {
+    return new DataPointBoolean(tagName, tagId, tagUnit, value, timestamp, quality);
+  }
 }

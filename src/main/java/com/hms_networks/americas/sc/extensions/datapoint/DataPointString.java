@@ -117,4 +117,8 @@ public class DataPointString extends DataPoint {
   public Object getValueObject() {
     return getValue();
   }
+
+  public DataPoint clone(String tagName) throws CloneNotSupportedException {
+    return new DataPointString(tagName, tagId, tagUnit, value, timestamp, quality);
+  }
 }

@@ -66,4 +66,18 @@ public class DataQuality {
   public byte getRawDataQuality() {
     return instanceDataQuality;
   }
+
+  public String toString() {
+    String qualityString;
+    if (this == GOOD) {
+      qualityString = "good";
+    } else if (this == BAD) {
+      qualityString = "bad";
+    } else if (this == UNCERTAIN) {
+      qualityString = "uncertain";
+    } else {
+      qualityString = "unknown";
+    }
+    return qualityString;
+  }
 }
