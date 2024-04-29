@@ -9,7 +9,7 @@
   <parent>
     <groupId>com.hms_networks.americas.sc</groupId>
     <artifactId>extensions</artifactId>
-    <version>1.15.8</version>
+    <version>2.0.0</version>
   </parent>
 
   <!-- MODULE ARTIFACT ID -->
@@ -64,49 +64,49 @@
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>localization</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- File Utils Module -->
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>fileutils</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- Logging Module -->
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>logging</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- Retry Module -->
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>retry</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- String Module -->
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>string</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- JSON Module -->
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>json</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
 
     <!-- Config Module -->
     <dependency>
       <groupId>com.hms_networks.americas.sc</groupId>
       <artifactId>config</artifactId>
-      <version>1.15.8</version>
+      <version>2.0.0</version>
     </dependency>
   </dependencies>
 </project>
