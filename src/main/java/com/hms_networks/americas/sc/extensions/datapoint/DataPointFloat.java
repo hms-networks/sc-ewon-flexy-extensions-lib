@@ -117,4 +117,8 @@ public class DataPointFloat extends DataPoint {
   public Object getValueObject() {
     return new Double(value);
   }
+
+  public DataPoint clone(String tagName) throws CloneNotSupportedException {
+    return new DataPointFloat(tagName, tagId, tagUnit, value, timestamp, quality);
+  }
 }
