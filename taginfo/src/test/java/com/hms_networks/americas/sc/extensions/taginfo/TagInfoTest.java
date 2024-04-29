@@ -203,8 +203,7 @@ public class TagInfoTest extends TestCase {
   /**
    * Basic test method for {@link TagInfo} objects.
    *
-   * <p>This test performs basic checks to ensure that {@link
-   * TagInfo} objects store data properly.
+   * <p>This test performs basic checks to ensure that {@link TagInfo} objects store data properly.
    *
    * @since 1.0.0
    */
