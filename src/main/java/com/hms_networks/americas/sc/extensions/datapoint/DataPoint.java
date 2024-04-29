@@ -55,6 +55,10 @@ public abstract class DataPoint {
     return tagUnit;
   }
 
+  public void setTagUnit(String tagUnit) {
+    this.tagUnit = tagUnit;
+  }
+
   /**
    * Get the {@link String} representation of the time stamp.
    *
@@ -145,4 +149,6 @@ public abstract class DataPoint {
    * @return data point value as an {@link Object}
    */
   public abstract Object getValueObject();
+
+  public abstract Object clone(String tagName) throws CloneNotSupportedException;
 }

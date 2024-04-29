@@ -64,4 +64,10 @@ public class DataPointIntegerMappedString extends DataPointString {
   public DataType getType() {
     return DataType.INTEGER_MAPPED_STRING;
   }
+
+  public Object clone(String tagName) throws CloneNotSupportedException {
+    Object cloned = clone();
+    ((DataPointIntegerMappedString) cloned).tagName = tagName;
+    return cloned;
+  }
 }
