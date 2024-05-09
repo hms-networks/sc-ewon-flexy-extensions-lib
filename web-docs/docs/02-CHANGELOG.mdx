@@ -5,6 +5,18 @@ sidebar_label: Change Log
 toc_max_heading_level: 2
 ---
 
+## Version 1.15.14
+### Features
+- Added overrideTagUnit method to DataPoint class to allow for setting the unit of a data point
+  after it has been created (useful for value transformations)
+- Added flexible DataPointNumber class to support different number types (useful for value
+  transformations)
+- Added clone method to each DataPoint class to allow for deep copying of data points (useful for
+  creating derived tag data points from their parent data point)
+- Added DataType#NUMBER to support DataPointNumber class type
+- Added support for getting the string representation of a DataQuality enum value
+- Added support for getting a DataQuality enum value from an OPCUA quality value
+
 ## Version 1.15.13
 ### Features
 - Improved reboot watchdog functionality. User no longer has to modify the rebootWatchdog.json file.
