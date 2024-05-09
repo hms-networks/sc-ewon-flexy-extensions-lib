@@ -160,4 +160,13 @@ public abstract class DataPoint {
    * @return data point value as an {@link Object}
    */
   public abstract Object getValueObject();
+
+  /**
+   * Clones the data point.
+   *
+   * @param tagName The tag name to use for the cloned data point
+   * @return cloned data point with the specified tag name
+   * @throws CloneNotSupportedException if the data point cannot be cloned
+   */
+  public abstract DataPoint clone(String tagName) throws CloneNotSupportedException;
 }
