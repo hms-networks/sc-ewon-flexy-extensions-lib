@@ -56,6 +56,21 @@ public abstract class DataPoint {
   }
 
   /**
+   * Sets (overrides) the unit of the data point tag.
+   *
+   * <p>Unless required, it is recommended to retain the existing tag unit value, which corresponds
+   * with the unit configured on the Ewon tag.
+   *
+   * <p>This method should only be used when the unit of the data point tag is known to be different
+   * from the unit configured on the Ewon tag, such as when a value transformation is applied.
+   *
+   * @param tagUnit the new unit of the data point tag
+   */
+  public void overrideTagUnit(String tagUnit) {
+    this.tagUnit = tagUnit;
+  }
+
+  /**
    * Get the {@link String} representation of the time stamp.
    *
    * @return the timestamp as a {@link String}.
