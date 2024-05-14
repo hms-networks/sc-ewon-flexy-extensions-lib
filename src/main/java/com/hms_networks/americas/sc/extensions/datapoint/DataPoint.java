@@ -136,7 +136,7 @@ public abstract class DataPoint {
    * Compares the data point's value to another data point's value.
    *
    * @param p data point to compare
-   * @return true if values are equal
+   * @return true if data points are of the same type and values are equal
    */
   public abstract boolean valueEquals(DataPoint p);
 
