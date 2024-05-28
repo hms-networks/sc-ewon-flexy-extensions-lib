@@ -616,6 +616,21 @@ public class Logger {
   }
 
   /**
+   * Resets the output status of a specific log. This is used to allow the log to be outputted
+   * again.
+   *
+   * <p>The specified log key must be unique for each log event that should only be logged once. If
+   * the same log key is used for multiple log events, only the first log event will be logged,
+   * regardless of the message.
+   *
+   * @param logKey key for the log event
+   * @since 1.15.15
+   */
+  public static void resetLoggedOnce(String logKey) {
+    logOnceList.remove(logKey);
+  }
+
+  /**
    * Gets a boolean indicating whether a specific log has been outputted. This is used to prevent
    * spamming the log with the same message.
    *
