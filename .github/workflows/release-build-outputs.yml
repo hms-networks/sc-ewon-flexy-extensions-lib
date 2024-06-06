@@ -1,6 +1,7 @@
-# HMS Networks Solution Center
+# HMS Networks; Americas
 # Build Outputs Action for Maven-based Ewon ETK Project Releases
-# Version: 2.2
+# Version: 3.0.2
+# Date: April 9, 2024
 #
 # This action is configured to automatically run when a release
 # tag is created in the following syntax: `v*`.
@@ -22,26 +23,18 @@ env:
 
 
 jobs:
-  build:
+  build-outputs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Project
+        uses: actions/checkout@v4
 
       - name: Set Up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
           java-version: 16
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2/repository
-            target/buildJdk
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: 'maven'
 
       - name: Compile Java Files With Maven
         run: mvn package -f pom.xml
@@ -65,6 +58,13 @@ jobs:
           tr -d '\0' < $RELEASE_BODY_FILE.tmp > $RELEASE_BODY_FILE
         # gets section of changelog between (not including) version-specific header and next version header using regex look-back and look-ahead and removes trailing NULL characters
 
+      - name: Get Name of Artifact
+        run: |
+          ARTIFACT_PATHNAME=$(ls target/*-full.jar | head -n 1)
+          ARTIFACT_NAME=$(basename $ARTIFACT_PATHNAME)
+          echo "ARTIFACT_NAME=${ARTIFACT_NAME}" >> $GITHUB_ENV
+          echo "ARTIFACT_PATHNAME=${ARTIFACT_PATHNAME}" >> $GITHUB_ENV
+
       - name: Get Name of Release (RepoName-Version)
         run: echo "RELEASE_NAME=${{ github.event.repository.name }}-${{ env.VERSION_NUMBER }}" >> $GITHUB_ENV
 
@@ -76,7 +76,7 @@ jobs:
         id: check_pre_release
         run: |
           # Check if SEMVER indicates a pre-release (has a hyphen after MAJOR.MINOR.PATCH)
-          if [[ ${{ env.VERSION_NUMBER }} =~ ^[0-9]+\.[0-9]+\.[0-9]+(-\S+)$ ]]; then
+          if [[ "${{ env.VERSION_NUMBER }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+-(0|[1-9]\d*|([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))(\+[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*)?$ ]]; then
               echo "IS_PRE_RELEASE=true" >> $GITHUB_ENV
           else
               echo "IS_PRE_RELEASE=false" >> $GITHUB_ENV
@@ -91,7 +91,7 @@ jobs:
           target_commitish: ${{ github.sha }}
           name: Release ${{ env.VERSION_NUMBER }}
           draft: false
-          prerelease: ${{ steps.check_pre_release.outputs.IS_PRE_RELEASE }}
+          prerelease: ${{ env.IS_PRE_RELEASE }}
           generate_release_notes: false
           body_path: ${{ env.RELEASE_BODY_FILE }}
           files: |

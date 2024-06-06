@@ -1,6 +1,7 @@
-# HMS Networks Solution Center
+# HMS Networks; Americas
 # Maven Release Push Action for Maven-based Ewon ETK Project Releases
-# Version: 2.1
+# Version: 3.0.0
+# Date: February 8, 2024
 #
 # This action is configured to automatically run when a release
 # tag is created in the following syntax: `v*`.
@@ -13,29 +14,20 @@ on:
       - 'v*' # Push events to matching v*, i.e. v1.0
 
 jobs:
-  build:
+  push-maven-repo:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout project
-        uses: actions/checkout@v3
+      - name: Checkout Project
+        uses: actions/checkout@v4
         with:
           path: './project'
 
       - name: Set Up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
           java-version: 16
-
-      - name: Cache local Maven repository
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.m2/repository
-            ./project/target/buildJdk
-          key: ${{ runner.os }}-maven-${{ hashFiles('./project/**/pom.xml') }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          cache: 'maven'
 
       - name: Compile Java Files With Maven
         run: mvn package -f ./project/pom.xml
