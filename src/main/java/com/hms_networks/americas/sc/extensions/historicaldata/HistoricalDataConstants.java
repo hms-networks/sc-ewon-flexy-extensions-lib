@@ -19,6 +19,9 @@ class HistoricalDataConstants {
   /** Index of time int in EBD lines */
   public static final int EBD_LINE_TAG_TIMEINT_INDEX = 1;
 
+  /** Index of time string in EBD lines */
+  public static final int EBD_LINE_TAG_TIMESTR_INDEX = 2;
+
   /** Index of tag value in EBD lines */
   public static final int EBD_LINE_TAG_VALUE_INDEX = 4;
 
