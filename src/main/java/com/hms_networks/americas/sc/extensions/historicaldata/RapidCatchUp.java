@@ -74,7 +74,7 @@ public class RapidCatchUp {
 
   /**
    * Dynamically adjust the request period by doubling it, but do not exceed {@link
-   * RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS}.
+   * #RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS}.
    */
   public static void adjustRapidCatchUpPeriod() {
     // Double duration
@@ -85,14 +85,14 @@ public class RapidCatchUp {
             RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS);
   }
 
-  /** Reset the request period to {@link RAPID_CATCH_UP_TIME_BASE_MILLISECONDS }. */
+  /** Reset the request period to {@link #RAPID_CATCH_UP_TIME_BASE_MILLISECONDS }. */
   public static void resetRapidCatchUpPeriod() {
     catchUpRequestDurationMilliseconds = RAPID_CATCH_UP_TIME_BASE_MILLISECONDS;
   }
 
   /**
    * Special purpose stream reader to enable rapid catch up. Performs a limited number of reads and
-   * returns up to {@link MAX_STREAM_READS} from {@link InputStream} as a {@link String} in the
+   * returns up to {@link #MAX_STREAM_READS} from {@link InputStream} as a {@link String} in the
    * specified encoding.
    *
    * @param inputStream input stream to read
