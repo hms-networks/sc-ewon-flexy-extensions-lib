@@ -7,9 +7,13 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointDword;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointFloat;
 import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
+import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * This class will hold a list of data points for each tag. One instance of the class is made per
@@ -97,32 +101,48 @@ public class RealTimeTagDataPointManager {
    *
    * @param tag the tag to inspect
    */
-  public void recordCurentTagValue(TagInfo tag) {
+  public void recordCurentTagValue(TagInfo tag) throws Exception {
 
+    // Get timestamp information
+    int timestampInt;
+    String timestampString;
+    Date currentTime = new Date();
+    if (SCTimeUtils.getTagDataExportedInUtc()) {
+      timestampInt = (int) SCTimeUnit.MILLISECONDS.toSeconds(currentTime.getTime());
+      timestampString = SCTimeUtils.getIso8601UtcTimeFormat().format(currentTime);
+    } else {
+      timestampInt =
+          (int)
+              SCTimeUnit.MILLISECONDS.toSeconds(
+                  currentTime.getTime()
+                      + LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds());
+      timestampString = SCTimeUtils.getIso8601LocalTimeFormat().format(currentTime);
+    }
+
+    // Get tag information
     String tagName = tag.getName();
     TagType tagType = tag.getType();
     String tagUnit = tag.getUnit();
     int tagID = tag.getId();
-    final int millisecondsInSeconds = 1000;
-    String timeStampSeconds = String.valueOf(System.currentTimeMillis() / millisecondsInSeconds);
-    DataPoint data = null;
 
+    // Based on the tag type, get the tag value and create a data point
+    DataPoint data = null;
     if (tagControl != null) {
       if (tagType == TagType.FLOAT) {
         float val = (float) tagControl.getTagValueAsDouble();
-        data = new DataPointFloat(tagName, tagID, tagUnit, val, timeStampSeconds);
+        data = new DataPointFloat(tagName, tagID, tagUnit, val, timestampInt, timestampString);
       } else if (tagType == TagType.INTEGER) {
         int val = tagControl.getTagValueAsInt();
-        data = new DataPointFloat(tagName, tagID, tagUnit, val, timeStampSeconds);
+        data = new DataPointFloat(tagName, tagID, tagUnit, val, timestampInt, timestampString);
       } else if (tagType == TagType.STRING) {
         String val = tagControl.getTagValueAsString();
-        data = new DataPointString(tagName, tagID, tagUnit, val, timeStampSeconds);
+        data = new DataPointString(tagName, tagID, tagUnit, val, timestampInt, timestampString);
       } else if (tagType == TagType.BOOLEAN) {
         boolean val = (tagControl.getTagValueAsLong() != 0);
-        data = new DataPointBoolean(tagName, tagID, tagUnit, val, timeStampSeconds);
+        data = new DataPointBoolean(tagName, tagID, tagUnit, val, timestampInt, timestampString);
       } else if (tagType == TagType.DWORD) {
         long val = tagControl.getTagValueAsLong();
-        data = new DataPointDword(tagName, tagID, tagUnit, val, timeStampSeconds);
+        data = new DataPointDword(tagName, tagID, tagUnit, val, timestampInt, timestampString);
       }
     } else {
       Logger.LOG_WARN(

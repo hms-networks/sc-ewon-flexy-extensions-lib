@@ -74,7 +74,7 @@ public class RapidCatchUp {
 
   /**
    * Dynamically adjust the request period by doubling it, but do not exceed {@link
-   * RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS}.
+   * #RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS}.
    */
   public static void adjustRapidCatchUpPeriod() {
     // Double duration
@@ -85,14 +85,14 @@ public class RapidCatchUp {
             RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS);
   }
 
-  /** Reset the request period to {@link RAPID_CATCH_UP_TIME_BASE_MILLISECONDS }. */
+  /** Reset the request period to {@link #RAPID_CATCH_UP_TIME_BASE_MILLISECONDS }. */
   public static void resetRapidCatchUpPeriod() {
     catchUpRequestDurationMilliseconds = RAPID_CATCH_UP_TIME_BASE_MILLISECONDS;
   }
 
   /**
    * Special purpose stream reader to enable rapid catch up. Performs a limited number of reads and
-   * returns up to {@link MAX_STREAM_READS} from {@link InputStream} as a {@link String} in the
+   * returns up to {@link #MAX_STREAM_READS} from {@link InputStream} as a {@link String} in the
    * specified encoding.
    *
    * @param inputStream input stream to read
@@ -142,6 +142,7 @@ public class RapidCatchUp {
    * @param includeTagGroupC include tag group C
    * @param includeTagGroupD include tag group D
    * @param stringHistorical export string historical logs if {@code true}
+   * @param exportDataInUtc export data in ISO 8601 UTC format if {@code true} (instead of local)
    * @return {@link RapidCatchUpTracker} object
    * @throws Exception for {@link DataPoint} getTimeStampAsDate() errors
    * @throws IOException for errors closing exporter
@@ -152,7 +153,8 @@ public class RapidCatchUp {
       boolean includeTagGroupB,
       boolean includeTagGroupC,
       boolean includeTagGroupD,
-      boolean stringHistorical)
+      boolean stringHistorical,
+      boolean exportDataInUtc)
       throws Exception, IOException {
 
     // The end time is the start + catch up duration
@@ -172,7 +174,8 @@ public class RapidCatchUp {
             includeTagGroupB,
             includeTagGroupC,
             includeTagGroupD,
-            stringHistorical);
+            stringHistorical,
+            exportDataInUtc);
 
     RapidCatchUpTracker histTracker;
     try {

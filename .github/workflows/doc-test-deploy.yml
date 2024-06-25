@@ -1,9 +1,11 @@
-# HMS Networks Solution Center
+# HMS Networks; Americas
 # Test Docusaurus Deploy Action for Maven-based Ewon ETK Projects
-# Version: 1.0
+# Version: 3.0.0
+# Date: February 8, 2024
 #
 # This action is configured to automatically run when a pull request
 # is opened for the `main` branch.
+
 name: Test Docusaurus Build
 
 on:
@@ -12,7 +14,7 @@ on:
       - main
 
 jobs:
-  test-deploy:
+  doc-test-deploy:
     name: Test Docusaurus Build
     runs-on: ubuntu-latest
     defaults:
@@ -20,10 +22,11 @@ jobs:
         shell: bash
         working-directory: web-docs
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout Project
+        uses: actions/checkout@v4
 
       - name: Setup Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: yarn

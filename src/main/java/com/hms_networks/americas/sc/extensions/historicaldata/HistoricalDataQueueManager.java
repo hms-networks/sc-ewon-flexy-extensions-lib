@@ -5,6 +5,7 @@ import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeSpan;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -627,6 +628,9 @@ public class HistoricalDataQueueManager {
     long startTimeTrackerMsPlusSpan = startTimeTrackerMsLong + getQueueFifoTimeSpanMillis();
     long endTimeTrackerMsLong = Math.min(startTimeTrackerMsPlusSpan, System.currentTimeMillis());
 
+    // Get export data in UTC time setting
+    boolean exportDataInUtc = SCTimeUtils.getTagDataExportedInUtc();
+
     ArrayList queueDataList = null;
     Map queueDataMap = null;
 
@@ -641,7 +645,8 @@ public class HistoricalDataQueueManager {
               includeTagGroupB,
               includeTagGroupC,
               includeTagGroupD,
-              stringHistorical);
+              stringHistorical,
+              exportDataInUtc);
 
       if (catchUpResult.isHistoricalTrackingCaughtUp()) {
         // If historical tracking is caught up, set lastReadDataPointsEmpty to false
@@ -679,6 +684,7 @@ public class HistoricalDataQueueManager {
                 includeTagGroupC,
                 includeTagGroupD,
                 stringHistorical,
+                exportDataInUtc,
                 timeSpan);
       } else {
         queueDataList =
@@ -689,7 +695,8 @@ public class HistoricalDataQueueManager {
                 includeTagGroupB,
                 includeTagGroupC,
                 includeTagGroupD,
-                stringHistorical);
+                stringHistorical,
+                exportDataInUtc);
       }
 
       // Run string EBD export call if enabled
@@ -706,6 +713,7 @@ public class HistoricalDataQueueManager {
                   includeTagGroupC,
                   includeTagGroupD,
                   stringHistorical,
+                  exportDataInUtc,
                   timeSpan);
 
           // Combine with standard EBD call results
@@ -736,7 +744,8 @@ public class HistoricalDataQueueManager {
                   includeTagGroupB,
                   includeTagGroupC,
                   includeTagGroupD,
-                  stringHistorical);
+                  stringHistorical,
+                  exportDataInUtc);
 
           // Combine with standard EBD call results
           queueDataList.addAll(queueStringDataList);

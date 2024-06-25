@@ -210,6 +210,26 @@ public class SCTimeUtils {
   }
 
   /**
+   * Returns a {@link Date} object representing the specified ISO 8601 formatted timestamp in the
+   * applicable time zone (UTC or local, depending on the value returned by {@link
+   * #getTagDataExportedInUtc()}).
+   *
+   * @param timestamp ISO 8601 formatted timestamp
+   * @return {@link Date} object representing the specified ISO 8601 formatted timestamp in the
+   *     applicable time zone
+   * @throws Exception if unable to get UTC export value
+   */
+  public static Date getDateForIso8601FormattedTimestamp(String timestamp) throws Exception {
+    Date date;
+    if (getTagDataExportedInUtc()) {
+      date = getIso8601UtcTimeFormat().parse(timestamp);
+    } else {
+      date = getIso8601LocalTimeFormat().parse(timestamp);
+    }
+    return date;
+  }
+
+  /**
    * Returns an ISO 8601 formatted string representing the timestamp of the specified data point in
    * the applicable time zone (UTC or local, depending on the value returned by {@link
    * #getTagDataExportedInUtc()}).
