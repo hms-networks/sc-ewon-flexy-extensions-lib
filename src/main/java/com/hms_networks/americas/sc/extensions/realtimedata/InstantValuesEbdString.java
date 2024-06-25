@@ -8,6 +8,8 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPointString;
 import com.hms_networks.americas.sc.extensions.datapoint.DataQuality;
 import com.hms_networks.americas.sc.extensions.historicaldata.HistoricalDataManager;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
+import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfo;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
@@ -120,11 +122,18 @@ public class InstantValuesEbdString {
   private static final String EBD_ENCODING = "UTF-8";
 
   /**
-   * The timestamp of the EBD data.
+   * The timestamp of the EBD data (seconds since the epoch).
    *
    * @since 1.0.0
    */
-  private final String timestamp;
+  private final int timestampInt;
+
+  /**
+   * The timestamp of the EBD data (ISO-8601 string format).
+   *
+   * @since 1.0.0
+   */
+  private final String timestampString;
 
   /**
    * Map to store the data points from the EBD data. The key is the tag name and the value is the
@@ -140,7 +149,8 @@ public class InstantValuesEbdString {
    * Constructor for the InstantValuesEbdString class. This constructor parses the EBD data and
    * creates data points for each tag.
    *
-   * @param timestamp the timestamp of the EBD data
+   * @param timestampInt the timestamp to associate with the EBD data (seconds since the epoch)
+   * @param timestampString the timestamp to associate with the EBD data (ISO-8601 string format)
    * @param ebdData the EBD data to parse
    * @throws IllegalStateException when the {@link TagInfoManager} has not been initialized with
    *     {@link TagInfoManager#refreshTagList()}
@@ -153,13 +163,14 @@ public class InstantValuesEbdString {
    *
    * @since 1.0.0
    */
-  public InstantValuesEbdString(String timestamp, String ebdData) {
-    // Store timestamp
-    this.timestamp = timestamp;
+  public InstantValuesEbdString(int timestampInt, String timestampString, String ebdData) {
+    // Store timestamps
+    this.timestampInt = timestampInt;
+    this.timestampString = timestampString;
 
     // Parse the EBD data
     Object[][] parsedData = parse(ebdData);
-    dataPoints = buildDataPoints(timestamp, parsedData);
+    dataPoints = buildDataPoints(timestampInt, timestampString, parsedData);
   }
 
   /**
@@ -179,14 +190,28 @@ public class InstantValuesEbdString {
    * @since 1.0.0
    */
   public static InstantValuesEbdString doEbd() throws Exception {
-    String timestamp = SCTimeUtils.getIso8601FormattedTimestampForDate(new Date());
-    return doEbd(timestamp);
+    int timestampInt;
+    String timestampString;
+    Date currentTime = new Date();
+    if (SCTimeUtils.getTagDataExportedInUtc()) {
+      timestampInt = (int) SCTimeUnit.MILLISECONDS.toSeconds(currentTime.getTime());
+      timestampString = SCTimeUtils.getIso8601UtcTimeFormat().format(currentTime);
+    } else {
+      timestampInt =
+          (int)
+              SCTimeUnit.MILLISECONDS.toSeconds(
+                  currentTime.getTime()
+                      + LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds());
+      timestampString = SCTimeUtils.getIso8601LocalTimeFormat().format(currentTime);
+    }
+    return doEbd(timestampInt, timestampString);
   }
 
   /**
    * Method to execute an EBD call and parse the data into data points for each tag.
    *
-   * @param timestamp the timestamp to associate with the EBD data
+   * @param timestampInt the timestamp to associate with the EBD data (seconds since the epoch)
+   * @param timestampString the timestamp to associate with the EBD data (ISO-8601 string format)
    * @return an {@link InstantValuesEbdString} object containing the parsed data points
    * @throws IllegalStateException when the {@link TagInfoManager} has not been initialized with
    *     {@link TagInfoManager#refreshTagList()}
@@ -200,20 +225,22 @@ public class InstantValuesEbdString {
    * @throws Exception if an error occurs while executing the EBD call
    * @since 1.0.0
    */
-  public static InstantValuesEbdString doEbd(String timestamp) throws Exception {
+  public static InstantValuesEbdString doEbd(int timestampInt, String timestampString)
+      throws Exception {
     // Store timestamp and execute EBD call
     Exporter ebdInstantValuesExporter =
         HistoricalDataManager.executeEbdCall(EBD_INSTANT_VALUES_STRING);
 
     // Pull in bytes from Exporter (input stream)
     String ebdData = StreamUtils.getStringFromInputStream(ebdInstantValuesExporter, EBD_ENCODING);
-    return new InstantValuesEbdString(timestamp, ebdData);
+    return new InstantValuesEbdString(timestampInt, timestampString, ebdData);
   }
 
   /**
    * Method to build data points from the parsed data.
    *
-   * @param timestamp the timestamp of the EBD data
+   * @param timestampInt the timestamp to associate with the EBD data (seconds since the epoch)
+   * @param timestampString the timestamp to associate with the EBD data (ISO-8601 string format)
    * @param parsedData the parsed data
    * @return a map of data points (Parameterized type: Map&lt;String, DataPoint&gt;)
    * @throws IllegalArgumentException if a tag type cannot be decoded from its tag info and value
@@ -221,7 +248,8 @@ public class InstantValuesEbdString {
    *     {@link TagInfoManager#refreshTagList()}
    * @since 1.0.0
    */
-  private static Map buildDataPoints(String timestamp, Object[][] parsedData) {
+  private static Map buildDataPoints(
+      int timestampInt, String timestampString, Object[][] parsedData) {
     // Create a map to store the data points
     Map dataPoints = new HashMap(); // Map<String, DataPoint>
 
@@ -248,26 +276,38 @@ public class InstantValuesEbdString {
       if (tagInfo.getType() == TagType.STRING) {
         String valueString = value instanceof String ? (String) value : value.toString();
         dataPoint =
-            new DataPointString(tagName, tagId, tagUnit, valueString, timestamp, dataQuality);
+            new DataPointString(
+                tagName, tagId, tagUnit, valueString, timestampInt, timestampString, dataQuality);
       } else if (tagInfo.getType() == TagType.BOOLEAN && value instanceof Boolean) {
         boolean valueBoolean = ((Boolean) value).booleanValue();
         dataPoint =
-            new DataPointBoolean(tagName, tagId, tagUnit, valueBoolean, timestamp, dataQuality);
+            new DataPointBoolean(
+                tagName, tagId, tagUnit, valueBoolean, timestampInt, timestampString, dataQuality);
       } else {
         Number valueNumber = (Number) value;
         if (tagInfo.getType() == TagType.BOOLEAN) {
           boolean valueBoolean = valueNumber.intValue() != 0;
           dataPoint =
-              new DataPointBoolean(tagName, tagId, tagUnit, valueBoolean, timestamp, dataQuality);
+              new DataPointBoolean(
+                  tagName,
+                  tagId,
+                  tagUnit,
+                  valueBoolean,
+                  timestampInt,
+                  timestampString,
+                  dataQuality);
         } else if (tagInfo.getType() == TagType.INTEGER) {
           dataPoint =
-              new DataPointNumber(tagName, tagId, tagUnit, valueNumber, timestamp, dataQuality);
+              new DataPointNumber(
+                  tagName, tagId, tagUnit, valueNumber, timestampInt, timestampString, dataQuality);
         } else if (tagInfo.getType() == TagType.FLOAT) {
           dataPoint =
-              new DataPointNumber(tagName, tagId, tagUnit, valueNumber, timestamp, dataQuality);
+              new DataPointNumber(
+                  tagName, tagId, tagUnit, valueNumber, timestampInt, timestampString, dataQuality);
         } else if (tagInfo.getType() == TagType.DWORD) {
           dataPoint =
-              new DataPointNumber(tagName, tagId, tagUnit, valueNumber, timestamp, dataQuality);
+              new DataPointNumber(
+                  tagName, tagId, tagUnit, valueNumber, timestampInt, timestampString, dataQuality);
         } else {
           throw new IllegalArgumentException(
               "Failed to create data point for tag ["
@@ -510,13 +550,23 @@ public class InstantValuesEbdString {
   }
 
   /**
-   * Get the timestamp of the EBD data.
+   * Get the timestamp of the EBD data (seconds since the epoch).
    *
-   * @return the timestamp of the EBD data
+   * @return the timestamp of the EBD data (seconds since the epoch)
    * @since 1.0.0
    */
-  public String getTimestamp() {
-    return timestamp;
+  public int getTimestampInt() {
+    return timestampInt;
+  }
+
+  /**
+   * Get the timestamp of the EBD data (ISO-8601 string format).
+   *
+   * @return the timestamp of the EBD data (ISO-8601 string format)
+   * @since 1.0.0
+   */
+  public String getTimestampString() {
+    return timestampString;
   }
 
   /**

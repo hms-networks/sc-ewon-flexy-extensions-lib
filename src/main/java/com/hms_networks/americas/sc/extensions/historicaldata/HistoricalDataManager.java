@@ -473,6 +473,7 @@ public class HistoricalDataManager {
 
     // Create variables to store line data
     int tagId = -1;
+    int tagTimeInt = -1;
     String tagTimeStr = "";
     String tagValue = "";
     int tagQuality = DataQuality.GOOD.getRawDataQuality();
@@ -499,6 +500,9 @@ public class HistoricalDataManager {
       switch (tokenizer.getPrevTokenIndex()) {
         case HistoricalDataConstants.EBD_LINE_TAG_ID_INDEX:
           tagId = Integer.parseInt(currentToken);
+          break;
+        case HistoricalDataConstants.EBD_LINE_TAG_TIMEINT_INDEX:
+          tagTimeInt = Integer.parseInt(currentToken);
           break;
         case HistoricalDataConstants.EBD_LINE_TAG_TIMESTR_INDEX:
           tagTimeStr = currentToken;
@@ -534,7 +538,8 @@ public class HistoricalDataManager {
             if (tagType == TagType.BOOLEAN) {
               boolean boolValue = convertStrToBool(tagValue);
               returnVal =
-                  new DataPointBoolean(tagName, tagId, tagUnit, boolValue, tagTimeStr, dataQuality);
+                  new DataPointBoolean(
+                      tagName, tagId, tagUnit, boolValue, tagTimeInt, tagTimeStr, dataQuality);
             } else if (tagType == TagType.FLOAT) {
               float floatValue;
               if (tagValue.equalsIgnoreCase(HistoricalDataConstants.TAG_VALUE_NEGATIVE_INFINITY)) {
@@ -548,11 +553,13 @@ public class HistoricalDataManager {
                 floatValue = Float.valueOf(tagValue).floatValue();
               }
               returnVal =
-                  new DataPointFloat(tagName, tagId, tagUnit, floatValue, tagTimeStr, dataQuality);
+                  new DataPointFloat(
+                      tagName, tagId, tagUnit, floatValue, tagTimeInt, tagTimeStr, dataQuality);
             } else if (tagType == TagType.INTEGER) {
               int intValue = Integer.valueOf(tagValue).intValue();
               returnVal =
-                  new DataPointInteger(tagName, tagId, tagUnit, intValue, tagTimeStr, dataQuality);
+                  new DataPointInteger(
+                      tagName, tagId, tagUnit, intValue, tagTimeInt, tagTimeStr, dataQuality);
             } else if (tagType == TagType.INTEGER_MAPPED_STRING) {
               int intValue = Integer.valueOf(tagValue).intValue();
               TagInfoEnumeratedIntToString tagInfoEnumeratedIntToString =
@@ -563,16 +570,19 @@ public class HistoricalDataManager {
                       tagId,
                       tagUnit,
                       intValue,
+                      tagTimeInt,
                       tagTimeStr,
                       dataQuality,
                       tagInfoEnumeratedIntToString.getEnumeratedStringValueMapping());
             } else if (tagType == TagType.DWORD) {
               long dwordValue = Long.valueOf(tagValue).longValue();
               returnVal =
-                  new DataPointDword(tagName, tagId, tagUnit, dwordValue, tagTimeStr, dataQuality);
+                  new DataPointDword(
+                      tagName, tagId, tagUnit, dwordValue, tagTimeInt, tagTimeStr, dataQuality);
             } else if (tagType == TagType.STRING) {
               returnVal =
-                  new DataPointString(tagName, tagId, tagUnit, tagValue, tagTimeStr, dataQuality);
+                  new DataPointString(
+                      tagName, tagId, tagUnit, tagValue, tagTimeInt, tagTimeStr, dataQuality);
             }
           }
       }
