@@ -25,7 +25,8 @@ public class DataPointIntegerMappedString extends DataPointString {
    * @param tagId data point tag ID
    * @param tagUnit data point tag unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
    * @param quality data point quality
    * @param enumMapping integer enumerated {@link String} mapping(s)
    */
@@ -35,9 +36,10 @@ public class DataPointIntegerMappedString extends DataPointString {
       String tagUnit,
       int value,
       String time,
+      String timeIso8601,
       DataQuality quality,
       String[] enumMapping) {
-    super(tagName, tagId, tagUnit, enumMapping[value], time, quality);
+    super(tagName, tagId, tagUnit, enumMapping[value], time, timeIso8601, quality);
   }
 
   /**
@@ -48,12 +50,19 @@ public class DataPointIntegerMappedString extends DataPointString {
    * @param tagId data point tag ID
    * @param tagUnit data point tag Unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
    * @param enumMapping integer enumerated {@link String} mapping(s)
    */
   public DataPointIntegerMappedString(
-      String tagName, int tagId, String tagUnit, int value, String time, String[] enumMapping) {
-    super(tagName, tagId, tagUnit, enumMapping[value], time);
+      String tagName,
+      int tagId,
+      String tagUnit,
+      int value,
+      String time,
+      String timeIso8601,
+      String[] enumMapping) {
+    super(tagName, tagId, tagUnit, enumMapping[value], time, timeIso8601);
   }
 
   /**

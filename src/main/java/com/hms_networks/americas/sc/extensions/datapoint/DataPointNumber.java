@@ -20,16 +20,24 @@ public class DataPointNumber extends DataPoint {
    * @param tagId data point tag ID
    * @param tagUnit data point tag Unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
    * @param quality data point quality
    */
   public DataPointNumber(
-      String tagName, int tagId, String tagUnit, Number value, String time, DataQuality quality) {
+      String tagName,
+      int tagId,
+      String tagUnit,
+      Number value,
+      String time,
+      String timeIso8601,
+      DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
     this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
+    this.iso8601Timestamp = timeIso8601;
     this.quality = quality;
   }
 
@@ -41,13 +49,16 @@ public class DataPointNumber extends DataPoint {
    * @param tagUnit data point tag Unit
    * @param value data point value
    * @param time data point timestamp
+   * @param timeIso8601 data point timestamp, ISO 8601 format
    */
-  public DataPointNumber(String tagName, int tagId, String tagUnit, Number value, String time) {
+  public DataPointNumber(
+      String tagName, int tagId, String tagUnit, Number value, String time, String timeIso8601) {
     this.tagName = tagName;
     this.tagId = tagId;
     this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
+    this.iso8601Timestamp = timeIso8601;
     this.quality = DataQuality.GOOD;
   }
 
@@ -143,6 +154,7 @@ public class DataPointNumber extends DataPoint {
    * @throws CloneNotSupportedException if the data point cannot be cloned
    */
   public DataPoint clone(String tagName) throws CloneNotSupportedException {
-    return new DataPointNumber(tagName, tagId, tagUnit, value, timestamp, quality);
+    return new DataPointNumber(
+        tagName, tagId, tagUnit, value, timestamp, iso8601Timestamp, quality);
   }
 }
