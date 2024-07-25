@@ -20,16 +20,24 @@ public class DataPointDword extends DataPoint {
    * @param tagId data point tag ID
    * @param tagUnit data point tag unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
    * @param quality data point quality
    */
   public DataPointDword(
-      String tagName, int tagId, String tagUnit, long value, String time, DataQuality quality) {
+      String tagName,
+      int tagId,
+      String tagUnit,
+      long value,
+      String time,
+      String timeIso8601,
+      DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
     this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
+    this.iso8601Timestamp = timeIso8601;
     this.quality = quality;
   }
 
@@ -40,14 +48,17 @@ public class DataPointDword extends DataPoint {
    * @param tagId data point tag ID
    * @param tagUnit data point tag unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
    */
-  public DataPointDword(String tagName, int tagId, String tagUnit, long value, String time) {
+  public DataPointDword(
+      String tagName, int tagId, String tagUnit, long value, String time, String timeIso8601) {
     this.tagName = tagName;
     this.tagId = tagId;
     this.tagUnit = tagUnit;
     this.value = value;
     this.timestamp = time;
+    this.iso8601Timestamp = timeIso8601;
     this.quality = DataQuality.GOOD;
   }
 
@@ -126,6 +137,6 @@ public class DataPointDword extends DataPoint {
    * @throws CloneNotSupportedException if the data point cannot be cloned
    */
   public DataPoint clone(String tagName) throws CloneNotSupportedException {
-    return new DataPointDword(tagName, tagId, tagUnit, value, timestamp, quality);
+    return new DataPointDword(tagName, tagId, tagUnit, value, timestamp, iso8601Timestamp, quality);
   }
 }
