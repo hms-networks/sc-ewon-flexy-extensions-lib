@@ -29,12 +29,23 @@ import java.util.Map;
  *
  * @author HMS Networks, MU Americas Solution Center
  * @since 1.0.0
+ * @version 3.0.0
  */
 public class HistoricalDataManager {
 
   /**
+   * Default value for the export data in UTC flag. This is separate from the Ewon's export data in
+   * UTC setting, and is used when the value is not specified.
+   */
+  private static final boolean DEFAULT_EXPORT_DATA_IN_UTC = true;
+
+  /**
    * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a list of
    * data points.
+   *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp. Previous versions used a timestamp integer with the number of seconds since epoch,
+   * thus callers of this method must adapt as necessary.
    *
    * @param startTime start time of export
    * @param endTime end time of export
@@ -47,6 +58,9 @@ public class HistoricalDataManager {
    * @throws IOException if export block descriptor fails
    * @throws JSONException if unable to parse int to string enumeration file
    * @throws EbdTimeoutException for EBD timeout
+   * @since 1.0.0
+   * @deprecated Use {@link #readHistoricalFifo(String, String, boolean, boolean, boolean, boolean,
+   *     boolean, boolean)} instead.
    */
   public static ArrayList readHistoricalFifo(
       String startTime,
@@ -56,6 +70,49 @@ public class HistoricalDataManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD,
       boolean stringHistorical)
+      throws IOException, JSONException, EbdTimeoutException {
+    return readHistoricalFifo(
+        startTime,
+        endTime,
+        includeTagGroupA,
+        includeTagGroupB,
+        includeTagGroupC,
+        includeTagGroupD,
+        stringHistorical,
+        DEFAULT_EXPORT_DATA_IN_UTC);
+  }
+
+  /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a list of
+   * data points.
+   *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp. Previous versions used a timestamp integer with the number of seconds since epoch,
+   * thus callers of this method must adapt as necessary.
+   *
+   * @param startTime start time of export
+   * @param endTime end time of export
+   * @param includeTagGroupA include tag group A
+   * @param includeTagGroupB include tag group B
+   * @param includeTagGroupC include tag group C
+   * @param includeTagGroupD include tag group D
+   * @param stringHistorical export string historical logs if true
+   * @param exportDataInUtc export data in ISO 8601 UTC format if {@code true} (instead of local)
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
+   * @since 3.0.0
+   */
+  public static ArrayList readHistoricalFifo(
+      String startTime,
+      String endTime,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      boolean stringHistorical,
+      boolean exportDataInUtc)
       throws IOException, JSONException, EbdTimeoutException {
 
     // create EBD string
@@ -67,7 +124,8 @@ public class HistoricalDataManager {
             includeTagGroupB,
             includeTagGroupC,
             includeTagGroupD,
-            stringHistorical);
+            stringHistorical,
+            exportDataInUtc);
 
     // Execute EBD call and parse results
     final Exporter exporter = executeEbdCall(ebdStr);
@@ -78,6 +136,10 @@ public class HistoricalDataManager {
    * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a map of
    * rounded timestamps to lists of data points. <br>
    * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp. Previous versions used a timestamp integer with the number of seconds since epoch,
+   * thus callers of this method must adapt as necessary.
    *
    * @param startTime start time of export
    * @param endTime end time of export
@@ -93,6 +155,9 @@ public class HistoricalDataManager {
    * @throws EbdTimeoutException for EBD timeout
    * @throws IllegalArgumentException if time unit is null, unknown, or not supported
    * @throws Exception if unable to parse data point timestamp to date
+   * @since 1.0.0
+   * @deprecated Use {@link #readHistoricalFifo(String, String, boolean, boolean, boolean, boolean,
+   *     boolean, boolean, SCTimeSpan)} instead.
    */
   public static Map readHistoricalFifo(
       String startTime,
@@ -102,6 +167,55 @@ public class HistoricalDataManager {
       boolean includeTagGroupC,
       boolean includeTagGroupD,
       boolean stringHistorical,
+      SCTimeSpan timeSpan)
+      throws Exception {
+    return readHistoricalFifo(
+        startTime,
+        endTime,
+        includeTagGroupA,
+        includeTagGroupB,
+        includeTagGroupC,
+        includeTagGroupD,
+        stringHistorical,
+        DEFAULT_EXPORT_DATA_IN_UTC,
+        timeSpan);
+  }
+
+  /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a map of
+   * rounded timestamps to lists of data points. <br>
+   * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp. Previous versions used a timestamp integer with the number of seconds since epoch,
+   * thus callers of this method must adapt as necessary.
+   *
+   * @param startTime start time of export
+   * @param endTime end time of export
+   * @param includeTagGroupA include tag group A
+   * @param includeTagGroupB include tag group B
+   * @param includeTagGroupC include tag group C
+   * @param includeTagGroupD include tag group D
+   * @param stringHistorical export string historical logs if true
+   * @param exportDataInUtc export data in ISO 8601 UTC format if {@code true} (instead of local)
+   * @param timeSpan time span to round data point time stamps to
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
+   * @throws IllegalArgumentException if time unit is null, unknown, or not supported
+   * @throws Exception if unable to parse data point timestamp to date
+   * @since 3.0.0
+   */
+  public static Map readHistoricalFifo(
+      String startTime,
+      String endTime,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD,
+      boolean stringHistorical,
+      boolean exportDataInUtc,
       SCTimeSpan timeSpan)
       throws Exception {
 
@@ -114,7 +228,8 @@ public class HistoricalDataManager {
             includeTagGroupB,
             includeTagGroupC,
             includeTagGroupD,
-            stringHistorical);
+            stringHistorical,
+            exportDataInUtc);
 
     // Execute EBD call and parse results
     final Exporter exporter = executeEbdCall(ebdStr);
@@ -128,6 +243,7 @@ public class HistoricalDataManager {
    * @return EBD Exporter - caller must close exporter
    * @throws EbdTimeoutException when there is no response before timeout period
    * @throws IOException when there is an Exporter Exception
+   * @since 1.0.0
    */
   public static Exporter executeEbdCall(String ebdStr) throws IOException, EbdTimeoutException {
     final long start = System.currentTimeMillis();
@@ -163,7 +279,9 @@ public class HistoricalDataManager {
    * @param includeTagGroupC include tag group C
    * @param includeTagGroupD include tag group D
    * @param stringHistorical export string historical logs if true
+   * @param exportDataInUtc export data in ISO 8601 UTC format if {@code true} (instead of local)
    * @return EBD string
+   * @since 1.0.0
    */
   static String prepareHistoricalFifoReadEBDString(
       String startTime,
@@ -172,7 +290,8 @@ public class HistoricalDataManager {
       boolean includeTagGroupB,
       boolean includeTagGroupC,
       boolean includeTagGroupD,
-      boolean stringHistorical) {
+      boolean stringHistorical,
+      boolean exportDataInUtc) {
 
     // Check for valid group selection
     if (!includeTagGroupA && !includeTagGroupB && !includeTagGroupC && !includeTagGroupD) {
@@ -203,12 +322,21 @@ public class HistoricalDataManager {
       ebdDataType = "HL";
     }
 
+    // Get EBD timestamp type
+    String ebdTimestampType;
+    if (exportDataInUtc) {
+      ebdTimestampType = "U";
+    } else {
+      ebdTimestampType = "L";
+    }
+
     /*
      * Build EBD string with parameters
      * dt[ebdDataType]: data type, value specified in string ebdDataType
      * ftT: file type, text
      * startTime: start time for data
      * endTime: end time for data
+     * ts: timestamp type, value specified in string ebdTimestampType
      * flABCD: filter type, specified tag groups
      */
     return "$dt"
@@ -217,6 +345,8 @@ public class HistoricalDataManager {
         + startTime
         + "$et"
         + endTime
+        + "$ts"
+        + ebdTimestampType
         + "$fl"
         + tagGroupFilterStr;
   }
@@ -225,10 +355,14 @@ public class HistoricalDataManager {
    * Parses Export Block Descriptor Historical Log response into a list of data points. Note: this
    * function only handles Historical Log responses.
    *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp in addition to the timestamp integer with the number of seconds since epoch.
+   *
    * @param exporter EBD Exporter
    * @return a list of data points from the response
    * @throws IOException for parsing Exceptions
    * @throws JSONException for JSON parsing Exceptions
+   * @since 1.0.0
    */
   private static ArrayList parseEBDHistoricalLogExportResponse(Exporter exporter)
       throws IOException, JSONException {
@@ -254,6 +388,9 @@ public class HistoricalDataManager {
    * lists of data points. Note: this function only handles Historical Log responses. <br>
    * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
    *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp in addition to the timestamp integer with the number of seconds since epoch.
+   *
    * @param exporter EBD Exporter
    * @param timeSpan time span to round data point time stamps to
    * @return a map of data points and time stamps from the response
@@ -261,6 +398,7 @@ public class HistoricalDataManager {
    * @throws JSONException for JSON parsing Exceptions
    * @throws IllegalArgumentException if time unit is null, unknown, or not supported
    * @throws Exception if unable to parse data point timestamp to date
+   * @since 2.0.0
    */
   private static Map parseEBDHistoricalLogExportResponse(Exporter exporter, SCTimeSpan timeSpan)
       throws Exception {
@@ -305,29 +443,53 @@ public class HistoricalDataManager {
    *
    * @param strBool boolean string representation
    * @return converted boolean
+   * @since 1.0.0
    */
   private static boolean convertStrToBool(String strBool) {
     return strBool.equals("1");
   }
 
   /**
+   * Corrects the Export Block Descriptor (EBD) ISO 8601 timestamp by removing quotes and adding
+   * milliseconds to the timestamp.
+   *
+   * <p>Example: "2020-02-24T15:20:58Z" to 2020-02-24T15:20:58.000Z
+   *
+   * @param ebdTs Export ISO 8601 timestamp
+   * @return corrected ISO 8601 timestamp
+   */
+  private static String correctEbdIsoTimestamp(String ebdTs) {
+    return ebdTs.substring(
+            HistoricalDataConstants.EBD_ISO8601_TIMESTAMP_START_INDEX,
+            HistoricalDataConstants.EBD_ISO8601_TIMESTAMP_START_MILLIS)
+        + HistoricalDataConstants.EBD_ISO8601_TIMESTAMP_ADD_MILLIS_STR
+        + ebdTs.substring(
+            HistoricalDataConstants.EBD_ISO8601_TIMESTAMP_START_MILLIS, ebdTs.length() - 1);
+  }
+
+  /**
    * Parse the specified historical file line and return its corresponding data point.
+   *
+   * <p>In version 3.0.0 and later, this method returns a data point with an ISO 8601 formatted
+   * timestamp in addition to a timestamp integer with the number of seconds since epoch.
    *
    * @param line line to parse
    * @return data point
    * @throws IOException if unable to access tag information
    * @throws JSONException if unable to parse int to string enumeration file
+   * @since 1.0.0
    */
   static DataPoint parseHistoricalFileLine(String line) throws IOException, JSONException {
     /*
      * Example Line:
      * "TagId";"TimeInt";"TimeStr";"IsInitValue";"Value";"IQuality"
-     * 247;1582557658;"24/02/2020 15:20:58";0;0;3
+     * 3;1721834576;"2024-07-24T15:22:56-05:00";0;43;3
      */
 
     // Create variables to store line data
     int tagId = -1;
-    String tagTimeInt = "";
+    String tagTimeEpochStr = "";
+    String tagTimeIso8601Str = "";
     String tagValue = "";
     int tagQuality = DataQuality.GOOD.getRawDataQuality();
 
@@ -355,7 +517,10 @@ public class HistoricalDataManager {
           tagId = Integer.parseInt(currentToken);
           break;
         case HistoricalDataConstants.EBD_LINE_TAG_TIMEINT_INDEX:
-          tagTimeInt = currentToken;
+          tagTimeEpochStr = currentToken;
+          break;
+        case HistoricalDataConstants.EBD_LINE_TAG_TIMESTR_INDEX:
+          tagTimeIso8601Str = correctEbdIsoTimestamp(currentToken);
           break;
         case HistoricalDataConstants.EBD_LINE_TAG_VALUE_INDEX:
           tagValue = currentToken;
@@ -388,7 +553,14 @@ public class HistoricalDataManager {
             if (tagType == TagType.BOOLEAN) {
               boolean boolValue = convertStrToBool(tagValue);
               returnVal =
-                  new DataPointBoolean(tagName, tagId, tagUnit, boolValue, tagTimeInt, dataQuality);
+                  new DataPointBoolean(
+                      tagName,
+                      tagId,
+                      tagUnit,
+                      boolValue,
+                      tagTimeEpochStr,
+                      tagTimeIso8601Str,
+                      dataQuality);
             } else if (tagType == TagType.FLOAT) {
               float floatValue;
               if (tagValue.equalsIgnoreCase(HistoricalDataConstants.TAG_VALUE_NEGATIVE_INFINITY)) {
@@ -402,11 +574,25 @@ public class HistoricalDataManager {
                 floatValue = Float.valueOf(tagValue).floatValue();
               }
               returnVal =
-                  new DataPointFloat(tagName, tagId, tagUnit, floatValue, tagTimeInt, dataQuality);
+                  new DataPointFloat(
+                      tagName,
+                      tagId,
+                      tagUnit,
+                      floatValue,
+                      tagTimeEpochStr,
+                      tagTimeIso8601Str,
+                      dataQuality);
             } else if (tagType == TagType.INTEGER) {
               int intValue = Integer.valueOf(tagValue).intValue();
               returnVal =
-                  new DataPointInteger(tagName, tagId, tagUnit, intValue, tagTimeInt, dataQuality);
+                  new DataPointInteger(
+                      tagName,
+                      tagId,
+                      tagUnit,
+                      intValue,
+                      tagTimeEpochStr,
+                      tagTimeIso8601Str,
+                      dataQuality);
             } else if (tagType == TagType.INTEGER_MAPPED_STRING) {
               int intValue = Integer.valueOf(tagValue).intValue();
               TagInfoEnumeratedIntToString tagInfoEnumeratedIntToString =
@@ -417,16 +603,31 @@ public class HistoricalDataManager {
                       tagId,
                       tagUnit,
                       intValue,
-                      tagTimeInt,
+                      tagTimeEpochStr,
+                      tagTimeIso8601Str,
                       dataQuality,
                       tagInfoEnumeratedIntToString.getEnumeratedStringValueMapping());
             } else if (tagType == TagType.DWORD) {
               long dwordValue = Long.valueOf(tagValue).longValue();
               returnVal =
-                  new DataPointDword(tagName, tagId, tagUnit, dwordValue, tagTimeInt, dataQuality);
+                  new DataPointDword(
+                      tagName,
+                      tagId,
+                      tagUnit,
+                      dwordValue,
+                      tagTimeEpochStr,
+                      tagTimeIso8601Str,
+                      dataQuality);
             } else if (tagType == TagType.STRING) {
               returnVal =
-                  new DataPointString(tagName, tagId, tagUnit, tagValue, tagTimeInt, dataQuality);
+                  new DataPointString(
+                      tagName,
+                      tagId,
+                      tagUnit,
+                      tagValue,
+                      tagTimeEpochStr,
+                      tagTimeIso8601Str,
+                      dataQuality);
             }
           }
       }
