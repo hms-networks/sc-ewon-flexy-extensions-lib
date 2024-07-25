@@ -19,6 +19,9 @@ class HistoricalDataConstants {
   /** Index of time int in EBD lines */
   public static final int EBD_LINE_TAG_TIMEINT_INDEX = 1;
 
+  /** Index of time string in EBD lines */
+  public static final int EBD_LINE_TAG_TIMESTR_INDEX = 2;
+
   /** Index of tag value in EBD lines */
   public static final int EBD_LINE_TAG_VALUE_INDEX = 4;
 
@@ -145,4 +148,13 @@ class HistoricalDataConstants {
 
   /** The IO server used for queue diagnostic tag(s). */
   public static final String QUEUE_DIAGNOSTIC_TAG_IO_SERVER = "MEM";
+
+  /** Start index of the actual ISO 8601 timestamp return by EBD. */
+  public static final int EBD_ISO8601_TIMESTAMP_START_INDEX = 1;
+
+  /** String index where milliseconds should be added to a timestamp that lacks milliseconds. */
+  public static final int EBD_ISO8601_TIMESTAMP_START_MILLIS = 20;
+
+  /** String to add to a timestamp that lacks milliseconds. */
+  public static final String EBD_ISO8601_TIMESTAMP_ADD_MILLIS_STR = ".000";
 }
