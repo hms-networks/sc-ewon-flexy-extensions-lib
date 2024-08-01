@@ -31,9 +31,6 @@ public class SCTimeUtils {
    */
   private static final String SCB_UTC_EXPORT_VALUE_TRUE = "1";
 
-  /** The name of the Java time zone representing GMT/UTC. */
-  private static final String GMT_TIME_ZONE_NAME = "GMT";
-
   /** The designator used for the GMT/UTC time zone, which has no offset. */
   private static final String GMT_TIME_ZONE_DESIGNATOR = "Z";
 
@@ -175,18 +172,19 @@ public class SCTimeUtils {
     TimeZone.setDefault(newTimeZone);
 
     // Build applicable date formats
-    boolean isTimeZoneGmt = newTimeZone.getDisplayName().equals(GMT_TIME_ZONE_NAME);
+    boolean isTimeZoneGmt =
+        newTimeZone.getDisplayName().equals(TimeLibConstants.GMT_TIME_ZONE_NAME);
     localTimeZoneDesignator =
         isTimeZoneGmt
             ? GMT_TIME_ZONE_DESIGNATOR
-            : newTimeZone.getDisplayName().substring(GMT_TIME_ZONE_NAME.length());
+            : newTimeZone.getDisplayName().substring(TimeLibConstants.GMT_TIME_ZONE_NAME.length());
     final String localTimeFormatString =
         SIMPLE_DATE_FORMAT_PATTERN_ISO_8601 + "'" + localTimeZoneDesignator + "'";
     final String utcTimeFormatString =
         SIMPLE_DATE_FORMAT_PATTERN_ISO_8601 + "'" + GMT_TIME_ZONE_DESIGNATOR + "'";
     iso8601LocalTimeFormat = new SimpleDateFormat(localTimeFormatString, Locale.getDefault());
     iso8601UtcTimeFormat = new SimpleDateFormat(utcTimeFormatString, Locale.getDefault());
-    iso8601UtcTimeFormat.setTimeZone(TimeZone.getTimeZone(GMT_TIME_ZONE_NAME));
+    iso8601UtcTimeFormat.setTimeZone(TimeZone.getTimeZone(TimeLibConstants.GMT_TIME_ZONE_NAME));
   }
 
   /**

@@ -8,6 +8,7 @@ import com.hms_networks.americas.sc.extensions.string.StringUtils;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Utility class for calculating the offset between the local time zone and UTC.
@@ -117,6 +118,7 @@ public class LocalTimeOffsetCalculator {
 
     // Get local time from contents of local time offset result file
     SimpleDateFormat sdf = new SimpleDateFormat(TimeLibConstants.TIME_OFFSET_DATE_FORMAT);
+    sdf.setTimeZone(TimeZone.getTimeZone(TimeLibConstants.GMT_TIME_ZONE_NAME));
     Date localTimeDateObj = sdf.parse(localTime);
 
     // Calculate difference between UTC time (Ewon system time) and local time (in milliseconds)
