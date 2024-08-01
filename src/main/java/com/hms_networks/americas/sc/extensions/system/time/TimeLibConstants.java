@@ -17,4 +17,7 @@ public class TimeLibConstants {
    * https://developer.ewon.biz/content/export-block-descriptor.
    */
   public static final String TIME_OFFSET_LOCAL_TIME_EBD = "$dtSE$se\"Time$\"$ftT";
+
+  /** The name of the Java time zone representing GMT/UTC. */
+  public static final String GMT_TIME_ZONE_NAME = "GMT";
 }
