@@ -22,8 +22,22 @@ public abstract class DataPoint {
   /** Unit of data point tag. */
   protected String tagUnit;
 
-  /** Timestamp of data point */
+  /**
+   * Timestamp of data point in seconds since UNIX epoch. Note that timestamp could be relative to
+   * UTC or local time depending on Record Data in UTC setting. Please see <a
+   * href="https://hmsnetworks.blob.core.windows.net/www/docs/librariesprovider10/downloads-monitored/manuals/knowledge-base/kb-0284-01-en-utc-timestamp-logging.pdf">Knowledge
+   * base article on Flexy UTC historical logging setting</a> for details on historical data
+   * timestamp settings.
+   */
   protected String timestamp;
+
+  /**
+   * ISO 8601 format timestamp with millisecond resolution. Can be relative to UTC, or local time.
+   * Please see {@link
+   * com.hms_networks.americas.sc.extensions.historicaldata.HistoricalDataQueueManager} and
+   * exportDataInUtc parameter.
+   */
+  protected String iso8601Timestamp;
 
   /** Quality of data point value */
   protected DataQuality quality;
@@ -71,12 +85,29 @@ public abstract class DataPoint {
   }
 
   /**
-   * Get the {@link String} representation of the time stamp.
+   * Get the {@link String} representation of the UNIX epoch seconds timestamp. Because the
+   * timestamp could be in local time or UTC time, it is recommended to use {@link
+   * #getIso8601Timestamp} or {@link #getTimeStampAsDate} instead.
    *
    * @return the timestamp as a {@link String}.
+   * @deprecated - Use {@link #getIso8601Timestamp} or {@link #getTimeStampAsDate} instead.
    */
   public String getTimeStamp() {
     return timestamp;
+  }
+
+  /**
+   * Get the {@link String} representation of the ISO 8601 timestamp with milliseconds.
+   *
+   * <p>Example of local time offset: 2024-07-24T15:08:26.000-05:00
+   *
+   * <p>Example of UTC time: 2024-07-24T15:13:26.000Z
+   *
+   * @return the ISO 8601 timestamp as a {@link String}.
+   * @since 1.1.0
+   */
+  public String getIso8601Timestamp() {
+    return iso8601Timestamp;
   }
 
   /**
