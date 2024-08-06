@@ -20,16 +20,25 @@ public class DataPointBoolean extends DataPoint {
    * @param tagId data point tag ID
    * @param tagUnit data point tag unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param timestampInt data point timestamp as an {@code int}, representing seconds since the
+   *     epoch
+   * @param timestampString data point timestamp as a {@link String}, in ISO-8601 format
    * @param quality data point quality
    */
   public DataPointBoolean(
-      String tagName, int tagId, String tagUnit, boolean value, String time, DataQuality quality) {
+      String tagName,
+      int tagId,
+      String tagUnit,
+      boolean value,
+      int timestampInt,
+      String timestampString,
+      DataQuality quality) {
     this.tagName = tagName;
     this.tagId = tagId;
     this.tagUnit = tagUnit;
     this.value = value;
-    this.timestamp = time;
+    this.timestampInt = timestampInt;
+    this.timestampString = timestampString;
     this.quality = quality;
   }
 
@@ -40,14 +49,23 @@ public class DataPointBoolean extends DataPoint {
    * @param tagId data point tag ID
    * @param tagUnit data point unit
    * @param value data point value
-   * @param time data point timestamp
+   * @param timestampInt data point timestamp as an {@code int}, representing seconds since the
+   *     epoch
+   * @param timestampString data point timestamp as a {@link String}, in ISO-8601 format
    */
-  public DataPointBoolean(String tagName, int tagId, String tagUnit, boolean value, String time) {
+  public DataPointBoolean(
+      String tagName,
+      int tagId,
+      String tagUnit,
+      boolean value,
+      int timestampInt,
+      String timestampString) {
     this.tagName = tagName;
     this.tagId = tagId;
     this.tagUnit = tagUnit;
     this.value = value;
-    this.timestamp = time;
+    this.timestampInt = timestampInt;
+    this.timestampString = timestampString;
     this.quality = DataQuality.GOOD;
   }
 
@@ -70,7 +88,7 @@ public class DataPointBoolean extends DataPoint {
     boolean returnVal = false;
     if (p instanceof DataPointBoolean) {
       returnVal =
-          p.getTimeStamp().equals(timestamp)
+          p.getTimeStampInt() == timestampInt
               && ((DataPointBoolean) p).getValue() == value
               && p.getTagName().equals(tagName);
     }
@@ -126,6 +144,7 @@ public class DataPointBoolean extends DataPoint {
    * @throws CloneNotSupportedException if the data point cannot be cloned
    */
   public DataPoint clone(String tagName) throws CloneNotSupportedException {
-    return new DataPointBoolean(tagName, tagId, tagUnit, value, timestamp, quality);
+    return new DataPointBoolean(
+        tagName, tagId, tagUnit, value, timestampInt, timestampString, quality);
   }
 }

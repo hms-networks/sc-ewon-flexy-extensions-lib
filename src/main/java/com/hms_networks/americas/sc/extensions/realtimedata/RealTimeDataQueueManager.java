@@ -144,7 +144,7 @@ public class RealTimeDataQueueManager {
    *
    * @param tagGroup The tag group to fetch data from.
    */
-  public static void dataFetcher(int tagGroup) {
+  public static void dataFetcher(int tagGroup) throws Exception {
     ArrayList tagGroupArray = (ArrayList) tagManagers.get(tagGroup);
     if (tagGroupArray != null) {
       // for each tag in the tag group, record a new value

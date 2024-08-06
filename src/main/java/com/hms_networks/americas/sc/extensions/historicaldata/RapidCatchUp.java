@@ -142,6 +142,7 @@ public class RapidCatchUp {
    * @param includeTagGroupC include tag group C
    * @param includeTagGroupD include tag group D
    * @param stringHistorical export string historical logs if {@code true}
+   * @param exportDataInUtc export data in ISO 8601 UTC format if {@code true} (instead of local)
    * @return {@link RapidCatchUpTracker} object
    * @throws Exception for {@link DataPoint} getTimeStampAsDate() errors
    * @throws IOException for errors closing exporter
@@ -152,7 +153,8 @@ public class RapidCatchUp {
       boolean includeTagGroupB,
       boolean includeTagGroupC,
       boolean includeTagGroupD,
-      boolean stringHistorical)
+      boolean stringHistorical,
+      boolean exportDataInUtc)
       throws Exception, IOException {
 
     // The end time is the start + catch up duration
@@ -172,7 +174,8 @@ public class RapidCatchUp {
             includeTagGroupB,
             includeTagGroupC,
             includeTagGroupD,
-            stringHistorical);
+            stringHistorical,
+            exportDataInUtc);
 
     RapidCatchUpTracker histTracker;
     try {

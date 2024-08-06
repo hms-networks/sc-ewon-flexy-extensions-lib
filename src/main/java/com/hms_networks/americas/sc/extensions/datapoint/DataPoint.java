@@ -1,7 +1,5 @@
 package com.hms_networks.americas.sc.extensions.datapoint;
 
-import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
-import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import java.util.Date;
 
@@ -22,8 +20,11 @@ public abstract class DataPoint {
   /** Unit of data point tag. */
   protected String tagUnit;
 
-  /** Timestamp of data point */
-  protected String timestamp;
+  /** Timestamp of data point (integer). This is the timestamp in seconds since the epoch. */
+  protected int timestampInt;
+
+  /** Timestamp of data point (string). This is in ISO-8601 format. */
+  protected String timestampString;
 
   /** Quality of data point value */
   protected DataQuality quality;
@@ -71,12 +72,21 @@ public abstract class DataPoint {
   }
 
   /**
+   * Get the timestamp of the data point as an integer, representing seconds since the epoch.
+   *
+   * @return timestamp of data point as an integer
+   */
+  public int getTimeStampInt() {
+    return timestampInt;
+  }
+
+  /**
    * Get the {@link String} representation of the time stamp.
    *
    * @return the timestamp as a {@link String}.
    */
-  public String getTimeStamp() {
-    return timestamp;
+  public String getTimeStampString() {
+    return timestampString;
   }
 
   /**
@@ -86,24 +96,7 @@ public abstract class DataPoint {
    * @throws Exception if unable to detect if time stamp is in UTC or local time
    */
   public Date getTimeStampAsDate() throws Exception {
-    // Get timestamp in milliseconds
-    long timestampMillisecondsTime = SCTimeUnit.SECONDS.toMillis(Long.parseLong(getTimeStamp()));
-
-    // Handle tag timestamp being in local time (default)
-    Date timestampDate;
-    if (!SCTimeUtils.getTagDataExportedInUtc()) {
-      // Add offset to get UTC time (new Date() uses time since epoch in UTC)
-      long timestampMillisecondsUtcTime =
-          timestampMillisecondsTime + LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
-
-      timestampDate = new Date(timestampMillisecondsUtcTime);
-    }
-    // Handle tag timestamp being in UTC time
-    else {
-      timestampDate = new Date(timestampMillisecondsTime);
-    }
-
-    return timestampDate;
+    return SCTimeUtils.getDateForIso8601FormattedTimestamp(timestampString);
   }
 
   /**
@@ -121,7 +114,7 @@ public abstract class DataPoint {
    * @return tag name, timestamp, value, and unit in a string with spaces in between
    */
   public String toString() {
-    return tagName + " " + timestamp + " " + getValueString() + " " + tagUnit;
+    return tagName + " " + timestampString + " " + getValueString() + " " + tagUnit;
   }
 
   /**

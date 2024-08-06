@@ -7,6 +7,7 @@ import com.hms_networks.americas.sc.extensions.fileutils.FileAccessManager;
 import com.hms_networks.americas.sc.extensions.fileutils.FileManager;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
 import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
+import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagType;
@@ -255,9 +256,7 @@ public class LocalDataFileManager extends Thread {
     }
 
     // Get datapoint UTC time as long
-    long localDataPointTime =
-        Long.parseLong(dataPoint.getTimeStamp())
-            * LocalDataFileConstants.NUM_MILLISECONDS_PER_SECOND;
+    long localDataPointTime = SCTimeUnit.SECONDS.toMillis(dataPoint.getTimeStampInt());
     long utcDataPointTime =
         localDataPointTime + LocalTimeOffsetCalculator.getLocalTimeOffsetMilliseconds();
     Date dataPointDate = new Date(utcDataPointTime);
