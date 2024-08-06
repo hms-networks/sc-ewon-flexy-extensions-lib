@@ -43,7 +43,7 @@ public class RapidCatchUp {
    * <p>24 hours is below the testing 48, but sill will provide aggressive catch up.
    */
   public static final long RAPID_CATCH_UP_TIME_DURATION_MAX_MILLISECONDS =
-      SCTimeUnit.HOURS.toMillis(24);
+      SCTimeUnit.HOURS.toMillis(1);
 
   /** Dynamic duration for requesting historical data during catch up period */
   public static long catchUpRequestDurationMilliseconds = RAPID_CATCH_UP_TIME_BASE_MILLISECONDS;
