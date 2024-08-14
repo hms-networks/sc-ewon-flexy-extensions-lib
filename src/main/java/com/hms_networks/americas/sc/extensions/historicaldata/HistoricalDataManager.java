@@ -133,6 +133,29 @@ public class HistoricalDataManager {
   }
 
   /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a list of
+   * data points.
+   *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp. Previous versions used a timestamp integer with the number of seconds since epoch,
+   * thus callers of this method must adapt as necessary.
+   *
+   * @param requestEbd historical data request EBD string
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
+   * @since 3.0.0
+   */
+  public static ArrayList readHistoricalFifo(String requestEbd)
+      throws IOException, JSONException, EbdTimeoutException {
+
+    // Execute EBD call and parse results
+    final Exporter exporter = executeEbdCall(requestEbd);
+    return parseEBDHistoricalLogExportResponse(exporter);
+  }
+
+  /**
    * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a map of
    * rounded timestamps to lists of data points. <br>
    * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
@@ -233,6 +256,32 @@ public class HistoricalDataManager {
 
     // Execute EBD call and parse results
     final Exporter exporter = executeEbdCall(ebdStr);
+    return parseEBDHistoricalLogExportResponse(exporter, timeSpan);
+  }
+
+  /**
+   * Reads historical log between <code>startTime</code> and <code>endTime</code>. Returns a map of
+   * rounded timestamps to lists of data points. <br>
+   * (Parameterized map type: Map&lt;Date, List&lt;DataPoint&gt;&gt;)
+   *
+   * <p>In version 3.0.0 and later, this method returns data points with an ISO 8601 formatted
+   * timestamp. Previous versions used a timestamp integer with the number of seconds since epoch,
+   * thus callers of this method must adapt as necessary.
+   *
+   * @param requestEBD historical data request EBD string
+   * @param timeSpan time span to round data point time stamps to
+   * @return data points from response
+   * @throws IOException if export block descriptor fails
+   * @throws JSONException if unable to parse int to string enumeration file
+   * @throws EbdTimeoutException for EBD timeout
+   * @throws IllegalArgumentException if time unit is null, unknown, or not supported
+   * @throws Exception if unable to parse data point timestamp to date
+   * @since 3.0.0
+   */
+  public static Map readHistoricalFifo(String requestEBD, SCTimeSpan timeSpan) throws Exception {
+
+    // Execute EBD call and parse results
+    final Exporter exporter = executeEbdCall(requestEBD);
     return parseEBDHistoricalLogExportResponse(exporter, timeSpan);
   }
 
