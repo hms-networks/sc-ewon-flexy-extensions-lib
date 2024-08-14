@@ -130,4 +130,19 @@ public class LocalTimeOffsetCalculator {
 
     return diffInMilliseconds;
   }
+
+  /**
+   * Converts the local epoch milliseconds timestamp to UTC epoch milliseconds. Flexy EBD historical
+   * data response will return integer timestamps in local time when "Record Data in UTC" is not
+   * enabled, so this method can be used to convert the local time to UTC time.
+   *
+   * @param localEpochMillis the local epoch milliseconds timestamp
+   * @return epoch milliseconds timestamp relative to UTC
+   * @throws ParseException
+   * @throws InterruptedException
+   */
+  public static long convertLocalEpochMillisToUtc(long localEpochMillis)
+      throws InterruptedException, ParseException {
+    return localEpochMillis + calculateLocalTimeOffsetMilliseconds();
+  }
 }
