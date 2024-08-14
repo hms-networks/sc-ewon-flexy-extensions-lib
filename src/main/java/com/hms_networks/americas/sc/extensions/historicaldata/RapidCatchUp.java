@@ -5,6 +5,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
+import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import java.io.ByteArrayOutputStream;
@@ -144,7 +145,7 @@ public class RapidCatchUp {
    * @param stringHistorical export string historical logs if {@code true}
    * @param exportDataInUtc export data in ISO 8601 UTC format if {@code true} (instead of local)
    * @return {@link RapidCatchUpTracker} object
-   * @throws Exception for {@link DataPoint} getTimeStampAsDate() errors
+   * @throws Exception for exceptions related to checking if data is exported in UTC format
    * @throws IOException for errors closing exporter
    */
   public static RapidCatchUpTracker rapidCatchUpRequest(
@@ -157,19 +158,24 @@ public class RapidCatchUp {
       boolean exportDataInUtc)
       throws Exception, IOException {
 
+    // Rapid catch up does not use last point or update last point
+    boolean timeRelative = true;
+    boolean useLastPoint = false;
+    boolean updateLastPoint = false;
+
     // The end time is the start + catch up duration
     long endTimeTrackingMilliseconds =
-        catchUpRequestDurationMilliseconds + startTimeTrackingMilliseconds;
-
-    final String ebdStartTime =
-        HistoricalDataQueueManager.convertToEBDTimeFormat(startTimeTrackingMilliseconds);
-    final String ebdEndTime =
-        HistoricalDataQueueManager.convertToEBDTimeFormat(endTimeTrackingMilliseconds);
+        Math.min(
+            catchUpRequestDurationMilliseconds + startTimeTrackingMilliseconds,
+            System.currentTimeMillis());
 
     final String ebdRequest =
-        HistoricalDataManager.prepareHistoricalFifoReadEBDString(
-            ebdStartTime,
-            ebdEndTime,
+        HistoricalDataEbdRequest.prepareHistoricalFifoReadEbdString(
+            startTimeTrackingMilliseconds,
+            endTimeTrackingMilliseconds,
+            timeRelative,
+            useLastPoint,
+            updateLastPoint,
             includeTagGroupA,
             includeTagGroupB,
             includeTagGroupC,
@@ -217,7 +223,7 @@ public class RapidCatchUp {
    * @param exporter EBD Exporter
    * @param endTimeMilliseconds end time in milliseconds since epoch UTC
    * @return {@link RapidCatchUpTracker} indicating if data was found and the end time
-   * @throws Exception for {@link DataPoint} getTimeStampAsDate() errors
+   * @throws Exception for exceptions related to checking if data is exported in UTC format
    * @throws IOException for errors closing exporter
    * @throws JSONException for errors related to string enumeration configuration
    */
@@ -232,14 +238,23 @@ public class RapidCatchUp {
     final int headerSizeLines = 1;
     if (eventFileLines.size() > headerSizeLines) {
       final int firstDataPointIdx = 1;
+      final int secOffset = 1;
       String line = (String) eventFileLines.get(firstDataPointIdx);
       DataPoint lineDataPoint = HistoricalDataManager.parseHistoricalFileLine(line.trim());
       if (lineDataPoint != null) {
-        long firstTimeMilliseconds = lineDataPoint.getTimeStampAsDate().getTime();
-        // For EBD calls, the st (start time) is not inclusive, subtract a second to ensure
-        // subsequent calls include the first found datapoint
-        return new RapidCatchUpTracker(
-            true, firstTimeMilliseconds - SCTimeUnit.SECONDS.toMillis(1));
+        long timeStampSec = Long.parseLong(lineDataPoint.getTimeStamp());
+        if (SCTimeUtils.getTagDataExportedInUtc()) {
+          boolean isCaughtUp = true;
+          return new RapidCatchUpTracker(
+              isCaughtUp, SCTimeUnit.SECONDS.toMillis(timeStampSec - secOffset));
+        }
+
+        long firstTimeStampLocalMs = SCTimeUnit.SECONDS.toMillis(timeStampSec - secOffset);
+        // If the data is not exported in UTC, convert the timestamp to UTC
+        long returnTimestamp =
+            LocalTimeOffsetCalculator.convertLocalEpochMillisToUtc(firstTimeStampLocalMs);
+        boolean isCaughtUp = true;
+        return new RapidCatchUpTracker(isCaughtUp, returnTimestamp);
       }
     }
     boolean isCaughtUp = false;
