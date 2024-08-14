@@ -5,6 +5,7 @@ import com.hms_networks.americas.sc.extensions.datapoint.DataPoint;
 import com.hms_networks.americas.sc.extensions.json.JSONException;
 import com.hms_networks.americas.sc.extensions.logging.Logger;
 import com.hms_networks.americas.sc.extensions.string.StringUtils;
+import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import java.io.ByteArrayOutputStream;
@@ -159,22 +160,22 @@ public class RapidCatchUp {
 
     // The end time is the start + catch up duration
     long endTimeTrackingMilliseconds =
-        catchUpRequestDurationMilliseconds + startTimeTrackingMilliseconds;
-
-    final String ebdStartTime =
-        HistoricalDataQueueManager.convertToEBDTimeFormat(startTimeTrackingMilliseconds);
-    final String ebdEndTime =
-        HistoricalDataQueueManager.convertToEBDTimeFormat(endTimeTrackingMilliseconds);
+        Math.min(
+            catchUpRequestDurationMilliseconds + startTimeTrackingMilliseconds,
+            System.currentTimeMillis());
 
     final String ebdRequest =
-        HistoricalDataManager.prepareHistoricalFifoReadEBDString(
-            ebdStartTime,
-            ebdEndTime,
+        HistoricalDataEBDRequest.prepareHistoricalFifoReadEBDString(
+            startTimeTrackingMilliseconds,
+            endTimeTrackingMilliseconds,
+            true, // timeRelative
+            false, // useLastPoint
+            false,
             includeTagGroupA,
             includeTagGroupB,
             includeTagGroupC,
             includeTagGroupD,
-            stringHistorical,
+            false, // stringHistorical
             exportDataInUtc);
 
     RapidCatchUpTracker histTracker;
@@ -235,11 +236,16 @@ public class RapidCatchUp {
       String line = (String) eventFileLines.get(firstDataPointIdx);
       DataPoint lineDataPoint = HistoricalDataManager.parseHistoricalFileLine(line.trim());
       if (lineDataPoint != null) {
-        long firstTimeMilliseconds = lineDataPoint.getTimeStampAsDate().getTime();
-        // For EBD calls, the st (start time) is not inclusive, subtract a second to ensure
-        // subsequent calls include the first found datapoint
-        return new RapidCatchUpTracker(
-            true, firstTimeMilliseconds - SCTimeUnit.SECONDS.toMillis(1));
+        long timeStampSec = Long.parseLong(lineDataPoint.getTimeStamp());
+        if (SCTimeUtils.getTagDataExportedInUtc()) {
+          return new RapidCatchUpTracker(true, SCTimeUnit.SECONDS.toMillis(timeStampSec - 1));
+        }
+
+        long firstTimeStampLocalMs = SCTimeUnit.SECONDS.toMillis(timeStampSec - 1);
+        // If the data is not exported in UTC, convert the timestamp to UTC
+        long returnTimestamp =
+            LocalTimeOffsetCalculator.convertLocalEpochMillisToUtc(firstTimeStampLocalMs);
+        return new RapidCatchUpTracker(true, returnTimestamp);
       }
     }
     boolean isCaughtUp = false;
