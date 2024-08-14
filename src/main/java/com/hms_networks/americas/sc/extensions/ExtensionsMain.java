@@ -7,6 +7,7 @@ import com.hms_networks.americas.sc.extensions.historicaldata.HistoricalDataQueu
 import com.hms_networks.americas.sc.extensions.historicaldata.TimeTrackerUnrecoverableException;
 import com.hms_networks.americas.sc.extensions.system.time.LocalTimeOffsetCalculator;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
+import com.hms_networks.americas.sc.extensions.system.time.TimeZoneManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class ExtensionsMain {
     while (i > 0) {
       i--;
       try {
+        TimeZoneManager.checkUpdateTimeZone();
         ArrayList dat = HistoricalDataQueueManager.getFifoNextSpanDataAllGroups(false);
         for (int j = 0; j < dat.size(); j++) {
           DataPoint dp = (DataPoint) dat.get(j);
