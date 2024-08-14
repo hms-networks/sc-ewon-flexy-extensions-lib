@@ -93,6 +93,12 @@ public class HistoricalDataQueueManager {
    */
   private static boolean lastReadDataPointsEmpty = false;
 
+  private static boolean useLastPoint = false;
+
+  private static void setUseLastPoint(boolean update) {
+    useLastPoint = update;
+  }
+
   /**
    * Get the current configured FIFO queue time span in milliseconds.
    *
@@ -631,30 +637,19 @@ public class HistoricalDataQueueManager {
     // Get export data in UTC time setting
     boolean exportDataInUtc = SCTimeUtils.getTagDataExportedInUtc();
 
+    // Initialize empty queueDataList or queueDataMap, these are the return structures
     ArrayList queueDataList = null;
     Map queueDataMap = null;
 
     // Check to see if rapid catch up should be enabled
-    if (RapidCatchUp.shouldEnterRapidCatchUpMode(lastReadDataPointsEmpty, endTimeTrackerMsLong)) {
-
-      boolean stringHistorical = false;
-      RapidCatchUpTracker catchUpResult =
-          RapidCatchUp.rapidCatchUpRequest(
+    if (RapidCatchUp.shouldEnterRapidCatchUpMode(lastReadDataPointsEmpty, startTimeTrackerMsLong)) {
+      endTimeTrackerMsLong =
+          PerformRapidCatchUp(
               startTimeTrackerMsLong,
               includeTagGroupA,
               includeTagGroupB,
               includeTagGroupC,
-              includeTagGroupD,
-              stringHistorical,
-              exportDataInUtc);
-
-      if (catchUpResult.isHistoricalTrackingCaughtUp()) {
-        // If historical tracking is caught up, set lastReadDataPointsEmpty to false
-        lastReadDataPointsEmpty = false;
-      }
-
-      // Regardless of caught up status, update end time
-      endTimeTrackerMsLong = catchUpResult.getTrackingEndTimeMilliseconds();
+              includeTagGroupD);
 
       // Initialize empty queueDataList or queueDataMap
       if (timeSpan != null) {
@@ -662,99 +657,65 @@ public class HistoricalDataQueueManager {
       } else {
         queueDataList = new ArrayList();
       }
+      // Initialize empty queueDataList or queueDataMap
     } else {
-
-      // Calculate EBD start and end time
-      final String ebdStartTime = convertToEBDTimeFormat(startTimeTrackerMsLong);
-      final String ebdEndTime = convertToEBDTimeFormat(endTimeTrackerMsLong);
-
-      // Run standard EBD export call (int, float, ...)
-      boolean stringHistorical = false;
-
+      String requestEbdStrTag = "";
+      boolean timeRelative = true; // use relative time values
       final long startOfEbdHistoricalReadMs = System.currentTimeMillis();
 
-      // Read historical data into queueDataList or queueDataMap
-      if (timeSpan != null) {
-        queueDataMap =
-            HistoricalDataManager.readHistoricalFifo(
-                ebdStartTime,
-                ebdEndTime,
+      final String requestEbdNonStringTags =
+          HistoricalDataEBDRequest.prepareHistoricalFifoReadEBDString(
+              startTimeTrackerMsLong,
+              endTimeTrackerMsLong,
+              timeRelative,
+              useLastPoint,
+              true,
+              includeTagGroupA,
+              includeTagGroupB,
+              includeTagGroupC,
+              includeTagGroupD,
+              false, // stringHistorical
+              exportDataInUtc);
+
+      if (stringHistoryEnabled) {
+        requestEbdStrTag =
+            HistoricalDataEBDRequest.prepareHistoricalFifoReadEBDString(
+                startTimeTrackerMsLong,
+                endTimeTrackerMsLong,
+                timeRelative,
+                useLastPoint,
+                false,
                 includeTagGroupA,
                 includeTagGroupB,
                 includeTagGroupC,
                 includeTagGroupD,
-                stringHistorical,
-                exportDataInUtc,
-                timeSpan);
-      } else {
-        queueDataList =
-            HistoricalDataManager.readHistoricalFifo(
-                ebdStartTime,
-                ebdEndTime,
-                includeTagGroupA,
-                includeTagGroupB,
-                includeTagGroupC,
-                includeTagGroupD,
-                stringHistorical,
+                true, // stringHistorical
                 exportDataInUtc);
       }
 
-      // Run string EBD export call if enabled
-      if (stringHistoryEnabled) {
-        stringHistorical = true;
+      if (timeSpan != null) {
+        queueDataMap =
+            getFifoNextSpanDataRawSpan(
+                requestEbdNonStringTags, requestEbdStrTag, timeSpan, stringHistoryEnabled);
 
-        if (queueDataMap != null) {
-          Map queueStringDataMap =
-              HistoricalDataManager.readHistoricalFifo(
-                  ebdStartTime,
-                  ebdEndTime,
-                  includeTagGroupA,
-                  includeTagGroupB,
-                  includeTagGroupC,
-                  includeTagGroupD,
-                  stringHistorical,
-                  exportDataInUtc,
-                  timeSpan);
+        if (timeRelative && !queueDataMap.isEmpty()) {
+          setUseLastPoint(true);
+        }
+      } else {
+        queueDataList =
+            getFifoNextSpanDataRawArrayList(
+                requestEbdNonStringTags, requestEbdStrTag, stringHistoryEnabled);
 
-          // Combine with standard EBD call results
-          Iterator queueStringDataMapIterator = queueStringDataMap.entrySet().iterator();
-          while (queueStringDataMapIterator.hasNext()) {
-            Map.Entry queueStringDataMapEntry = (Map.Entry) queueStringDataMapIterator.next();
-            Date queueStringDataMapKey = (Date) queueStringDataMapEntry.getKey();
-            ArrayList queueStringDataMapValue = (ArrayList) queueStringDataMapEntry.getValue();
-
-            // Check if queue data map contains the key
-            if (queueDataMap.containsKey(queueStringDataMapKey)) {
-              // Get the data points list at the key
-              ArrayList dataPointsListAtKey = (ArrayList) queueDataMap.get(queueStringDataMapKey);
-
-              // Add the data points list at the key
-              dataPointsListAtKey.addAll(queueStringDataMapValue);
-            } else {
-              // Add the data points list at the key
-              queueDataMap.put(queueStringDataMapKey, queueStringDataMapValue);
-            }
-          }
-        } else {
-          ArrayList queueStringDataList =
-              HistoricalDataManager.readHistoricalFifo(
-                  ebdStartTime,
-                  ebdEndTime,
-                  includeTagGroupA,
-                  includeTagGroupB,
-                  includeTagGroupC,
-                  includeTagGroupD,
-                  stringHistorical,
-                  exportDataInUtc);
-
-          // Combine with standard EBD call results
-          queueDataList.addAll(queueStringDataList);
+        if (timeRelative && !queueDataList.isEmpty()) {
+          setUseLastPoint(true);
         }
       }
 
       // Check for Circularized Event
       if (CircularizedFileCheck.didFileCircularizedEventOccurSinceAbsolute(
           startOfEbdHistoricalReadMs)) {
+        // do not use the last point
+        setUseLastPoint(false);
         throw new CircularizedFileException("A circularized event was found in the event logs.");
       }
 
@@ -768,6 +729,15 @@ public class HistoricalDataQueueManager {
 
     // Store end time +1 ms (to prevent duplicate data)
     long nextStartTimeTrackerMsLong = endTimeTrackerMsLong + 1;
+
+    handleTimeUpdate(nextStartTimeTrackerMsLong);
+
+    // Return data as raw object (public method stub will convert to expected type)
+    return queueDataMap != null ? (Object) queueDataMap : (Object) queueDataList;
+  }
+
+  private static void handleTimeUpdate(long nextStartTimeTrackerMsLong)
+      throws DiagnosticTagUpdateException, CorruptedTimeTrackerException, IOException {
     updateTrackingStartTime(nextStartTimeTrackerMsLong);
 
     // Update diagnostic tags (if they are enabled)
@@ -791,9 +761,93 @@ public class HistoricalDataQueueManager {
             "Unable to update historical data queue diagnostic tags!", e);
       }
     }
+  }
 
-    // Return data as raw object (public method stub will convert to expected type)
-    return queueDataMap != null ? (Object) queueDataMap : (Object) queueDataList;
+  private static long PerformRapidCatchUp(
+      long startTimeTrackerMsLong,
+      boolean includeTagGroupA,
+      boolean includeTagGroupB,
+      boolean includeTagGroupC,
+      boolean includeTagGroupD)
+      throws Exception {
+
+    boolean stringHistorical = false;
+    boolean exportDataInUtc = true;
+    RapidCatchUpTracker catchUpResult =
+        RapidCatchUp.rapidCatchUpRequest(
+            startTimeTrackerMsLong,
+            includeTagGroupA,
+            includeTagGroupB,
+            includeTagGroupC,
+            includeTagGroupD,
+            stringHistorical,
+            exportDataInUtc);
+
+    if (catchUpResult.isHistoricalTrackingCaughtUp()) {
+      // If historical tracking is caught up, set lastReadDataPointsEmpty to false
+      lastReadDataPointsEmpty = false;
+    }
+
+    // Regardless of caught up status, update end time
+    return catchUpResult.getTrackingEndTimeMilliseconds();
+  }
+
+  private static Map getFifoNextSpanDataRawSpan(
+      String ebdTagRequest, String ebdStringTagRequest, SCTimeSpan timeSpan, boolean stringEnabled)
+      throws Exception {
+
+    // if enabled, read strings first
+    Map queueStringDataMap = null;
+    Map queueDataMap = null;
+
+    // it is important that the string tags are read first, and the duration between string and
+    // non-string tags is minimal.
+    if (stringEnabled) {
+      queueStringDataMap = HistoricalDataManager.readHistoricalFifo(ebdStringTagRequest, timeSpan);
+    }
+    queueDataMap = HistoricalDataManager.readHistoricalFifo(ebdTagRequest, timeSpan);
+
+    // this is the combine step
+    if (stringEnabled) {
+      // Combine with standard EBD call results
+      Iterator queueStringDataMapIterator = queueStringDataMap.entrySet().iterator();
+      while (queueStringDataMapIterator.hasNext()) {
+        Map.Entry queueStringDataMapEntry = (Map.Entry) queueStringDataMapIterator.next();
+        Date queueStringDataMapKey = (Date) queueStringDataMapEntry.getKey();
+        ArrayList queueStringDataMapValue = (ArrayList) queueStringDataMapEntry.getValue();
+
+        // Check if queue data map contains the key
+        if (queueDataMap.containsKey(queueStringDataMapKey)) {
+          // Get the data points list at the key
+          ArrayList dataPointsListAtKey = (ArrayList) queueDataMap.get(queueStringDataMapKey);
+
+          // Add the data points list at the key
+          dataPointsListAtKey.addAll(queueStringDataMapValue);
+        } else {
+          // Add the data points list at the key
+          queueDataMap.put(queueStringDataMapKey, queueStringDataMapValue);
+        }
+      }
+    }
+    return queueDataMap;
+  }
+
+  private static ArrayList getFifoNextSpanDataRawArrayList(
+      String ebdRequest, String ebdStringRequest, boolean stringEnabled)
+      throws IOException, JSONException, EbdTimeoutException {
+
+    ArrayList queueDataList = null;
+    ArrayList queueStringDataList = null;
+    if (stringEnabled) {
+      queueStringDataList = HistoricalDataManager.readHistoricalFifo(ebdStringRequest);
+    }
+    queueDataList = HistoricalDataManager.readHistoricalFifo(ebdRequest);
+
+    if (queueStringDataList != null && queueStringDataList.size() > 0) {
+      queueDataList.addAll(queueStringDataList);
+    }
+
+    return queueDataList;
   }
 
   /**
@@ -805,7 +859,7 @@ public class HistoricalDataQueueManager {
    * @throws TimeTrackerUnrecoverableException if both time tracking files are corrupted
    * @throws CorruptedTimeTrackerException one of the tracking files is corrupted
    */
-  private static long getTrackingStartTime(boolean startNewTimeTracker)
+  public static long getTrackingStartTime(boolean startNewTimeTracker)
       throws CorruptedTimeTrackerException, IOException, TimeTrackerUnrecoverableException {
 
     /*
