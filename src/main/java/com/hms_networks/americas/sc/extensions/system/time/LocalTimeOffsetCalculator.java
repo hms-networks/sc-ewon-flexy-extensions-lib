@@ -138,8 +138,10 @@ public class LocalTimeOffsetCalculator {
    *
    * @param localEpochMillis the local epoch milliseconds timestamp
    * @return epoch milliseconds timestamp relative to UTC
-   * @throws ParseException
-   * @throws InterruptedException
+   * @throws InterruptedException if interrupted while attempting script expression export block
+   *     descriptor call
+   * @throws ParseException if unable to parse script expression export block descriptor call result
+   *     (local time)
    */
   public static long convertLocalEpochMillisToUtc(long localEpochMillis)
       throws InterruptedException, ParseException {
