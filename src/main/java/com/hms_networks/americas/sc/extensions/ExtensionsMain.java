@@ -10,6 +10,7 @@ import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
 import com.hms_networks.americas.sc.extensions.system.time.TimeZoneManager;
 import com.hms_networks.americas.sc.extensions.taginfo.TagInfoManager;
 import java.io.IOException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -22,12 +23,37 @@ import java.util.Date;
  */
 public class ExtensionsMain {
 
-  public static void getTagInfo() {
+  public static void getTagInfoDate() {
     int i = 40;
     while (i > 0) {
       i--;
       try {
-        TimeZoneManager.checkUpdateTimeZone();
+    TimeZoneManager.checkUpdateTimeZone();
+        ArrayList dat = HistoricalDataQueueManager.getFifoNextSpanDataAllGroups(false);
+        for (int j = 0; j < dat.size(); j++) {
+          DataPoint dp = (DataPoint) dat.get(j);
+          if (dp.getTagId() == 7 || dp.getTagId() == 6) {
+            long time = Long.parseLong(dp.getTimeStamp());
+            Date d = new Date(time*1000);
+            System.out.println(dp.getValueString() + " " + dp.getIso8601Timestamp() + " "+d );
+          }
+          Thread.sleep(1000);
+          TimeZoneManager.checkUpdateTimeZone();
+        }
+      } catch (Exception e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+  }
+
+
+public static void getTagInfo() {
+    int i = 40;
+    while (i > 0) {
+      i--;
+      try {
+    TimeZoneManager.checkUpdateTimeZone();
         ArrayList dat = HistoricalDataQueueManager.getFifoNextSpanDataAllGroups(false);
         for (int j = 0; j < dat.size(); j++) {
           DataPoint dp = (DataPoint) dat.get(j);
@@ -93,7 +119,7 @@ public class ExtensionsMain {
       SCTimeUtils.injectJvmLocalTime();
       TagInfoManager.refreshTagList();
       HistoricalDataQueueManager.setStringHistoryEnabled(true);
-      getTagInfo();
+      getTagInfoDate();
 
     } catch (Exception e) {
       // TODO Auto-generated catch block
