@@ -107,6 +107,18 @@ public class SCAppRebootWatchdog {
   }
 
   /**
+   * Forces the service of the reboot watchdog. This should be called if the application needs to
+   * stop, potentially before the timer expires, and the reboot counter should not be incremented.
+   *
+   * @throws IOException If watchdog file cannot be read from filesystem.
+   * @throws JSONException If watchdog file is not valid JSON or doesn't have the correct structure.
+   */
+  public static void forceServiceRebootWatchdog() throws IOException, JSONException {
+    resetRebootWatchdogFile();
+    isRebootWatchdogServiced = true;
+  }
+
+  /**
    * Gets the current number of unsuccessful reboots.
    *
    * @return The current number of unsuccessful reboots. -1 if data file has not been read.
