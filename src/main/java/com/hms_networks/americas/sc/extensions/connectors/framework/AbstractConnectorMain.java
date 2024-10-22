@@ -13,6 +13,7 @@ import com.hms_networks.americas.sc.extensions.system.info.SCSystemInfo;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeSpan;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUnit;
 import com.hms_networks.americas.sc.extensions.system.time.SCTimeUtils;
+import com.hms_networks.americas.sc.extensions.system.time.TimeZoneManager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -933,6 +934,14 @@ public abstract class AbstractConnectorMain {
 
         // Invoke connector main loop
         connectorLoopRun();
+
+        try {
+          TimeZoneManager.checkUpdateTimeZone();
+        } catch (Exception e) {
+          Logger.LOG_SERIOUS(
+              "An error occurred while attempting to check and update the local timezone offset.");
+          Logger.LOG_EXCEPTION(e);
+        }
 
         // Sleep for specified cycle time
         try {
