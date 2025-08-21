@@ -461,11 +461,6 @@ public abstract class ConstrainedMqttManager {
     } else if (wanIpTimeout != WAIT_FOR_WAN_IP_TIMEOUT_DISABLED && wanIpTimeoutUnit != null) {
       SCAppManagement.waitForWanIp(wanIpTimeout, wanIpTimeoutUnit);
     }
-
-    // Check for WAN IP
-    if (!SCAppManagement.deviceHasWanIP()) {
-      throw new IllegalStateException("Device does not have WAN IP");
-    }
   }
 
   /**
