@@ -14,7 +14,38 @@ public class DataPointDword extends DataPoint {
   private final long value;
 
   /**
-   * Constructor for a DWORD data point with specified quality.
+   * Constructor for a DWORD data point with specified quality and initialization status.
+   *
+   * @param tagName data point tag name
+   * @param tagId data point tag ID
+   * @param tagUnit data point tag unit
+   * @param value data point value
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
+   * @param quality data point quality
+   * @param isInitValue data point initialization status
+   */
+  public DataPointDword(
+      String tagName,
+      int tagId,
+      String tagUnit,
+      long value,
+      String time,
+      String timeIso8601,
+      DataQuality quality,
+      boolean isInitValue) {
+    this.tagName = tagName;
+    this.tagId = tagId;
+    this.tagUnit = tagUnit;
+    this.value = value;
+    this.timestamp = time;
+    this.iso8601Timestamp = timeIso8601;
+    this.quality = quality;
+    this.isInitValue = isInitValue;
+  }
+
+  /**
+   * Constructor for a DWORD data point with specified quality, but without initialization status.
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
@@ -39,10 +70,11 @@ public class DataPointDword extends DataPoint {
     this.timestamp = time;
     this.iso8601Timestamp = timeIso8601;
     this.quality = quality;
+    this.isInitValue = DEFAULT_TAG_IS_INIT_VALUE;
   }
 
   /**
-   * Constructor for a DWORD data point without specified quality.
+   * Constructor for a DWORD data point without specified quality and without initialization status.
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
@@ -60,6 +92,7 @@ public class DataPointDword extends DataPoint {
     this.timestamp = time;
     this.iso8601Timestamp = timeIso8601;
     this.quality = DataQuality.GOOD;
+    this.isInitValue = DEFAULT_TAG_IS_INIT_VALUE;
   }
 
   /**
@@ -137,6 +170,7 @@ public class DataPointDword extends DataPoint {
    * @throws CloneNotSupportedException if the data point cannot be cloned
    */
   public DataPoint clone(String tagName) throws CloneNotSupportedException {
-    return new DataPointDword(tagName, tagId, tagUnit, value, timestamp, iso8601Timestamp, quality);
+    return new DataPointDword(
+        tagName, tagId, tagUnit, value, timestamp, iso8601Timestamp, quality, isInitValue);
   }
 }
