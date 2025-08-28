@@ -18,6 +18,33 @@ package com.hms_networks.americas.sc.extensions.datapoint;
 public class DataPointIntegerMappedString extends DataPointString {
 
   /**
+   * Constructor for an integer mapped (enumerated) {@link String} data point with specified quality
+   * and initialization status.
+   *
+   * @param tagName data point tag name
+   * @param tagId data point tag ID
+   * @param tagUnit data point tag unit
+   * @param value data point value
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
+   * @param quality data point quality
+   * @param enumMapping integer enumerated {@link String} mapping(s)
+   * @param isInitValue data point initialization status
+   */
+  public DataPointIntegerMappedString(
+      String tagName,
+      int tagId,
+      String tagUnit,
+      int value,
+      String time,
+      String timeIso8601,
+      DataQuality quality,
+      String[] enumMapping,
+      boolean isInitValue) {
+    super(tagName, tagId, tagUnit, enumMapping[value], time, timeIso8601, quality, isInitValue);
+  }
+
+  /**
    * Constructor for an integer mapped (enumerated) {@link String} data point with specified
    * quality.
    *

@@ -14,7 +14,40 @@ public class DataPointInteger extends DataPoint {
   private final int value;
 
   /**
-   * Constructor for a <code>integer</code> data point with specified quality.
+   * Constructor for a <code>integer</code> data point with specified quality and initialization
+   * status.
+   *
+   * @param tagName data point tag name
+   * @param tagId data point tag ID
+   * @param tagUnit data point tag Unit
+   * @param value data point value
+   * @param time data point timestamp, UNIX epoch seconds
+   * @param timeIso8601 data point timestamp, ISO 8601 format
+   * @param quality data point quality
+   * @param isInitValue data point initialization status
+   */
+  public DataPointInteger(
+      String tagName,
+      int tagId,
+      String tagUnit,
+      int value,
+      String time,
+      String timeIso8601,
+      DataQuality quality,
+      boolean isInitValue) {
+    this.tagName = tagName;
+    this.tagId = tagId;
+    this.tagUnit = tagUnit;
+    this.value = value;
+    this.timestamp = time;
+    this.iso8601Timestamp = timeIso8601;
+    this.quality = quality;
+    this.isInitValue = isInitValue;
+  }
+
+  /**
+   * Constructor for a <code>integer</code> data point with specified quality, but without
+   * initialization status.
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
@@ -39,10 +72,12 @@ public class DataPointInteger extends DataPoint {
     this.timestamp = time;
     this.iso8601Timestamp = timeIso8601;
     this.quality = quality;
+    this.isInitValue = DEFAULT_TAG_IS_INIT_VALUE;
   }
 
   /**
-   * Constructor for a <code>integer</code> data point without specified quality.
+   * Constructor for a <code>integer</code> data point without specified quality and without
+   * initialization status.
    *
    * @param tagName data point tag name
    * @param tagId data point tag ID
@@ -60,6 +95,7 @@ public class DataPointInteger extends DataPoint {
     this.timestamp = time;
     this.iso8601Timestamp = timeIso8601;
     this.quality = DataQuality.GOOD;
+    this.isInitValue = DEFAULT_TAG_IS_INIT_VALUE;
   }
 
   /**
@@ -138,6 +174,6 @@ public class DataPointInteger extends DataPoint {
    */
   public DataPoint clone(String tagName) throws CloneNotSupportedException {
     return new DataPointInteger(
-        tagName, tagId, tagUnit, value, timestamp, iso8601Timestamp, quality);
+        tagName, tagId, tagUnit, value, timestamp, iso8601Timestamp, quality, isInitValue);
   }
 }

@@ -13,6 +13,9 @@ import java.util.Date;
  */
 public abstract class DataPoint {
 
+  /** Default initialization status for tags created with legacy constructors. */
+  public static final boolean DEFAULT_TAG_IS_INIT_VALUE = false;
+
   /** Name of data point tag */
   protected String tagName;
 
@@ -41,6 +44,9 @@ public abstract class DataPoint {
 
   /** Quality of data point value */
   protected DataQuality quality;
+
+  /** Flag indicating if the data point is an initialization value */
+  protected boolean isInitValue;
 
   /**
    * Get the name of the data point tag
@@ -200,4 +206,14 @@ public abstract class DataPoint {
    * @throws CloneNotSupportedException if the data point cannot be cloned
    */
   public abstract DataPoint clone(String tagName) throws CloneNotSupportedException;
+
+  /**
+   * Get the {@link boolean} representation of whether the data point is an initialization value.
+   *
+   * @return <code>true</code> if the data point is an initialization value, <code>false</code>
+   *     otherwise
+   */
+  public boolean isInitValue() {
+    return isInitValue;
+  }
 }

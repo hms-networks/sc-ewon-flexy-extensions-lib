@@ -543,6 +543,7 @@ public class HistoricalDataManager {
     String tagTimeIso8601Str = "";
     String tagValue = "";
     int tagQuality = DataQuality.GOOD.getRawDataQuality();
+    boolean isInitValue = false;
 
     // Create DataPoint for returning
     DataPoint returnVal = null;
@@ -572,6 +573,9 @@ public class HistoricalDataManager {
           break;
         case HistoricalDataConstants.EBD_LINE_TAG_TIMESTR_INDEX:
           tagTimeIso8601Str = correctEbdIsoTimestamp(currentToken);
+          break;
+        case HistoricalDataConstants.EBD_LINE_TAG_IS_INIT_VALUE_INDEX:
+          isInitValue = convertStrToBool(currentToken);
           break;
         case HistoricalDataConstants.EBD_LINE_TAG_VALUE_INDEX:
           tagValue = currentToken;
@@ -611,7 +615,8 @@ public class HistoricalDataManager {
                       boolValue,
                       tagTimeEpochStr,
                       tagTimeIso8601Str,
-                      dataQuality);
+                      dataQuality,
+                      isInitValue);
             } else if (tagType == TagType.FLOAT) {
               float floatValue;
               if (tagValue.equalsIgnoreCase(HistoricalDataConstants.TAG_VALUE_NEGATIVE_INFINITY)) {
@@ -632,7 +637,8 @@ public class HistoricalDataManager {
                       floatValue,
                       tagTimeEpochStr,
                       tagTimeIso8601Str,
-                      dataQuality);
+                      dataQuality,
+                      isInitValue);
             } else if (tagType == TagType.INTEGER) {
               int intValue = Integer.valueOf(tagValue).intValue();
               returnVal =
@@ -643,7 +649,8 @@ public class HistoricalDataManager {
                       intValue,
                       tagTimeEpochStr,
                       tagTimeIso8601Str,
-                      dataQuality);
+                      dataQuality,
+                      isInitValue);
             } else if (tagType == TagType.INTEGER_MAPPED_STRING) {
               int intValue = Integer.valueOf(tagValue).intValue();
               TagInfoEnumeratedIntToString tagInfoEnumeratedIntToString =
@@ -657,7 +664,8 @@ public class HistoricalDataManager {
                       tagTimeEpochStr,
                       tagTimeIso8601Str,
                       dataQuality,
-                      tagInfoEnumeratedIntToString.getEnumeratedStringValueMapping());
+                      tagInfoEnumeratedIntToString.getEnumeratedStringValueMapping(),
+                      isInitValue);
             } else if (tagType == TagType.DWORD) {
               long dwordValue = Long.valueOf(tagValue).longValue();
               returnVal =
@@ -668,7 +676,8 @@ public class HistoricalDataManager {
                       dwordValue,
                       tagTimeEpochStr,
                       tagTimeIso8601Str,
-                      dataQuality);
+                      dataQuality,
+                      isInitValue);
             } else if (tagType == TagType.STRING) {
               returnVal =
                   new DataPointString(
@@ -678,7 +687,8 @@ public class HistoricalDataManager {
                       tagValue,
                       tagTimeEpochStr,
                       tagTimeIso8601Str,
-                      dataQuality);
+                      dataQuality,
+                      isInitValue);
             }
           }
       }
