@@ -20,6 +20,8 @@ jobs:
   make-branch:
     name: Create Release Branch
     runs-on: ubuntu-latest
+    permissions:
+          contents: write
     steps:
 
       - name: Branch name # Build a branch name from tag (vX.Y) in release/X.Y format
